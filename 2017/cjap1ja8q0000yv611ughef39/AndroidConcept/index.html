@@ -1,0 +1,48 @@
+<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Androidの概念 | Android programing getstart</title><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/normalize.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/highlight.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/very-simple.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><link rel="Shortcut Icon" type="image/x-icon" href="/AndroidCourse/favicon.ico"></head><body><!-- include the sidebar--><!-- include ./includes/sidebar.jade--><!-- Blog title and subtitle--><header><div class="container header"><a id="logo" href="/AndroidCourse/." class="title">Android programing getstart</a><span class="subtitle"></span><label id="toggle-menu" for="menu" onclick><i class="fa fa-bars"></i></label></div></header><!-- use checkbox hack for toggle nav-bar on small screens--><input id="menu" type="checkbox"><!-- Navigation Links--><nav id="nav"><div class="container"><a href="/AndroidCourse/" class="sidebar-nav-item">Home</a><a href="/AndroidCourse/archives" class="sidebar-nav-item">Archives</a></div></nav><div id="header-margin-bar"></div><!-- gallery that comes before the header--><div class="wrapper"><div class="container post-header"><h1>Androidの概念</h1></div></div><div class="wrapper"><div class="container meta"><div class="post-time">2017-11-18</div></div></div><article><div class="container post"><p>Androidアプリ開発に必要になる概念を学んでいきます</p>
+<!-- toc -->
+<ul>
+<li><a href="#android開発における4大要素">Android開発における４大要素</a><ul>
+<li><a href="#activity">Activity</a></li>
+<li><a href="#intent">Intent</a></li>
+<li><a href="#service">Service</a></li>
+<li><a href="#content-provider">Content Provider</a></li>
+</ul>
+</li>
+<li><a href="#その他の要素">その他の要素</a><ul>
+<li><a href="#fragment">Fragment</a></li>
+<li><a href="#viewwidget">View(Widget)</a></li>
+<li><a href="#life-cycle">Life cycle</a></li>
+</ul>
+</li>
+<li><a href="#layout-editorとconstraints-layout">Layout EditorとConstraints Layout</a><ul>
+<li><a href="#layout-editor">Layout Editor</a></li>
+<li><a href="#constraints-layout">Constraints Layout</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1><span id="android開発における4大要素">Android開発における４大要素</span></h1><p>Android アプリの開発には重要に扱われている4大要素があります。<br>各要素を一言で表すと以下４つになります。<br>１.画面<br>２.アプリ/機能の呼び出し<br>３.バックグラウンド実行<br>４.外部からの呼び出し受付</p>
+<p>また上記の要素をAndroidアプリの開発に当てはめると以下名称にて使われます。</p>
+<ul>
+<li>Activity(1.画面)</li>
+<li>Intent(2.アプリ/機能の呼び出し)</li>
+<li>Service(3.バックグラウンド実行)</li>
+<li>Broad Cast Receiver (4.外部からの呼び出し受付)</li>
+</ul>
+<h2><span id="activity">Activity</span></h2><p>アプリ開発における画面を指し、ユーザーからの操作の受付、ユーザーへの情報表示のために使用します。<br>Activity内にはwidgetまたはviewと呼ばれる要素（ボタンや画像）を配置して機能を追加する。<br>また画面単位の要素としてFragmentが存在し、Activity内に表示させて使うことが推奨されている。</p>
+<h2><span id="intent">Intent</span></h2><p>Activity間の呼び出しを行うための仕組み。<br>画面遷移やActivity間でのデータのやりとり、他にもメールアプリやブラウザアプリなど、<br>外部アプリの呼び出しを行う時に利用します。</p>
+<h2><span id="service">Service</span></h2><p>バックグラウンドで長時間の作業を行うためのコンポーネントです。<br>例として、Content Providerや非同期通信によるデータのやりとり、画面を表示しないまま音楽再生をする場合などに利用します。</p>
+<h2><span id="content-provider">Content Provider</span></h2><p>構造化されたデータへのアクセスを管理する仕組み。<br>アプリ内のデータベースとのやりとりや端末内の別アプリが管理しているデータへのアクセスを行う場合などに利用します。</p>
+<h1><span id="その他の要素">その他の要素</span></h1><ul>
+<li>Fragment</li>
+<li>View</li>
+<li>Life cycle (ライフサイクル)</li>
+</ul>
+<h2><span id="fragment">Fragment</span></h2><h2><span id="viewwidget">View(Widget)</span></h2><h2><span id="life-cycle">Life cycle</span></h2><p>Androidの画面要素にはLife cycleと言う概念を含んでおり、<br>Activity / Fragment / View要素にはそれぞれインスタンス化前、表示前、非表示前、要素解放前など要素ごとに表示やアプリ内での状態が切り替わったタイミングで強制的に処理される<br>※ 今回の講座ではActivity / Fragmentのライフサイクルだけ紹介します</p>
+<h1><span id="layout-editorとconstraints-layout">Layout EditorとConstraints Layout</span></h1><p>Android Studio 2.2から追加されたLayoutEditorとConstraintsLayoutを使用することでアプリ画面のレイアウト実装を視覚的に確認しながら実装できるようになった。</p>
+<h2><span id="layout-editor">Layout Editor</span></h2><p>視覚的にViewやWidgetを配置することができるようになった、Constrains Layoutと合わせて使うことで画面のレイアウトを行う際にxmlによるプログラムを記述する手間が<br>省きながら実際に配置を確認できるようになった。</p>
+<h2><span id="constraints-layout">Constraints Layout</span></h2><p>Android 2.3(Gingerbread)以上を対象に開発を行う場合に利用することが可能。<br>constraints(制約)をViewやWidgetに設けることでレイアウトを決めることができる。<br>従来の”Linear Layout”や”Relative Layout”に比べネスト構造を減らした実装を行うことができるようになった。</p>
+</div><!-- comment system--><div class="container"><hr></div></article><footer id="footer"><div class="container"><div class="bar"><div class="social"><a href="/atom.xml" target="_blank"><i class="fa fa-rss"></i></a></div><div class="footer">© 2017 <a href="/" rel="nofollow">kuririnz</a>. Powered by <a rel="nofollow" target="_blank" href="https://hexo.io">Hexo</a>. Theme <a target="_blank" href="https://github.com/lotabout/very-simple">very-simple</a>.</div></div></div></footer><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.css"><script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script><script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script><script>$(document).ready(function() {
+    $(".fancybox").fancybox();
+});
+</script></body></html>
