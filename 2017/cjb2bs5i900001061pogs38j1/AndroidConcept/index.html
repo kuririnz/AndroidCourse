@@ -38,7 +38,10 @@
 <li>View</li>
 <li>Life cycle (ライフサイクル)</li>
 </ul>
-<h2><span id="fragment">Fragment</span></h2><h2><span id="viewwidget">View(Widget)</span></h2><h2><span id="life-cycle">Life cycle</span></h2><p>Androidの画面要素にはLife cycleと言う概念を含んでおり、<br>Activity / Fragment / View要素にはそれぞれインスタンス化前、表示前、非表示前、要素解放前など要素ごとに表示やアプリ内での状態が切り替わったタイミングで強制的に処理される<br>※ 今回の講座ではActivity / Fragmentのライフサイクルだけ紹介します</p>
+<h2><span id="fragment">Fragment</span></h2><p>コンテンツ,ライフサイクルを持ったView</p>
+<h2><span id="viewwidget">View(Widget)</span></h2><h2><span id="life-cycle">Life cycle</span></h2><p>Androidの画面要素にはLife cycleと言う概念を含んでおり、<br>Activity / Fragment View要素にはそれぞれインスタンス化前、表示前、非表示前、破棄前など要素ごとに表示やアプリ内での状態が切り替わったタイミングで強制的に処理される</p>
+<p>各クラスのライフサイクルに関して<br>Activityのライフサイクル<a href="https://developer.android.com/guide/components/activities.html?hl=ja" target="_blank" rel="external">※1</a><br><img src="https://developer.android.com/images/activity_lifecycle.png?hl=ja" alt="alt" title="Architecture" width="350"></p>
+<p>Fragmentのライフサイクル<a href="https://developer.android.com/guide/components/fragments.html?hl=ja" target="_blank" rel="external">※2</a><br><img src="https://developer.android.com/images/fragment_lifecycle.png?hl=ja" alt="alt" title="Architecture" width="300"></p>
 <h1><span id="layout-editorとconstraints-layout">Layout EditorとConstraints Layout</span></h1><p>Android Studio 2.2から追加されたLayoutEditorとConstraintsLayoutを使用することでアプリ画面のレイアウト実装を視覚的に確認しながら実装できるようになった。</p>
 <h2><span id="layout-editor">Layout Editor</span></h2><p>視覚的にViewやWidgetを配置することができるようになった、Constrains Layoutと合わせて使うことで画面のレイアウトを行う際にxmlによるプログラムを記述する手間が<br>省きながら実際に配置を確認できるようになった。</p>
 <h2><span id="constraints-layout">Constraints Layout</span></h2><p>Android 2.3(Gingerbread)以上を対象に開発を行う場合に利用することが可能。<br>constraints(制約)をViewやWidgetに設けることでレイアウトを決めることができる。<br>従来の”Linear Layout”や”Relative Layout”に比べネスト構造を減らした実装を行うことができるようになった。</p>
