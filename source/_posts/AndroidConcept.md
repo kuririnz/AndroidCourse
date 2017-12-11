@@ -46,13 +46,20 @@ Activity間の呼び出しを行うための仕組み。
 * Life cycle (ライフサイクル)
 
 ## Fragment
+コンテンツ,ライフサイクルを持ったView
 
 ## View(Widget)
 
 ## Life cycle
 Androidの画面要素にはLife cycleと言う概念を含んでおり、
-Activity / Fragment / View要素にはそれぞれインスタンス化前、表示前、非表示前、要素解放前など要素ごとに表示やアプリ内での状態が切り替わったタイミングで強制的に処理される
-※ 今回の講座ではActivity / Fragmentのライフサイクルだけ紹介します
+Activity / Fragment View要素にはそれぞれインスタンス化前、表示前、非表示前、破棄前など要素ごとに表示やアプリ内での状態が切り替わったタイミングで強制的に処理される
+
+各クラスのライフサイクルに関して
+Activityのライフサイクル[※1]
+<img src="https://developer.android.com/images/activity_lifecycle.png?hl=ja" alt="alt" title="Architecture" width="350">
+
+Fragmentのライフサイクル[※2]
+<img src="https://developer.android.com/images/fragment_lifecycle.png?hl=ja" alt="alt" title="Architecture" width="300">
 
 
 # Layout EditorとConstraints Layout
@@ -66,3 +73,6 @@ Android Studio 2.2から追加されたLayoutEditorとConstraintsLayoutを使用
 Android 2.3(Gingerbread)以上を対象に開発を行う場合に利用することが可能。
 constraints(制約)をViewやWidgetに設けることでレイアウトを決めることができる。
 従来の"Linear Layout"や"Relative Layout"に比べネスト構造を減らした実装を行うことができるようになった。
+
+[※1]: https://developer.android.com/guide/components/activities.html?hl=ja
+[※2]: https://developer.android.com/guide/components/fragments.html?hl=ja

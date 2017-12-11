@@ -28,10 +28,31 @@ iOSやAndroid OS,Windows Phoneの3つのOSが市場で多くのシェアを持�
 
 
 ### 世界のスマートフォン OS シェア
+世界をマーケットとした場合、Android OSが最も利用されているスマートフォンOSであることがわかります。
 
+Net Market Share参照[※1]
+<img src="WorldShare.png" alt="alt" title="Mobile Share in World" width="300">
+
+|OS               |開発者       |シェア         |
+|:----------------|:----------:|:-------------|
+|Android          |Google      |70.47%        |
+|iOS              |Apple       |28.55%        |
+|Series 40        |NOKIA       |0.32%         |
+|Windows 10 Mobile|Microsoft   |0.22%         |
 
 ### 日本のスマートフォン OS シェア
+マーケットを日本に絞った場合でも最近はAndroid OSがiOSのシェアを上回るようになりました。
+これはAndroid OSを多く扱う格安SIMの認知が広がりと、iOSのデバイスの購入価格の上昇に
+伴ってAndroid端末を購入する利用者が増えたものと考えられます。
 
+KANTAR WORLDPANEL参照[※2]
+<img src="JapanShare.png" alt="alt" title="Mobile Share in Japan" width="300">
+
+|OS               |開発者       |シェア         |
+|:----------------|:----------:|:-------------|
+|Android          |Google      |55.00%        |
+|iOS              |Apple       |44.80%        |
+|Windows 10 Mobile|Microsoft   |0.10%         |
 
 ## Android アプリの開発環境
 
@@ -51,7 +72,7 @@ Androidアプリの開発は主に**java**や**Kotlin**と言うプログラミ�
 	* javaよりコード量を少なくAndroidアプリを開発できる
 	* javaの動作環境があれば実行可能
 
-### Android OSプラットフォーム
+## Android OSプラットフォーム
 
 現在(2017/11)で最も多く利用されている Android OSバージョンは6.0(Marshmallow)になります。
 販売されているAndroidデバイスは各販売元の企業によってカスタマイズされた物となっていることが多く、デバイスのスペックを含めた環境から販売元の企業によってアップデートできるOSを管理されており、最新のOSにアップデートできないことが多いです。
@@ -59,11 +80,28 @@ Androidアプリの開発は主に**java**や**Kotlin**と言うプログラミ�
 
 現在であれば**6.0(Marshmallow)**から2つ前のコードネームなので***4.4(KitKat)***までをサポート対象に含めることで、全世界のAndoroid OS ユーザの内、90%にアプリを配信することができることになります。
 
+Android Developers参照[※3]
+
+|Version    |CodeName    |API  |User     |
+|:----------|:-----------|:----|:--------|
+|6.0        |Marshmallow |23   |30.9%    |
+|5.0~5.1    |Lollipop    |21-22|27.2%    |
+|7.0~7.1    |Nougat      |24-25|20.6%    |
+|4.4        |KitKat      |19   |13.8%    |
+|4.1.x~4.2.x|Jelly Bean  |16-17|5.3%     |
+|4.3        |Jelly Bean  |18   |0.9%     |
+|8.0        |Oreo        |26   |0.3%     |
+
+
 ## Android アーキテクチャ
 
 Android OSのアーキテクチャはLinux Kernelを基盤に作られています。
 実際の開発に必ず必要になる知識ではありませんので紹介までにとどめさせていただきます。
 
-*参考サイト*
-> https://developer.android.com/about/dashboards/index.html#Platform
-> https://developer.android.com/guide/platform/index.html?hl=ja#system-apps
+Android Developers参照[※4]
+<img src="https://developer.android.com/guide/platform/images/android-stack_2x.png?hl=ja" alt="alt" title="Architecture" width="400">
+
+[※1]: https://netmarketshare.com/
+[※2]: https://www.kantarworldpanel.com/global/smartphone-os-market-share
+[※3]: https://developer.android.com/about/dashboards/index.html#Platform
+[※4]: https://developer.android.com/guide/platform/index.html?hl=ja#system-apps
