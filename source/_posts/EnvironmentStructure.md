@@ -1,5 +1,5 @@
 ---
-title: EnvironmentStructure
+title: Android アプリ開発の環境構築
 date: 2017-11-01
 tags:
 ---
