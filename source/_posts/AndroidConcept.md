@@ -55,7 +55,7 @@ Activity間の呼び出しを行うための仕組み。
 ## View
 ウィジェットやViewGroupの総称、こちらにもライフサイクルに近い機能は存在しているが、
 ActivityやFragmentとは違ったサイクルが存在する。
-[Life cycle](##LifeCycle)項目で紹介します。
+**LifeCycle**項目で紹介します。
 
 ### ViewGroup
 子要素を持つことができるView
@@ -77,11 +77,13 @@ Activity / Fragment View要素にはそれぞれインスタンス化前、表�
 
 各クラスのライフサイクルに関して
 Activityのライフサイクル[※1]
-<img src="https://developer.android.com/images/activity_lifecycle.png?hl=ja" alt="alt" title="Architecture" width="350">
+<img src="https://developer.android.com/images/activity_lifecycle.png?hl=ja" alt="alt" title="activity life cycle" width="350">
 
 Fragmentのライフサイクル[※2]
-<img src="https://developer.android.com/images/fragment_lifecycle.png?hl=ja" alt="alt" title="Architecture" width="300">
+<img src="https://developer.android.com/images/fragment_lifecycle.png?hl=ja" alt="alt" title="fragment life cycle" width="300">
 
+Viewのライフサイクル[※3]
+<img src="viewinlifecycle.png" alt="alt" title="view life cycle" width="450">
 
 # Layout EditorとConstraints Layout
 Android Studio 2.2から追加されたLayoutEditorとConstraintsLayoutを使用することでアプリ画面のレイアウト実装を視覚的に確認しながら実装できるようになった。
@@ -97,3 +99,4 @@ constraints(制約)をViewやWidgetに設けることでレイアウトを決め
 
 [※1]: https://developer.android.com/guide/components/activities.html?hl=ja
 [※2]: https://developer.android.com/guide/components/fragments.html?hl=ja
+[※3]: https://developer.android.com/reference/android/view/View.html#pubmethods
