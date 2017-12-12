@@ -2,7 +2,7 @@
 title: Android アプリ開発を始める
 date: 2017-11-04
 ---
-Androidアプリ開発の始め方からエミュレータを使って動作確認する
+講座で解説のために作成するアプリの紹介とプロジェクトの作成
 
 <!-- toc -->
 
@@ -93,13 +93,3 @@ Android Studioの初回起動時には利用環境のセットアップ処理が
 <img src="sad19.png" alt="alt" title="SetUp" width="450">
 
 <img src="sad20.png" alt="alt" title="SetUp" width="450">
-
-
-
-# エミュレータで動かす
-
-# レイアウトを変更する
-
-## Layout Editor
-
-# プログラムを途中で止めて状態を確認する
