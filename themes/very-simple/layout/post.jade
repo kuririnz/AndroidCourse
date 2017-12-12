@@ -18,15 +18,15 @@ block main
     .container.post-header
       h1: = page.title
 
-  .wrapper
-    .container.meta
-      .post-time= page.date.format(config.date_format)
-      if (page.categories && page.categories.length)
-        .post-categories
-          != list_categories(page.categories, {show_count: false, class: 'post-category', style: 'none', separator: '>'})
-      if (page.tags && page.tags.length)
-        .post-tags
-          != list_tags(page.tags, {show_count: false, class: 'post-tag', style:'none', separator:'/'})
+  //- .wrapper
+  //-   .container.meta
+  //-     .post-time= page.date.format(config.date_format)
+  //-     if (page.categories && page.categories.length)
+  //-       .post-categories
+  //-         != list_categories(page.categories, {show_count: false, class: 'post-category', style: 'none', separator: '>'})
+  //-     if (page.tags && page.tags.length)
+  //-       .post-tags
+  //-         != list_tags(page.tags, {show_count: false, class: 'post-tag', style:'none', separator:'/'})
 
 
   article

@@ -10,7 +10,8 @@ block main
     #index-main.container.entries
       for post in page.posts.toArray()
         .post-entry
-          .post-time= post.date.format(config.date_format)
+          //- .post-time= post.date.format(config.date_format) index画面に日付表示を行わない
+          .post-time= ""
           .post-desc
             .post-title
               if post.link

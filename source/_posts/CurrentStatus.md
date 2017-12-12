@@ -1,6 +1,6 @@
 ---
 title: Android OS とは
-date: 2017-11-18
+date: 2017-11-02
 ---
 Android OSの現在のシェアや動向を紹介します。
 
