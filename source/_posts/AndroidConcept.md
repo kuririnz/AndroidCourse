@@ -43,14 +43,35 @@ Activity間の呼び出しを行うための仕組み。
 
 * Fragment
 * View
+	* ViewGroup
+	* Widget
 * Life cycle (ライフサイクル)
 
 ## Fragment
-コンテンツ,ライフサイクルを持ったView
+コンテンツやWidget,ライフサイクルを持ったView
+子要素を持つことが可能なのでActivityと同じようにViewGroupやWidgetを配置することができる。
+また、Activityと独立したライフサイクルを持っており、ライフサイクルはActivityに近い形で実装されている。
 
-## View(Widget)
+## View
+ウィジェットやViewGroupの総称、こちらにもライフサイクルに近い機能は存在しているが、
+ActivityやFragmentとは違ったサイクルが存在する。
+[Life cycle](##LifeCycle)項目で紹介します。
 
-## Life cycle
+### ViewGroup
+子要素を持つことができるView
+LinearLayout,RelativeLayout、最近追加されたものとしてはConstraintsLayoutが該当します。
+他にListViewやGridView、RecyclerViewもViewGroupに該当します。
+どのコンポーネントも内部にView要素を持つことができる要素になります。
+
+LinearLayoutやRelativeLayoutは画面内の配置を容易にしてくれる機能を持っていたり、
+ListViewなどは一覧データを並べて表示する機能があります。
+
+### Widget
+子要素を持つことができないView、これをViewと呼ぶことが多い気がします
+ButtonやTextView、CheckBoxなどがWidgetと呼ばれる要素になります。
+コンポーネント自体がユーザインターフェースの役割をこなすことができるViewになります
+
+## LifeCycle
 Androidの画面要素にはLife cycleと言う概念を含んでおり、
 Activity / Fragment View要素にはそれぞれインスタンス化前、表示前、非表示前、破棄前など要素ごとに表示やアプリ内での状態が切り替わったタイミングで強制的に処理される
 
