@@ -10,8 +10,13 @@ date: 2017-11-04
 今回の講座でAndroid アプリ開発を学ぶ上で１つのアプリを開発します。
 機能として以下
 
-* 図書館でレンタルできる蔵書検索
+* 図書館で管理されている蔵書の検索機能
+* 蔵書名からレンタルできる図書館の検索機能
+* 蔵書検索した履歴管理機能
 
+検索機能に利用するサービス
+[カーリル 図書館 API](https://calil.jp/doc/api.html)
+[Google Books API](https://developers.google.com/books/)
 
 
 # Android Studio セットアップ
