@@ -2,10 +2,11 @@
 title: Android アプリ開発の環境構築
 date: 2017-11-01
 ---
-Androidアプリの開発を行うための準備をおこないます。
-Windows / Mac の各PCごとに手順が違うためそれぞれの環境構築手順を以下に記述します。
+Androidアプリの開発を行うための環境構築をおこないます。
 
 <!-- toc -->
+
+Windows / Mac の各PCごとに手順が違うためそれぞれの環境構築手順を以下に記述します。
 
 # 環境構築(Windows PC)
 Android アプリの開発を始めるには最低限２つソフトウェアのインストールと設定を行う必要があります。
@@ -32,6 +33,7 @@ java(JDK)をインストールします。
 <img src="j8_dl.png" alt="alt" title="java se download" width="520">
 
 ### JDKのインストール
+ダウンロードしたJDKのインストーラを起動してPCにJDKをインストールします。
 
 1.ダウンロードしたexeファイルをダブルクリックしインストーラーを起動します。
 <img src="j8_i_01.png" alt="alt" title="java(JDK) install" width="520">
@@ -43,19 +45,26 @@ java(JDK)をインストールします。
 3.JDKのインストール開始画面が表示されたら```次(N) >```をクリックし、その後も画面に従いインストールを進めます。
 <img src="j8_i_03.png" alt="alt" title="java(JDK) install" width="450">
 
-
+4.**開発ツール**が選択されていることを確認し、```次(N) >```をクリックします
 <img src="j8_i_04.png" alt="alt" title="java(JDK) install" width="450">
 
-<img src="j8_i_05.png" alt="alt" title="java(JDK) install" width="450">
-
+5.JDKの保存先を設定できます、変更は不要なので```次(N) >```をクリックします
 <img src="j8_i_06.png" alt="alt" title="java(JDK) install" width="450">
 
+6.インストールが始まります、完了して画面が変わるのを待ちます
 <img src="j8_i_07.png" alt="alt" title="java(JDK) install" width="450">
 
+7.インストールの完了画面が表示されたら```閉じる(C)```をクリックします
 <img src="j8_i_08.png" alt="alt" title="java(JDK) install complete" width="450">
 
+
+以上でJDKのインストールが完了です。
+
+
+---
+
 ### JDKのインストール 確認
-コマンドプロンプトを使いJDKがインストールされたことを確認します。
+次にコマンドプロンプトを使いJDKが正しくインストールされたことを確認します。
 
 1.Windows ホーム画面の左下にある```検索欄```に```cmd```と入力し**コマンドプロンプト**をクリックし起動します。
 
@@ -67,10 +76,12 @@ java(JDK)をインストールします。
 
 以上でjava(JDK)のインストール作業は完了です。
 
+---
+
 ## Android Studio
 続いて Android Studioの環境構築を行います。
 
-### Android Studioのダウンロード
+### Android Studioのインストール
 Android Studioをインストールするため、exeファイルを下記リンクからダウンロードページにアクセスします。
 
 [Android Studio ダウンロードページ](https://developer.android.com/studio/index.html?hl=ja)
@@ -85,28 +96,34 @@ Android Studioをインストールするため、exeファイルを下記リン
 3.ダウンロードしたexeファイルをダブルクリックし、Android Studioのインストーラーを起動します。
 <img src="as_i_03.png" alt="alt" title="Android Studio download" width="520">
 
-
-### Android Studioのインストール
+4.確認ダイアログが表示された場合は```はい```をクリックします
 <img src="as_i_04.png" alt="alt" title="Android Studio install" width="450">
 
+5.インストーラの起動画面が表示されたら```Next >```をクリックします
 <img src="as_i_05.png" alt="alt" title="Android Studio install" width="450">
 
+6.インストールするコンポーネント設定が表示されたら"Android Virtual Device"がチェックされていることを確認し、
+```Next >```をクリックします
 <img src="as_i_06.png" alt="alt" title="Android Studio install" width="450">
 
+7.Android Studioの保存先を設定します、変更の必要がなければ```Next >```をクリックりします
 <img src="as_i_07.png" alt="alt" title="Android Studio install" width="450">
 
+8.```Install```をクリックします
 <img src="as_i_08.png" alt="alt" title="Android Studio install" width="450">
 
+9.インストールの完了を待ちます
 <img src="as_i_09.png" alt="alt" title="Android Studio install" width="450">
 
+10.インストールが終わったら```Next >```をクリックします
 <img src="as_i_10.png" alt="alt" title="Android Studio install" width="450">
 
+11.```Finish```をクリックすると、Android Studioが起動します。
 <img src="as_i_11.png" alt="alt" title="Android Studio install" width="450">
-
 
 以上でAndroid Studioのインストール作業は完了です。
 Androidアプリの開発環境が整いましたので早速開発に入っていきましょう！
-[Androidの概念](/AndroidCourse/2017/11/18/AndroidConcept/)
+[Androidの概念](/AndroidCourse/2017/android/03-StartAndroidDevelopment/)
 
 # 環境構築(Mac PC)
 
