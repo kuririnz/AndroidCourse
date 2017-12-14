@@ -9,12 +9,14 @@ Androidアプリ開発に必要になる概念を学んでいきます
 # Android開発における４大要素
 Android アプリの開発には重要に扱われている4大要素があります。
 各要素を一言で表すと以下４つになります。
-１.画面
-２.アプリ/機能の呼び出し
-３.バックグラウンド実行
-４.外部からの呼び出し受付
+
+１. 画面
+２. アプリ/機能の呼び出し
+３. バックグラウンド実行
+４. 外部からの呼び出し受付
 
 また上記の要素をAndroidアプリの開発に当てはめると以下名称にて使われます。
+
 * Activity(1.画面)
 * Intent(2.アプリ/機能の呼び出し)
 * Service(3.バックグラウンド実行)
@@ -58,7 +60,7 @@ ActivityやFragmentとは違ったサイクルが存在する。
 
 ### ViewGroup
 子要素を持つことができるView
-LinearLayout,RelativeLayout、最近追加されたものとしてはConstraintsLayoutが該当します。
+LinearLayout,RelativeLayout、最近追加されたものとしてはConstraintLayoutが該当します。
 他にListViewやGridView、RecyclerViewもViewGroupに該当します。
 どのコンポーネントも内部にView要素を持つことができる要素になります。
 
@@ -83,18 +85,6 @@ Fragmentのライフサイクル[※2]
 
 Viewのライフサイクル[※3]
 <img src="viewinlifecycle.png" alt="alt" title="view life cycle" width="450">
-
-# Layout EditorとConstraints Layout
-Android Studio 2.2から追加されたLayoutEditorとConstraintsLayoutを使用することでアプリ画面のレイアウト実装を視覚的に確認しながら実装できるようになった。
-
-## Layout Editor
-視覚的にViewやWidgetを配置することができるようになった、Constrains Layoutと合わせて使うことで画面のレイアウトを行う際にxmlによるプログラムを記述する手間が
-省きながら実際に配置を確認できるようになった。
-
-## Constraints Layout
-Android 2.3(Gingerbread)以上を対象に開発を行う場合に利用することが可能。
-constraints(制約)をViewやWidgetに設けることでレイアウトを決めることができる。
-従来の"Linear Layout"や"Relative Layout"に比べネスト構造を減らした実装を行うことができるようになった。
 
 [※1]: https://developer.android.com/guide/components/activities.html?hl=ja
 [※2]: https://developer.android.com/guide/components/fragments.html?hl=ja
