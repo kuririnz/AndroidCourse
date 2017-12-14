@@ -18,44 +18,16 @@ date: 2017-11-04
 [カーリル 図書館 API](https://calil.jp/doc/api.html)
 [Google Books API](https://developers.google.com/books/)
 
-
-# Android Studio セットアップ
-Android Studioの初回起動時には利用環境のセットアップ処理が行われるので手順を記載します。
+# 新しいプロジェクトを作る
 
 1.Windows ホーム画面の左下にある```検索欄```に```Android```と入力し**Android Studio**をクリックし起動します。
 <img src="sad01.png" alt="alt" title="SetUp" width="600">
 
-2.android SDK Componentのインストールが開始されます
+2.```Start a new Android Studio project```をクリック
 <img src="sad02.png" alt="alt" title="SetUp" width="450">
 
-3.Welcome画面では```Next```ボタンをクリックします
-<img src="sad03.png" alt="alt" title="SetUp" width="450">
-
-4.Install Typeは**stanard**を選択し```Next```をクリックします
-<img src="sad04.png" alt="alt" title="SetUp" width="450">
-
-5.Android Studio内のテーマカラーを選択します、好みで選択し、```Next```をクリックします
-<img src="sad05.png" alt="alt" title="SetUp" width="450">
-
-6.セットアップ情報の確認画面が表示されるので```Finish```をクリックします
-<img src="sad06.png" alt="alt" title="SetUp" width="450">
-
-7.Androidアプリの開発に必要なComponentのダウンロードは始まります
-<img src="sad07.png" alt="alt" title="SetUp" width="450">
-
-8.ダウンロードが終わったら```Finish```をクリックします
-<img src="sad08.png" alt="alt" title="SetUp" width="450">
-
-9.Android Studioの起動画面が表示されたら完了です
-<img src="sad09.png" alt="alt" title="SetUp" width="450">
-
-# 新しいプロジェクトを作る
-
-1.```Start a new Android Studio project```をクリック
-<img src="sad10.png" alt="alt" title="SetUp" width="450">
-
-2.新規プロジェクト作成時にはアプリ名などを入力します
-以下の表の通りに項目を設定して```Next```をクリックします。
+3.新規プロジェクト作成時にはアプリ名などを入力します
+  以下の表の通りに項目を設定して```Next```をクリックします。
 
 |項目名                 |説明                |入力内容        |
 |:---------------------|:-----------------:|:------------:|
@@ -69,20 +41,20 @@ Android Studioの初回起動時には利用環境のセットアップ処理が
 ままで構いません。
 今回の講義ではC++での実装はありませんのでチェックを外しておきます。
 また、Kotlinは後半で利用方法を紹介しますので一旦チェックを外しておいてください。
-<img src="sad11.png" alt="alt" title="SetUp" width="450">
+<img src="sad03.png" alt="alt" title="SetUp" width="450">
 
-3.今回作成するAndroidアプリでサポート対象とするOSバージョンの下限設定を行います
+4.今回作成するAndroidアプリでサポート対象とするOSバージョンの下限設定を行います
 **Phone and Tablet**のみチェックをつけ、
 > API 23: Android 6.0 (Marshmallow)
 
 を選択したら、```Next```をクリックします
-<img src="sad12.png" alt="alt" title="SetUp" width="450">
+<img src="sad04.png" alt="alt" title="SetUp" width="450">
 
-4.**Empty Activity**を選択し```Next```をクリックします
-<img src="sad13.png" alt="alt" title="SetUp" width="450">
+5.**Empty Activity**を選択し```Next```をクリックします
+<img src="sad05.png" alt="alt" title="SetUp" width="450">
 
-5.初期画面となるActivity設定を行います
-以下の表の通りに項目を設定して```Next```をクリックします
+6.初期画面となるActivity設定を行います
+  以下の表の通りに項目を設定して```Next```をクリックします
 
 |項目名                             |説明                |入力内容       |
 |:---------------------------------|:-----------------:|:------------:|
@@ -90,19 +62,26 @@ Android Studioの初回起動時には利用環境のセットアップ処理が
 |Generate Layout File              |デザインファイル作成有無|チェックを入れる|
 |Layout Name                       |デザインファイル名    |activity_main |
 |Backwards Compatibility(AppCompat)|下方互換性の有無      |チェックを入れる |
-<img src="sad14.png" alt="alt" title="SetUp" width="450">
 
-6.「5.」で設定した内容でAndroidアプリの開発のデフォルト環境を構築が実行されます
+<img src="sad06.png" alt="alt" title="SetUp" width="450">
+
+7.「6.」で設定した内容でAndroidアプリの開発のデフォルト環境を構築が実行されます
 インストールが終了し**done**の文字が表示されたら```Finish```をクリックします。
-<img src="sad15.png" alt="alt" title="SetUp" width="450">
+<img src="sad07.png" alt="alt" title="SetUp" width="450">
 
-7.構築が終了すると開発画面に遷移します
-<img src="sad16.png" alt="alt" title="SetUp" width="450">
+8.構築が終了すると開発画面に遷移します
+**Messages**エリアにエラーとリンクが表示されている場合はリンクをクリックします
+<img src="sad08.png" alt="alt" title="SetUp" width="450">
 
-<img src="sad17.png" alt="alt" title="SetUp" width="450">
+9.不足しているComponentのインストールを行います
+**android-sdk-license**が選択された状態で**Accept**にチェックをいれ```Next```をクリックします
+<img src="sad09.png" alt="alt" title="SetUp" width="450">
 
-<img src="sad18.png" alt="alt" title="SetUp" width="450">
+10.Componentのインストール状況が表示されるので終了を待ちます
+<img src="sad10.png" alt="alt" title="SetUp" width="450">
 
-<img src="sad19.png" alt="alt" title="SetUp" width="450">
+11.インストールが終わったら```Finish```をクリックします
+<img src="sad11.png" alt="alt" title="SetUp" width="450">
 
-<img src="sad20.png" alt="alt" title="SetUp" width="450">
+12.Android Studioの開発画面に戻りエラーが消えていたらセットアップ完了です
+<img src="sad12.png" alt="alt" title="SetUp" width="450">

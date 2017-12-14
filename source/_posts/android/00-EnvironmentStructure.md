@@ -119,11 +119,35 @@ Android Studioをインストールするため、exeファイルを下記リン
 <img src="as_i_10.png" alt="alt" title="Android Studio install" width="450">
 
 11.```Finish```をクリックすると、Android Studioが起動します。
+引き続き、Android Studioの初回セットアップを行います
 <img src="as_i_11.png" alt="alt" title="Android Studio install" width="450">
 
-以上でAndroid Studioのインストール作業は完了です。
+12.Android Studioが起動しAndroid SDK Componentのインストールが開始されます
+<img src="as_s_01.png" alt="alt" title="Android Studio setup" width="450">
+
+13.Welcom画面が表示されたら```Next```をクリック
+<img src="as_s_02.png" alt="alt" title="Android Studio setup" width="450">
+
+14.Install Type画面では**Standard**が選択されていることを確認し```Next```をクリックします
+<img src="as_s_03.png" alt="alt" title="Android Studio setup" width="450">
+
+15.Android Studioのテーマ、色合いを好みで選択し、```Next```をクリックします
+<img src="as_s_04.png" alt="alt" title="Android Studio setup" width="450">
+
+16.確認画面が表示されたら```Finish```をクリックします
+<img src="as_s_05.png" alt="alt" title="Android Studio setup" width="450">
+
+17.Androidアプリの開発に必要なComponentのダウンロードを待ちます
+<img src="as_s_06.png" alt="alt" title="Android Studio setup" width="450">
+
+18.ダウンロードが終了したら、```Finish```をクリックします
+<img src="as_s_07.png" alt="alt" title="Android Studio setup" width="450">
+
+19.Android Studioの起動画面が表示されたら完了です
+<img src="as_s_08.png" alt="alt" title="Android Studio setup complete" width="450">
+
+以上でAndroid Studioのインストール、セットアップ作業は完了です。
 Androidアプリの開発環境が整いましたので早速開発に入っていきましょう！
-[Androidの概念](/AndroidCourse/2017/android/03-StartAndroidDevelopment/)
 
 # 環境構築(Mac PC)
 
