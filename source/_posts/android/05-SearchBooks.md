@@ -32,7 +32,6 @@ Androidアプリの画面が表示されるのもスレッドが画面を表示�
 一つ前の[レイアウト作成](/AndroidCourse/android/04-MakeLayoutDesign)の内容で作成したxmlレイアウトですが、
 今回プログラムを記述する"MainActivity.java"が処理された時に表示されるプログラムがすでに記述されています。
 それが以下のコード内矢印に囲まれてるプログラムでMainActivity.javaが処理された時にレイアウトの読み込みを行なっています。
-
 <font color="RoyalBlue">***MainActivity.java***</font>
 ```
 ...
@@ -47,22 +46,26 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
+<font color="red">「おまじない」</font>という言葉で紹介されることもありますが、このコードが書かれていないと画面には何も表示されず、真っ白な画面で止まってしまうので必ず記述しましょう。
 
-次に画面のButtonやEditTextをjavaプログラムに関連付けを行う方法です。
-ButtonやEditTextをjavaプログラムと関連づけるにはいくつかの決まった記述方法があります、中でも一番よく使う方法を紹介します。
-まずは関連付けたいウィジェットにユニークなID(名称)をつける必要があるため、**activity_main.xml**を開きます。
+さて、上記のコードを書かないと画面が表示されないことがわかりましたが、Buttonをクリックしたときに検索などの処理を行うには**MainActivity.javaでクリックされた時のプログラムを書く**必要があります。
+そのためには"activity_main.xml"に配置したButtonをMainActivity.javaで探してMainActivity.javaで使うための名前をつける必要がありますので、手順をこれから紹介します。
+
+ButtonやEditTextなどのウィジェットをjavaプログラムから探すにはいくつかの決まった記述方法があります、中でも一番よく使う方法として<font color="red">**findViewById()**</font>を使うことで、"setContentView"で読み込んだレイアウトの中からウィジェットやビューを探すことができます。
+
+まず、ウィジェットが探せるようにユニークID(名称)をつける必要があるので、**activity_main.xml**を開きます。
 <img src="rerationcode01.png" alt="alt" title="reration code" width="500">
 
-"蔵書検索"ボタンから見ていきましょう
+では"蔵書検索"ボタンをjavaプログラムから探すためのユニークID(名称)を設定します、
 "蔵書検索"ボタンをクリックしAttributesエリアから<font color="red">**"ID"**</font>項目を以下のように修正します
-
-
 <img src="setid01.png" alt="alt" title="reration code" width="500">
 
 > button -> BookSearchBtn
 
-他の項目も同じように<font color="red">**"ID"**</font>項目を変更していきます。
-※もし変更前IDが一致していなくても問題ないのでNoと照らし合わせて修正してください
+このAttributesの<font color="red">**"ID"**</font>という項目がjavaプログラムから探す時に必要な情報になります。
+
+では他の項目も同じように<font color="red">**"ID"**</font>項目を変更していきます。
+※もし変更前IDが一致していなくても、Noと場所の照らし合わせを正として修正してください
 <img src="setid03.png" alt="alt" title="reration code" width="500">
 
 |No.  |変更前のID |変更後ID         |
@@ -74,10 +77,15 @@ ButtonやEditTextをjavaプログラムと関連づけるにはいくつかの�
 |⑤   |editText2 |LibSearchEdit  |
 
 IDを変更するとComponent Treeの内容を変更が反映されます
-各ウィジェットにユニークIDを設定したら設定したIDを使って"MainActivity.java"のプログラムからウィジェットを呼び出して関連付けを行います
-MainActivity.javaを開きます。
-<img src="setid04.png" alt="alt" title="reration code" width="500">
+各ウィジェットにIDが設定できたら"MainActivity.java"にプログラム追加してウィジェットを探してMainActivity.javaで使う時の名前をつけていきます。
 
+まずはMainActivity.javaを開きます。
+<img src="setid04.png" alt="alt" title="reration code" width="500">
+次に**findViewById**と**"activity_main.xml"に設定したID**を使ってButtonウィジェットを探します
+
+コード記述する中でIDの入力中に小さいリスト表示がされると思いますので十字キーの上下を押して選択し、`return`キーを押せばプログラムに反映されます。
+
+<img src="setid05.png" alt="alt" title="reration code" width="650">
 <font color="RoyalBlue">***MainActivity.java***</font>
 ```
 ...
@@ -88,20 +96,48 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //↓↓↓↓↓↓↓↓↓↓↓↓ボタンの関連付け↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         Button button = findViewById(R.id.BookSearchBtn);
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 }
 ```
 
-idの入力を行なっている最中に小さいリスト表示がされると思いますので十字キーの上下を押して選択し、```return```キーを押せばプログラムに反映されます。
+上記追加した一行で<font color="red">activity_main.xmlから"BookSearchBtn"（"蔵書検索"ボタン）を探し、MainActivityで使う時の名前を"button"にする</font>という処理を記述することができました。
+一行の内訳としては以下です
+<img src="setid06.png" alt="alt" title="reration code" width="650">
 
-<img src="setid05.png" alt="alt" title="reration code" width="650">
+|No.  |各No.のコードの説明                                     |
+|:---:|:----------------------------------------------------|
+|①   |activity_main.xmlから探してくるウィジェットの型            |
+|②   |MainActivity.javaで使う時のユニークな名前                 |
+|③   |activity_main.xmlからウィジェットを探すためのメソッド（関数） |
+|④   |activity_main.xmlから探すウィジェット/ビューのユニークID    |
 
 
-## ボタンイベントの実装
+これで"蔵書検索"ボタンをxmlレイアウトとMainActivity.javaのプログラムで関連付けることができました。
+では"蔵書検索"ボタンを押した時に何か処理をする場合のプログラムを記述していきます。
 
+<font color="RoyalBlue">***MainActivity.java***</font>
+```
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button button = findViewById(R.id.BookSearchBtn);
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("BookSearchBtn", "onClick: BookSearch Button");
+            }
+        });
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    }
+
+```
+今回は
 
 ## 文字入力イベントの実装
 
