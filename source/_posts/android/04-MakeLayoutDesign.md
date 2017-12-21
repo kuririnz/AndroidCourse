@@ -70,15 +70,15 @@ Layout Editor内にある<font color="red">Palette</font>から```Plain Text```�
 まずは"editText"は画面左隅と隣合うように配置させるため、"editText"左枠に表示されている **◯**をクリックしたまま画面の左端まで引っ張って放します
 <img src="le3.png" alt="alt" title="create layout" width="500">
 "editText"が以下の画面のように画面左隅に近づいたと思います。
-<img src="le4_1.png" alt="alt" title="create layout" width="500">
+<img src="le4.png" alt="alt" title="create layout" width="500">
 先ほどの手順により画面左端とeditTextを隣り合わせる"制約"が設定されたことになります。
 では上下と右辺も同じように各画面端と隣接する制約を設定してみましょう。
-<img src="le4_2.png" alt="alt" title="create layout" width="500">
+<img src="le5.png" alt="alt" title="create layout" width="500">
 上下左右に制約を付けるとeditTextは画面の真ん中に表示されると思います
-<img src="le7.png" alt="alt" title="create layout" width="500">
+<img src="le6.png" alt="alt" title="create layout" width="500">
 続いて一つ目のeditTextを中央より少し左上に配置するために縦横の"バイアス"を以下の通り調整します
 バイアスを動かすと対象の方向に制約の範囲で動かすことができます
-<img src="le8.png" alt="alt" title="create layout" width="500">
+<img src="le7.png" alt="alt" title="create layout" width="500">
 
 |バイアス方向|設定値|
 |:---------|:----|
@@ -86,9 +86,9 @@ Layout Editor内にある<font color="red">Palette</font>から```Plain Text```�
 |水平バイアス|25   |
 
 次に***図書館検索***用の```EditText```を追加し画面の上下左右と制約をつけます
-<img src="le10.png" alt="alt" title="create layout" width="500">
+<img src="le8.png" alt="alt" title="create layout" width="500">
 ２つ目のeditTextを１つ目のEditTextの下に配置するために縦横の"バイアス"を以下の通り調整します
-<img src="le11.png" alt="alt" title="create layout" width="500">
+<img src="le9.png" alt="alt" title="create layout" width="500">
 
 |バイアス方向|設定値|
 |:---------|:----|
@@ -97,9 +97,9 @@ Layout Editor内にある<font color="red">Palette</font>から```Plain Text```�
 
 次は２種類の検索のために２つボタンを配置していきます
 "Plain Text"の時と同じように今度は<font color="red">Palette</font>から```Button```をクリックしたまま引っ張りデザインビュー上で放します
-<img src="le12.png" alt="alt" title="create layout" width="500">
+<img src="le10.png" alt="alt" title="create layout" width="500">
 "蔵書検索"用のボタンの配置のため制約を設定していきます
-<img src="le14.png" alt="alt" title="create layout" width="500">
+<img src="le11.png" alt="alt" title="create layout" width="500">
 
 |Buttonの辺|隣り合わせる箇所  |
 |:---------|:-------------|
@@ -109,7 +109,7 @@ Layout Editor内にある<font color="red">Palette</font>から```Plain Text```�
 |右辺       |画面右端       |
 
 上の"editText"と同じ高さに調整するため、バイアスを調整します
-<img src="le15.png" alt="alt" title="create layout" width="500">
+<img src="le12.png" alt="alt" title="create layout" width="500">
 
 |バイアス方向|設定値|
 |:---------|:----|
@@ -117,25 +117,44 @@ Layout Editor内にある<font color="red">Palette</font>から```Plain Text```�
 |水平バイアス|50   |
 
 残りの"図書館検索"用ボタン、検索履歴ボタンの２つを以下の画面の通り制約を使って配置してみましょう
-<img src="le21.png" alt="alt" title="create layout" width="500">
+<img src="le13.png" alt="alt" title="create layout" width="500">
 * レイアウト完成時にはComponent Treeに**Button2**、**Button3**が追加されます
 
 最後に各ボタンに表示される文字を修正します
 右上の**Button**をクリックし、右に表示される<font color="red">Attributes</font>エリアから"text"項目を探し、
 **蔵書検索**と入力します
-<img src="le22.png" alt="alt" title="create layout" width="500">
+<img src="le14.png" alt="alt" title="create layout" width="500">
 他の２つのボタンも以下のように表示される文字を変更しましょう
-<img src="le23.png" alt="alt" title="create layout" width="500">
+<img src="le15.png" alt="alt" title="create layout" width="500">
 
 これで検索画面のレイアウトは完成です、変更された画面を確認してみましょう。
 
 
 # 動作確認
-Android エミュレータにて配置したレイアウトで実行されることを確認してみましょう。
-今回はAndroid Studioに内臓されているエミュレータを使って動作確認を行います。
+配置したレイアウトで実行されることを確認してみましょう、
+今回はAndroid Studioに内臓されているエミュレータ（仮想デバイス）を使って動作確認を行います。
 
+アプリを実行するためには下記画面の`Run`ボタンをクリックします
+<img src="runemurate01.png" alt="alt" title="Run Project" width="500">
+実行するデバイスかエミュレータの選択画面が表示されますが、以下のように何も表示されないか、
+AndroidデバイスをPCに繋いでいる場合はデバイスが表示されているかもしれません。
 
-## まとめ
+今回はエミュレータを使用しますので、`Create New Virtual Device`をクリックしてエミュレータを作成します。
+<img src="runemurate02.png" alt="alt" title="Run Project" width="500">
+作成するエミュレータを選びますので<font color="red">**Pixel**</font>を選択して`Next`をクリックします
+<img src="runemurate03.png" alt="alt" title="Run Project" width="500">
+エミュレータにインストールするAndorid OSのバージョンを選択します。
+<font color="red">**Marshmallow**</font>を選択して`Next`をクリックします
+<img src="runemurate04.png" alt="alt" title="Run Project" width="500">
+エミュレータの名前や設定変更画面では変更は行わずに`Finish`をクリックします
+<img src="runemurate05.png" alt="alt" title="Run Project" width="500">
+エミュレータの作成が終わり実行するデバイスの選択画面に戻ります
+今回は作成したエミュレータの名前が表示されるので、<font color="red">**Pixel API 23**</font>を選択して`OK`をクリックします
+<img src="runemurate06.png" alt="alt" title="Run Project" width="500">
+Androidのエミュレータが起動し
+<img src="runemurate07.png" alt="alt" title="Run Project" width="300">
+"layout_main.xml"で作成したレイアウトが表示されれば成功です！
+<img src="runemurate08.png" alt="alt" title="Run Project" width="300">
 
 これで検索画面のレイアウト作成が完了です、次のページで今回作成したレイアウトのボタンやEditTextにプログラムでイベントを
 実装していきます。 [非同期処理、ネットワーク通信の実装](/AndroidCourse/android/05-SearchBooks)
