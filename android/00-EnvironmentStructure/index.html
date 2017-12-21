@@ -1,0 +1,79 @@
+<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Android アプリ開発の環境構築 | Android programing getstart</title><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/normalize.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/highlight.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/very-simple.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><link rel="Shortcut Icon" type="image/x-icon" href="/AndroidCourse/favicon.ico"></head><body><!-- include the sidebar--><!-- include ./includes/sidebar.jade--><!-- Blog title and subtitle--><header><div class="container header"><a id="logo" href="/AndroidCourse/." class="title">Android programing getstart</a><span class="subtitle"></span><label id="toggle-menu" for="menu" onclick><i class="fa fa-bars"></i></label></div></header><!-- use checkbox hack for toggle nav-bar on small screens--><input id="menu" type="checkbox"><!-- Navigation Links--><nav id="nav"><div class="container"><a href="/AndroidCourse/" class="sidebar-nav-item">Home</a></div></nav><div id="header-margin-bar"></div><!-- gallery that comes before the header--><div class="wrapper"><div class="container post-header"><h1>Android アプリ開発の環境構築</h1></div></div>
+<article><div class="container post"><p>Androidアプリの開発を行うための環境構築をおこないます。</p>
+<!-- toc -->
+<ul>
+<li><a href="#環境構築windows-pc">環境構築(Windows PC)</a><ul>
+<li><a href="#javajdk">java(JDK)</a><ul>
+<li><a href="#jdkのダウンロード">JDKのダウンロード</a></li>
+<li><a href="#jdkのインストール">JDKのインストール</a></li>
+<li><a href="#jdkのインストール-確認">JDKのインストール 確認</a></li>
+</ul>
+</li>
+<li><a href="#android-studio">Android Studio</a></li>
+</ul>
+</li>
+<li><a href="#環境構築mac-pc">環境構築(Mac PC)</a><ul>
+<li><a href="#javajdkのインストール">java(JDK)のインストール</a></li>
+<li><a href="#android-studioのインストール">Android Studioのインストール</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<p>Windows / Mac の各PCごとに手順が違うためそれぞれの環境構築手順を以下に記述します。</p>
+<h1><span id="環境構築windows-pc">環境構築(Windows PC)</span></h1><p>Android アプリの開発を始めるには最低限２つソフトウェアのインストールと設定を行う必要があります。<br>これ以降にwindows OS環境でのAndroid アプリ開発をおこなく準備作業を記載します。</p>
+<ul>
+<li>java(JDK)</li>
+<li>Android Studio</li>
+</ul>
+<h2><span id="javajdk">java(JDK)</span></h2><p>まずはAndroid アプリの開発を行うためのプログラミング言語javaを実行できるようにする必要があるため、<br>java(JDK)をインストールします。</p>
+<h3><span id="jdkのダウンロード">JDKのダウンロード</span></h3><p>インストールするにはまず、java(JDK)をダウンロードする必要があるため、以下のリンクからjava(JDK)をダウンロードします。</p>
+<p><strong>java(JDK)のバージョンとして動作保証がされているjava8系のダウンロードを行います</strong></p>
+<p>下記リンクをクリックしJDKダウンロードページにアクセスします。<br><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="external">JDK8 ダウンロードページ</a><br>※ 資料作成時の最新版<strong>java 8u152</strong>バージョンのダウンロード手順で記載していきます。</p>
+<p>下図の通り<code>Java SE Development Kit 8u152</code>の項目から<br><code>Accept License Agreement</code>にチェックを入れ、<code>Windows x64</code>のDownload列のリンクをクリックしてexeファイルをダウンロードします。<br><img src="j8_dl.png" alt="alt" title="java se download" width="520"></p>
+<h3><span id="jdkのインストール">JDKのインストール</span></h3><p>ダウンロードしたJDKのインストーラを起動してPCにJDKをインストールします。</p>
+<ol>
+<li>ダウンロードしたexeファイルをダブルクリックしインストーラーを起動します。<br><img src="j8_i_01.png" alt="alt" title="java(JDK) install" width="520"></li>
+<li>確認ダイアログが表示された場合は、<code>はい</code>をクリックします。<br><img src="j8_i_02.png" alt="alt" title="java(JDK) install" width="450"></li>
+<li>JDKのインストール開始画面が表示されたら<code>次(N) &gt;</code>をクリックし、その後も画面に従いインストールを進めます。<br><img src="j8_i_03.png" alt="alt" title="java(JDK) install" width="450"></li>
+<li><strong>開発ツール</strong>が選択されていることを確認し、<code>次(N) &gt;</code>をクリックします<br><img src="j8_i_04.png" alt="alt" title="java(JDK) install" width="450"></li>
+<li>JDKの保存先を設定できます、変更は不要なので<code>次(N) &gt;</code>をクリックします<br><img src="j8_i_06.png" alt="alt" title="java(JDK) install" width="450"></li>
+<li>インストールが始まります、完了して画面が変わるのを待ちます<br><img src="j8_i_07.png" alt="alt" title="java(JDK) install" width="450"></li>
+<li>インストールの完了画面が表示されたら<code>閉じる(C)</code>をクリックします<br><img src="j8_i_08.png" alt="alt" title="java(JDK) install complete" width="450"></li>
+</ol>
+<p>以上でJDKのインストールが完了です。</p>
+<hr>
+<h3><span id="jdkのインストール-確認">JDKのインストール 確認</span></h3><p>次にコマンドプロンプトを使いJDKが正しくインストールされたことを確認します。</p>
+<ol>
+<li>Windows ホーム画面の左下にある<code>検索欄</code>に<code>cmd</code>と入力し<strong>コマンドプロンプト</strong>をクリックし起動します。<br><img src="j8_c_01.png" alt="alt" title="java(JDK) install confirm" width="520"></li>
+<li>コマンドプロンプトに<code>java -version</code>と入力しエンターキーを押します。<br><img src="j8_c_02.png" alt="alt" title="java(JDK) install confirm" width="600"></li>
+</ol>
+<p>以上でjava(JDK)のインストールの確認ができました</p>
+<hr>
+<h2><span id="android-studio">Android Studio</span></h2><p>最後にAndroid Studioの環境構築を行います。<br>Android Studioをインストールするため、exeファイルを下記リンクからダウンロードページにアクセスします。</p>
+<p><a href="https://developer.android.com/studio/index.html?hl=ja" target="_blank" rel="external">Android Studio ダウンロードページ</a><br>※ 資料作成時の最新版は Android Studio 3.0.1</p>
+<ol>
+<li><strong>Android Studio Androidの公式 IDE</strong>下にある<code>Android Studio 3.0.1 FOR WINDOWS...</code>のボタンをクリックしexeファイルをダウンロードします。<br><img src="as_i_01.png" alt="alt" title="Android Studio download" width="520"></li>
+<li>ダウンロードの確認画面が表示されたら<strong>利用規約</strong>を確認の上、チェックをクリックし、<code>ANDROID STUDIO FOR WINDOWS ダウンロード</code>をクリックします。<br><img src="as_i_02.png" alt="alt" title="Android Studio download" width="520"></li>
+<li>ダウンロードしたexeファイルをダブルクリックし、Android Studioのインストーラーを起動します。<br><img src="as_i_03.png" alt="alt" title="Android Studio download" width="520"></li>
+<li>確認ダイアログが表示された場合は<code>はい</code>をクリックします<br><img src="as_i_04.png" alt="alt" title="Android Studio install" width="450"></li>
+<li>インストーラの起動画面が表示されたら<code>Next &gt;</code>をクリックします<br><img src="as_i_05.png" alt="alt" title="Android Studio install" width="450"></li>
+<li>インストールするコンポーネント設定が表示されたら”Android Virtual Device”がチェックされていることを確認し、<code>Next &gt;</code>をクリックします<br><img src="as_i_06.png" alt="alt" title="Android Studio install" width="450"></li>
+<li>Android Studioの保存先を設定します、変更の必要がなければ<code>Next &gt;</code>をクリックりします<br><img src="as_i_07.png" alt="alt" title="Android Studio install" width="450"></li>
+<li><code>Install</code>をクリックします<br><img src="as_i_08.png" alt="alt" title="Android Studio install" width="450"></li>
+<li>インストールの完了を待ちます<br><img src="as_i_09.png" alt="alt" title="Android Studio install" width="450"></li>
+<li>インストールが終わったら<code>Next &gt;</code>をクリックします<br><img src="as_i_10.png" alt="alt" title="Android Studio install" width="450"></li>
+<li><code>Finish</code>をクリックすると、Android Studioが起動します。<br>引き続き、Android Studioの初回セットアップを行います<br><img src="as_i_11.png" alt="alt" title="Android Studio install" width="450"></li>
+<li>Android Studioが起動しAndroid SDK Componentのインストールが開始されます<br><img src="as_s_01.png" alt="alt" title="Android Studio setup" width="450"></li>
+<li>Welcom画面が表示されたら<code>Next</code>をクリック<br><img src="as_s_02.png" alt="alt" title="Android Studio setup" width="450"></li>
+<li>Install Type画面では<strong>Standard</strong>が選択されていることを確認し<code>Next</code>をクリックします<br><img src="as_s_03.png" alt="alt" title="Android Studio setup" width="450"></li>
+<li>Android Studioのテーマ、色合いを好みで選択し、<code>Next</code>をクリックします<br><img src="as_s_04.png" alt="alt" title="Android Studio setup" width="450"></li>
+<li>確認画面が表示されたら<code>Finish</code>をクリックします<br><img src="as_s_05.png" alt="alt" title="Android Studio setup" width="450"></li>
+<li>Androidアプリの開発に必要なComponentのダウンロードを待ちます<br><img src="as_s_06.png" alt="alt" title="Android Studio setup" width="450"></li>
+<li>ダウンロードが終了したら、<code>Finish</code>をクリックします<br><img src="as_s_07.png" alt="alt" title="Android Studio setup" width="450"></li>
+<li>Android Studioの起動画面が表示されたら完了です<br><img src="as_s_08.png" alt="alt" title="Android Studio setup complete" width="450"></li>
+</ol>
+<p>以上でAndroid Studioのインストール、セットアップ作業は完了です。<br>Androidアプリの開発環境が整いましたので早速開発に入っていきましょう！</p>
+<h1><span id="環境構築mac-pc">環境構築(Mac PC)</span></h1><h2><span id="javajdkのインストール">java(JDK)のインストール</span></h2><h2><span id="android-studioのインストール">Android Studioのインストール</span></h2></div><!-- comment system--><div class="container"><hr></div></article><footer id="footer"><div class="container"><div class="bar"><div class="social"><a href="/atom.xml" target="_blank"><i class="fa fa-rss"></i></a></div><div class="footer">© 2017 <a href="/" rel="nofollow">kuririnz</a>. Powered by <a rel="nofollow" target="_blank" href="https://hexo.io">Hexo</a>. Theme <a target="_blank" href="https://github.com/lotabout/very-simple">very-simple</a>.</div></div></div></footer><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.css"><script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script><script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script><script>$(document).ready(function() {
+    $(".fancybox").fancybox();
+});
+</script></body></html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Androidの概念 | Android programing getstart</title><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/normalize.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/highlight.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/very-simple.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><link rel="Shortcut Icon" type="image/x-icon" href="/AndroidCourse/favicon.ico"></head><body><!-- include the sidebar--><!-- include ./includes/sidebar.jade--><!-- Blog title and subtitle--><header><div class="container header"><a id="logo" href="/AndroidCourse/." class="title">Android programing getstart</a><span class="subtitle"></span><label id="toggle-menu" for="menu" onclick><i class="fa fa-bars"></i></label></div></header><!-- use checkbox hack for toggle nav-bar on small screens--><input id="menu" type="checkbox"><!-- Navigation Links--><nav id="nav"><div class="container"><a href="/AndroidCourse/" class="sidebar-nav-item">Home</a></div></nav><div id="header-margin-bar"></div><!-- gallery that comes before the header--><div class="wrapper"><div class="container post-header"><h1>Androidの概念</h1></div></div>
+<article><div class="container post"><p>Androidアプリ開発に必要になる概念を学んでいきます</p>
+<!-- toc -->
+<ul>
+<li><a href="#android開発における4大要素">Android開発における４大要素</a><ul>
+<li><a href="#activity">Activity</a></li>
+<li><a href="#intent">Intent</a></li>
+<li><a href="#service">Service</a></li>
+<li><a href="#content-provider">Content Provider</a></li>
+</ul>
+</li>
+<li><a href="#その他の要素">その他の要素</a><ul>
+<li><a href="#fragment">Fragment</a></li>
+<li><a href="#view">View</a><ul>
+<li><a href="#viewgroup">ViewGroup</a></li>
+<li><a href="#widget">Widget</a></li>
+</ul>
+</li>
+<li><a href="#lifecycle">LifeCycle</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1><span id="android開発における4大要素">Android開発における４大要素</span></h1><p>Android アプリの開発には重要に扱われている4大要素があります。<br>各要素を一言で表すと以下４つになります。</p>
+<p>１. 画面<br>２. アプリ/機能の呼び出し<br>３. バックグラウンド実行<br>４. 外部からの呼び出し受付</p>
+<p>また上記の要素をAndroidアプリの開発に当てはめると以下名称にて使われます。</p>
+<ul>
+<li>Activity(1.画面)</li>
+<li>Intent(2.アプリ/機能の呼び出し)</li>
+<li>Service(3.バックグラウンド実行)</li>
+<li>Broad Cast Receiver (4.外部からの呼び出し受付)</li>
+</ul>
+<h2><span id="activity">Activity</span></h2><p>アプリ開発における画面を指し、ユーザーからの操作の受付、ユーザーへの情報表示のために使用します。<br>Activity内にはwidgetまたはviewと呼ばれる要素（ボタンや画像）を配置して機能を追加する。<br>また画面単位の要素としてFragmentが存在し、Activity内に表示させて使うことが推奨されている。</p>
+<h2><span id="intent">Intent</span></h2><p>Activity間の呼び出しを行うための仕組み。<br>画面遷移やActivity間でのデータのやりとり、他にもメールアプリやブラウザアプリなど、<br>外部アプリの呼び出しを行う時に利用します。</p>
+<h2><span id="service">Service</span></h2><p>バックグラウンドで長時間の作業を行うためのコンポーネントです。<br>例として、Content Providerや非同期通信によるデータのやりとり、画面を表示しないまま音楽再生をする場合などに利用します。</p>
+<h2><span id="content-provider">Content Provider</span></h2><p>構造化されたデータへのアクセスを管理する仕組み。<br>アプリ内のデータベースとのやりとりや端末内の別アプリが管理しているデータへのアクセスを行う場合などに利用します。</p>
+<h1><span id="その他の要素">その他の要素</span></h1><ul>
+<li>Fragment</li>
+<li>View<ul>
+<li>ViewGroup</li>
+<li>Widget</li>
+</ul>
+</li>
+<li>Life cycle (ライフサイクル)</li>
+</ul>
+<h2><span id="fragment">Fragment</span></h2><p>コンテンツやWidget,ライフサイクルを持ったView<br>子要素を持つことが可能なのでActivityと同じようにViewGroupやWidgetを配置することができる。<br>また、Activityと独立したライフサイクルを持っており、ライフサイクルはActivityに近い形で実装されている。</p>
+<h2><span id="view">View</span></h2><p>ウィジェットやViewGroupの総称、こちらにもライフサイクルに近い機能は存在しているが、<br>ActivityやFragmentとは違ったサイクルが存在する。<br><strong>LifeCycle</strong>項目で紹介します。</p>
+<h3><span id="viewgroup">ViewGroup</span></h3><p>子要素を持つことができるView<br>LinearLayout,RelativeLayout、最近追加されたものとしてはConstraintLayoutが該当します。<br>他にListViewやGridView、RecyclerViewもViewGroupに該当します。<br>どのコンポーネントも内部にView要素を持つことができる要素になります。</p>
+<p>LinearLayoutやRelativeLayoutは画面内の配置を容易にしてくれる機能を持っていたり、<br>ListViewなどは一覧データを並べて表示する機能があります。</p>
+<h3><span id="widget">Widget</span></h3><p>子要素を持つことができないView、これをViewと呼ぶことが多い気がします<br>ButtonやTextView、CheckBoxなどがWidgetと呼ばれる要素になります。<br>コンポーネント自体がユーザインターフェースの役割をこなすことができるViewになります</p>
+<h2><span id="lifecycle">LifeCycle</span></h2><p>Androidの画面要素にはLife cycleと言う概念を含んでおり、<br>Activity / Fragment View要素にはそれぞれインスタンス化前、表示前、非表示前、破棄前など要素ごとに表示やアプリ内での状態が切り替わったタイミングで強制的に処理される</p>
+<p>各クラスのライフサイクルに関して<br>Activityのライフサイクル<a href="https://developer.android.com/guide/components/activities.html?hl=ja" target="_blank" rel="external">※1</a><br><img src="https://developer.android.com/images/activity_lifecycle.png?hl=ja" alt="alt" title="activity life cycle" width="350"></p>
+<p>Fragmentのライフサイクル<a href="https://developer.android.com/guide/components/fragments.html?hl=ja" target="_blank" rel="external">※2</a><br><img src="https://developer.android.com/images/fragment_lifecycle.png?hl=ja" alt="alt" title="fragment life cycle" width="300"></p>
+<p>Viewのライフサイクル<a href="https://developer.android.com/reference/android/view/View.html#pubmethods" target="_blank" rel="external">※3</a><br><img src="viewinlifecycle.png" alt="alt" title="view life cycle" width="450"></p>
+</div><!-- comment system--><div class="container"><hr></div></article><footer id="footer"><div class="container"><div class="bar"><div class="social"><a href="/atom.xml" target="_blank"><i class="fa fa-rss"></i></a></div><div class="footer">© 2017 <a href="/" rel="nofollow">kuririnz</a>. Powered by <a rel="nofollow" target="_blank" href="https://hexo.io">Hexo</a>. Theme <a target="_blank" href="https://github.com/lotabout/very-simple">very-simple</a>.</div></div></div></footer><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.css"><script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script><script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script><script>$(document).ready(function() {
+    $(".fancybox").fancybox();
+});
+</script></body></html>
