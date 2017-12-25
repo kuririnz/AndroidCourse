@@ -91,14 +91,14 @@ IDを変更するとComponent Treeの内容を変更が反映されます
 ...
 public class MainActivity extends AppCompatActivity {
 
+    private Button bookSearchBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-        Button button = findViewById(R.id.BookSearchBtn);
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        bookSearchBtn = findViewById(R.id.BookSearchBtn);
     }
 }
 ```
@@ -109,11 +109,12 @@ public class MainActivity extends AppCompatActivity {
 
 |No.  |各No.のコードの説明                                     |
 |:---:|:----------------------------------------------------|
-|①   |activity_main.xmlから探してくるウィジェットの型            |
-|②   |MainActivity.javaで使う時のユニークな名前                 |
-|③   |activity_main.xmlからウィジェットを探すためのメソッド（関数） |
-|④   |activity_main.xmlから探すウィジェット/ビューのユニークID    |
-
+|①   |②〜③で宣言するウィジェットの使用範囲の指定コード             |
+|②   |activity_main.xmlから探してくるウィジェットの型            |
+|③   |MainActivity.javaで使う時のユニークな名前                 |
+|④   |②〜③で宣言したウィジェットを変更する時の記述方法             |
+|⑤   |activity_main.xmlからウィジェットを探すためのメソッド（関数  |
+|⑥   |activity_main.xmlから探すウィジェット/ビューのユニークID    |
 
 これで"蔵書検索"ボタンをxmlレイアウトとMainActivity.javaのプログラムで関連付けることができました。
 
@@ -127,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = findViewById(R.id.BookSearchBtn);
+        bookSearchBtn = findViewById(R.id.BookSearchBtn);
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-        button.setOnClickListener(new View.OnClickListener() {
+        bookSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("BookSearchBtn", "onClick: BookSearch Button");
@@ -141,7 +142,50 @@ public class MainActivity extends AppCompatActivity {
 ```
 次回以降でクリックアクションのプログラムに関して解説しますので、理解できていなくて問題無しです！
 
-## 文字入力アクションの実装
+まずは一度動作確認をしてみましょう、`Run`アイコンをクリックしてエミュレータを起動します。
+アプリ画面が表示されたら**蔵書検索**ボタンをクリックしてみてください。
+以下のようにAndroid Studioの左下<font color="red">Logcat</font>タブをクリックし、赤枠のログが出力されていることを確認してみましょう。
+<img src="setid07.png" alt="alt" title="reration code" width="650">
+上記で表示させたログですが、出力するためには以下のようにコードを記述する必要があります。
+ログはプログラム不具合の原因を調査したり、期待するデータが取得できていることなどに活用しますのでログを出力させるための
+テンプレートとして以下の書き方を覚えておきましょう。
+```
+Log.d("tag name", "message");
+```
+
+引き続きこのログを使っていきます、次は**蔵書検索**ボタンの横に配置したEditTextに入力された文字をログに出力してみます。
+MainActivity.javaのコードを修正していきます。
+<font color="RoyalBlue">***MainActivity.java***</font>
+```
+    private Button bookSearchBtn;
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    private EditText bookSearchEditor;
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        bookSearchBtn = findViewById(R.id.BookSearchBtn);
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        bookSearchEditor = findViewById(R.id.BookSearchEdit);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        bookSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                Log.d("BookSearchBtn", "入力された文字は [" + bookSearchEditor.getText().toString() + "]です。");
+               //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+            }
+        });
+    }
+```
+コードの修正が終わったら`Run`アイコンをクリックしてエミュレータにアプリをインストールし直します。
+アプリ画面が表示されたら文字を入力してから**蔵書検索**ボタンをクリックして、先ほど同様に<font color="red">Logcat</font>でログを確認してみましょう。
+<img src="setid08.png" alt="alt" title="reration code" width="300">
+<img src="setid09.png" alt="alt" title="reration code" width="650">
+入力した文字が表示されたのが確認できましたか？
 
 # REST API通信処理
 
