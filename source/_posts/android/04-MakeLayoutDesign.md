@@ -157,4 +157,4 @@ Androidのエミュレータが起動し
 <img src="runemurate08.png" alt="alt" title="Run Project" width="300">
 
 これで検索画面のレイアウト作成が完了です、次のページで今回作成したレイアウトのボタンやEditTextにプログラムでイベントを
-実装していきます。 [非同期処理、ネットワーク通信の実装](/AndroidCourse/android/05-SearchBooks)
+実装していきます。 [ボタンイベントの実装](/AndroidCourse/android/05-ButtonAction)
