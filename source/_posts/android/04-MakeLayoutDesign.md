@@ -82,24 +82,14 @@ Layout Editor内にある<font color="red">Palette</font>から```Plain Text```�
 
 |バイアス方向|設定値|
 |:---------|:----|
-|垂直バイアス|30   |
+|垂直バイアス|40   |
 |水平バイアス|25   |
 
-次に***図書館検索***用の```EditText```を追加し画面の上下左右と制約をつけます
-<img src="le8.png" alt="alt" title="create layout" width="500">
-２つ目のeditTextを１つ目のEditTextの下に配置するために縦横の"バイアス"を以下の通り調整します
-<img src="le9.png" alt="alt" title="create layout" width="500">
-
-|バイアス方向|設定値|
-|:---------|:----|
-|垂直バイアス|50   |
-|水平バイアス|25   |
-
-次は２種類の検索のために２つボタンを配置していきます
+続いて検索を実行するためのボタンを配置していきます
 "Plain Text"の時と同じように今度は<font color="red">Palette</font>から```Button```をクリックしたまま引っ張りデザインビュー上で放します
-<img src="le10.png" alt="alt" title="create layout" width="500">
-"蔵書検索"用のボタンの配置のため制約を設定していきます
-<img src="le11.png" alt="alt" title="create layout" width="500">
+<img src="le8.png" alt="alt" title="create layout" width="500">
+"蔵書検索"用のボタンを配置のため制約を設定していきます
+<img src="le9.png" alt="alt" title="create layout" width="500">
 
 |Buttonの辺|隣り合わせる箇所  |
 |:---------|:-------------|
@@ -109,26 +99,31 @@ Layout Editor内にある<font color="red">Palette</font>から```Plain Text```�
 |右辺       |画面右端       |
 
 上の"editText"と同じ高さに調整するため、バイアスを調整します
-<img src="le12.png" alt="alt" title="create layout" width="500">
+<img src="le10.png" alt="alt" title="create layout" width="500">
 
 |バイアス方向|設定値|
 |:---------|:----|
-|垂直バイアス|30   |
+|垂直バイアス|40   |
 |水平バイアス|50   |
 
-残りの"図書館検索"用ボタン、検索履歴ボタンの２つを以下の画面の通り制約を使って配置してみましょう
-<img src="le13.png" alt="alt" title="create layout" width="500">
-* レイアウト完成時にはComponent Treeに**Button2**、**Button3**が追加されます
+残りの"検索履歴"ボタンを画面の通り制約を使って配置してみましょう
+<img src="le11.png" alt="alt" title="create layout" width="500">
+> レイアウト完成時にはComponent Treeに**Button2**が追加されます
+
+
+
 
 最後に各ボタンに表示される文字を修正します
-右上の**Button**をクリックし、右に表示される<font color="red">Attributes</font>エリアから"text"項目を探し、
-**蔵書検索**と入力します
-<img src="le14.png" alt="alt" title="create layout" width="500">
-他の２つのボタンも以下のように表示される文字を変更しましょう
-<img src="le15.png" alt="alt" title="create layout" width="500">
+右上の**Button**をクリックし、右に表示される<font color="red">Attributes</font>エリアから"text"項目を探し、**蔵書検索**と入力します
+<img src="le12.png" alt="alt" title="create layout" width="500">
+
+同じ様に"Button2"ボタンの表示文言を修正してみましょう、
+<img src="le13.png" alt="alt" title="create layout" width="500">
+修正後にボタンに表示される文字列は**検索履歴**です
 
 これで検索画面のレイアウトは完成です、変更された画面を確認してみましょう。
 
+---
 
 # 動作確認
 配置したレイアウトで実行されることを確認してみましょう、
@@ -154,7 +149,7 @@ AndroidデバイスをPCに繋いでいる場合はデバイスが表示され�
 Androidのエミュレータが起動し
 <img src="runemurate07.png" alt="alt" title="Run Project" width="300">
 "layout_main.xml"で作成したレイアウトが表示されれば成功です！
-<img src="runemurate08.png" alt="alt" title="Run Project" width="300">
+<img src="runemurate08.png" alt="alt" title="Run Project" width="250">
 
 これで検索画面のレイアウト作成が完了です、次のページで今回作成したレイアウトのボタンやEditTextにプログラムでイベントを
 実装していきます。 [ボタンイベントの実装](/AndroidCourse/android/05-ButtonAction)

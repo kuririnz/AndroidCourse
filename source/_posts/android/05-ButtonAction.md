@@ -41,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
-<font color="red">「おまじない」</font>という言葉で紹介されることもありますが、このコードが書かれていないと画面には何も表示されず、真っ白な画面で止まってしまうので必ず記述しましょう。
+必ず書かないといけないコードを紹介する時に<font color="red">「おまじない」</font>という言葉で紹介されることもありますが、このコードが書かれていないと画面には何も表示されず、真っ白な画面で止まってしまうので必ず記述しましょう。
 
 簡単に図にしてみます。
-<img src="LoadLayout.png" alt="alt" title="loadlayout" width="450">
+<img src="LoadLayout.png" alt="alt" title="loadlayout" width="550">
 
 上記のコードが記述されることで画面にレイアウトが表示されていることがわかりました、次にButtonをクリックしたときに検索などの処理を行うにはMainActivity.javaなど**javaファイルでクリックされた時のプログラムを書く**必要があります。
 ただ、レイアウトを作成したのは"activity_main.xml"ファイルですので別のファイルです、ですがjavaファイルのプログラムからxmlファイルのボタンなどを関連付けることができます。
@@ -72,10 +72,8 @@ ButtonやEditTextなどのウィジェットをjavaプログラムから関連�
 |No.  |変更前のID |変更後ID         |
 |:---:|:---------|:--------------|
 |①   |button    |BookSearchBtn  |
-|②   |button2   |LibSearchBtn   |
-|③   |button3   |HistoryBtn     |
-|④   |editText  |BookSearchEdit |
-|⑤   |editText2 |LibSearchEdit  |
+|②   |editText  |BookSearchEdit |
+|③   |button2   |HistoryBtn     |
 
 IDを変更するとComponent Treeの内容も変更が反映されます
 各ウィジェットにIDが設定できたら"MainActivity.java"にプログラムを追加してウィジェットを`activity_main.xml`内のWidgetなどと関連付け、MainActivity.javaで使う時の名前をつけていきます。
@@ -94,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // レイアウトxmlと関連付けるWidget
-    private Button bookSearchBtn;
+    Button bookSearchBtn;
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     @Override
@@ -102,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // 蔵書検索ボタンをjavaプログラムで操作できるように名前をつける
         bookSearchBtn = findViewById(R.id.BookSearchBtn);
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
@@ -110,23 +109,34 @@ public class MainActivity extends AppCompatActivity {
 
 上記追加した２行で<font color="red">activity_main.xmlの"BookSearchBtn"（"蔵書検索"ボタン）を、MainActivityで使う時の名前として`buttonSearch`という名前を設定する</font>というプログラムを記述することができました。
 ２行の内訳としては以下です
-<img src="setid06.png" alt="alt" title="reration code" width="650">
+<img src="setid06.png" alt="alt" title="reration code" width="600">
 
 |No.  |各No.のコードの説明                                     |
 |:---:|:----------------------------------------------------|
-|①   |②〜③で宣言するウィジェットの使用できる範囲を決める単語       |
-|②   |activity_main.xml内のウィジェットと関連づける型            |
-|③   |MainActivity.javaで使う時のユニークな名前                 |
-|④   |②〜③で宣言したウィジェットを変更する時の記述方法             |
-|⑤   |activity_main.xml内のウィジェットと関連付けを行うためのプログラム  |
-|⑥   |activity_main.xml内の関連付けを行うウィジェット/ビューのユニークID    |
+|①   |activity_main.xml内のウィジェットと関連づける型            |
+|②   |MainActivity.javaで使う時のユニークな名前                 |
+|③   |①〜②で宣言したウィジェットに情報を登録する時の記述方法       |
+|④   |④のIDを使いactivity_main.xml内のウィジェット/ビューを取得するプログラム |
+|⑤   |activity_main.xml内から取得するウィジェット/ビューのユニークID |
 
-
-<font color="red">①〜③で追加したコードをクラスの宣言と言います、これは後ほど解説しますので、深く考えずに進んでください！</font>
 これで"蔵書検索"ボタンをxmlレイアウトとMainActivity.javaのプログラムで関連付けることができました。
 
+今後プログラムを開発していく上で重要な箇所ですので更に深掘りした解説を以下にまとめます
+> この①〜⑤の工程はプログラムで表示するデータを動的に保持したり、表示したりする上で大事なクラス（変数）の宣言から初期化を行なっています。
+ 
+> ①〜②で追加したコードを<font color="blue">クラスの宣言</font>と言い、WidgetやView、その他のクラスをjavaプログラムで使うために
+わかりやすい名前をつけて準備をしています。
+
+> 本来ボタンオブジェクトは"ボタンの色"、"ボタンに表示する文字"など情報を持っていますが、
+①〜②の工程だけでは名前が準備されただけで`bookSearchBtn`は全く情報を持っていません。
+
+> `bookSearchBtn `に情報を登録するには<font color="blue">**オブジェクト化（インスタンス化とも呼ばれます）**</font>という工程が必要になります、
+その工程が③〜⑤に該当しオブジェクト化を行なっており、この工程後に`bookSearchBtn`がもつ"ボタンの色"、"ボタンに表示する文字"などの情報を
+参照したり変更したりすることが可能になります。
+
 ## ボタンクリックアクションの実装
-次に"蔵書検索"ボタンのクリック時に何か処理をする場合のプログラムを記述していきます。
+次に"蔵書検索"ボタンのクリックした時にクリックされたことを開発者に確認させるためログを出力するプログラムを作っていきます。
+プログラムが上手く動かない時などどこまでプログラムが実行されたかを確認したり、データを確認するためにも使われるので使い方を覚えていきましょう。
 
 <font color="RoyalBlue">***MainActivity.java***</font>
 ```
@@ -134,21 +144,26 @@ public class MainActivity extends AppCompatActivity {
 public class MainActivity extends AppCompatActivity {
 
     // レイアウトxmlと関連付けるWidget
-    private Button bookSearchBtn;
+    Button bookSearchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 蔵書検索ボタンをjavaプログラムで操作できるように名前をつける
         bookSearchBtn = findViewById(R.id.BookSearchBtn);
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-        bookSearchBtn.setOnClickListener(new View.OnClickListener() {
+        // 蔵書検索ボタンが押された時の処理を実装
+        View.OnClickListener bookSearchEvent = new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                // コンソールログにボタンが押されたことを出力(表示)
                 Log.d("BookSearchBtn", "onClick: BookSearch Button");
             }
-        });
+        };
+        // 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録
+        bookSearchBtn.setOnClickListener(bookSearchEvent);
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 }
@@ -183,9 +198,9 @@ MainActivity.javaのコードを修正していきます。
 public class MainActivity extends AppCompatActivity {
 
     // レイアウトxmlと関連付けるWidget
-    private Button bookSearchBtn;
+    Button bookSearchBtn;
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-    private EditText bookSearchEditor;
+    EditText bookSearchEditor;
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     @Override
@@ -193,21 +208,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 蔵書検索ボタンをjavaプログラムで操作できるように名前をつける
         bookSearchBtn = findViewById(R.id.BookSearchBtn);
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // 蔵書検索する文字を入力するEditTextをjavaプログラムで操作できるように名前をつける
         bookSearchEditor = findViewById(R.id.BookSearchEdit);
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-        bookSearchBtn.setOnClickListener(new View.OnClickListener() {
+        // 蔵書検索ボタンが押された時の処理を実装
+        View.OnClickListener bookSearchEvent = new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                // コンソールログにボタンが押されたことを出力(表示)
                 Log.d("BookSearchBtn", "onClick: BookSearch Button");
                 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                // 入力された文字をToast(トースト)に表示
                 Toast.makeText(getBaseContext()
                         , "入力された文字は [" + bookSearchEditor.getText().toString() + "]です。"
                         , Toast.LENGTH_LONG).show();
                 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
             }
-        });
+        };
+        // 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録
+        bookSearchBtn.setOnClickListener(bookSearchEvent);
     }
 }
 ```
@@ -228,8 +250,35 @@ public class MainActivity extends AppCompatActivity {
 ここでは色々な新しい単語も紹介しますが、単語に関しては実際に利用する時に詳しく解説します。
 
 ## パターン１
+ボタンが押された時のプログラムをボタンに登録しながら実装するパターンです
+ボタンが押された時のプログラムが短いものなど多く使われるパターンです
+
+```
+...
+public class MainActivity extends AppCompatActivity {
+
+    Button bookSearchBtn;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        bookSearchBtn = findViewById(R.id.BookSearchBtn);
+        bookSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // ボタンが押された時のプログラム
+            }
+        });
+    }
+}
+```
+
+
+## パターン２
 `bookSearchBtn`の宣言場所が違う実装方法
-パターン１は`bookSearchBtn`インスタンスの宣言スコープが違う実装方法です
+パターン２は`bookSearchBtn`インスタンスの宣言スコープが違う実装方法です
 
 ```
 ...
@@ -239,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Button bookSearchBtn = findViewById(R.id.BookSearchBtn);
         bookSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,19 +297,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-}```
+}
+```
 
-## パターン２
-パターン１や当ページで紹介したプログラムから、ボタンイベントのプログラム自体を宣言し固有名称をつけた実装方法です
-この実装方法にはメリットも少なくわかりにくいので比較的少ない実装方法です
+## パターン３
+当ページで紹介したプログラムとボタンイベントのプログラムのスコープを`MainActivityクラス`全体で使えるようにした実装方法です
+当ページで紹介したパターンと違い`MainActivityクラス`全体で使うことができます
 
 ```
 ...
 public class MainActivity extends AppCompatActivity {
 
-    private Button bookSearchBtn;
+    Button bookSearchBtn;
 
-    View.OnClickListener ButtonClick = new View.OnClickListener() {
+    View.OnClickListener bookSearchEvent = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // ボタンが押された時のプログラム      
@@ -272,20 +323,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         bookSearchBtn = findViewById(R.id.BookSearchBtn);
-        bookSearchBtn.setOnClickListener(ButtonClick);
+        bookSearchBtn.setOnClickListener(bookSearchEvent);
     }
 }
 ```
 
-## パターン３
+## パターン４
 `View.OnClickLister`インターフェースをMainActivityクラスに付与した実装方法
-パターン３はボタンが押された時の実装をMainActivityクラスに委譲した実装方法です
+パターン４はボタンが押された時の実装をMainActivityクラスに委譲した実装方法です
 
 ```
 ...
     public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button bookSearchBtn;
+    Button bookSearchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -303,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-## パターン４
+## パターン５
 新しくボタンクリックイベントのインナークラス(外部クラス)を作成する実装方法
 この方法はリスト表示されている時などに使うことが多いです
 
@@ -311,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
 ...
 public class MainActivity extends AppCompatActivity {
 
-    private Button bookSearchBtn;
+    Button bookSearchBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
