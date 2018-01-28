@@ -1,27 +1,28 @@
-<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>レイアウト作成 | Android programing getstart</title><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/normalize.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/highlight.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/very-simple.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><link rel="Shortcut Icon" type="image/x-icon" href="/AndroidCourse/favicon.ico"></head><body><!-- include the sidebar--><!-- include ./includes/sidebar.jade--><!-- Blog title and subtitle--><header><div class="container header"><a id="logo" href="/AndroidCourse/." class="title">Android programing getstart</a><span class="subtitle"></span><label id="toggle-menu" for="menu" onclick><i class="fa fa-bars"></i></label></div></header><!-- use checkbox hack for toggle nav-bar on small screens--><input id="menu" type="checkbox"><!-- Navigation Links--><nav id="nav"><div class="container"><a href="/AndroidCourse/" class="sidebar-nav-item">Home</a></div></nav><div id="header-margin-bar"></div><!-- gallery that comes before the header--><div class="wrapper"><div class="container post-header"><h1>レイアウト作成</h1></div></div>
+<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>検索画面レイアウト作成 | Android programing getstart</title><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/normalize.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/highlight.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/very-simple.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><link rel="Shortcut Icon" type="image/x-icon" href="../../favicon.ico"></head><body><!-- include the sidebar--><!-- include ./includes/sidebar.jade--><!-- Blog title and subtitle--><header><div class="container header"><a id="logo" href="../../." class="title">Android programing getstart</a><span class="subtitle"></span><label id="toggle-menu" for="menu" onclick><i class="fa fa-bars"></i></label></div></header><!-- use checkbox hack for toggle nav-bar on small screens--><input id="menu" type="checkbox"><!-- Navigation Links--><nav id="nav"><div class="container"><a href="../../index.html" class="sidebar-nav-item">Home</a></div></nav><div id="header-margin-bar"></div><!-- gallery that comes before the header--><div class="wrapper"><div class="container post-header"><h1>検索画面レイアウト作成</h1></div></div>
 <article><div class="container post"><p>Layout Editor / ConstraintLayoutを使用したレイアウト実装と動作確認</p>
 <!-- toc -->
 <ul>
+<li><a href="#ページ内の学習ポイント">ページ内の学習ポイント</a></li>
 <li><a href="#layout-editor-constraintlayout">Layout Editor / ConstraintLayout</a><ul>
 <li><a href="#layout-editor">Layout Editor</a></li>
 <li><a href="#constraintlayout">ConstraintLayout</a></li>
-<li><a href="#レイアウト作成">レイアウト作成</a></li>
+<li><a href="#検索画面のレイアウト作成">検索画面のレイアウト作成</a></li>
+<li><a href="#表示確認">表示確認</a></li>
 </ul>
 </li>
-<li><a href="#動作確認">動作確認</a></li>
 </ul>
 <!-- tocstop -->
-<p>当ページではAnrdoidアプリのプロジェクト作成完了から検索画面のレイアウト完了まで解説しています。<br><a href="/AndroidCourse/android/03-StartAndroidDevelopment">前のメージでAndroidアプリのプロジェクト作成に関して解説しています</a><br>次のページで検索画面のプログラム実装、REST API通信に関して解説します。</p>
-<h1><span id="layout-editor-constraintlayout">Layout Editor / ConstraintLayout</span></h1><p>Layout Editor、ConstraintLayoutの使い方を学びながら画面のレイアウトを作成していきます。<br>このページで作成する画面には最終的に以下の機能を実装していきます。</p>
-<ul>
-<li>文字入力機能</li>
-<li>画面遷移</li>
-<li>蔵書/図書館検索結果取得</li>
+<p><a href="/AndroidCourse/android/03-StartAndroidDevelopment">Androidアプリ開発を始める</a>から引き続きの学習ページです。</p>
+<h1><span id="ページ内の学習ポイント">ページ内の学習ポイント</span></h1><ul>
+<li>Layout Editor</li>
+<li>Widget / View などのコンポーネント</li>
+<li>エミュレータの起動、確認方法</li>
 </ul>
-<p>Androidアプリのプロジェクト開始時に生成されたxmlレイアウトファイルにウィジェットなどを配置し、ウィジェットごとに制約を設定して以下画像のように表示位置を決めていきます。</p>
-<p><strong>ここに完成画面を表示</strong></p>
-<h2><span id="layout-editor">Layout Editor</span></h2><p>視覚的にViewやWidgetを配置することができるようになった、特にConstrainsLayoutと<br>合わせて使うことで画面のレイアウトを行う際にxmlによるプログラムを記述する手間が<br>省きながら実際に配置を確認できるようになった。</p>
-<p><img src="https://developer.android.com/studio/images/write/layout-editor-callouts_2-2_2x.png?hl=ja" alt="alt" title="Layout Editor" width="550"><br>各領域の名称は以下の通りです</p>
+<p>蔵書検索アプリ起動時に表示される検索画面のレイアウト構成を作りながら、<br>Layout Editorや画面を構成する要素について学習します。<br>また、作成したレイアウトをエミュレータという仮想デバイスを使い表示確認を通して使い方を学習します。</p>
+<h1><span id="layout-editor-constraintlayout">Layout Editor / ConstraintLayout</span></h1><p>Androidアプリに表示する画面のレイアウト構成を作るためにはLayout EditorというAndroid Studioの機能を使います。</p>
+<p>Androidアプリのプロジェクト開始時に生成されたレイアウトxmlファイルにウィジェット(Widget)やビュー(View)を配置し、ウィジェットごとに制約を設定して以下画像のように表示位置を決めていきます。<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/CompleteScreen.png" width="500" title="CompleteScreen"></p>
+<h2><span id="layout-editor">Layout Editor</span></h2><p>Android Studio 2.2で追加されたレイアウト構成の機能、以前までも類似する機能はあったが使いにくく、xmlファイルを直接修正することが多かったのですが、改善されたとこで視覚的にWidgetやViewを配置しやすくなった。<br>特にConstrainsLayoutと合わせて使うことで画面のレイアウト作成でxmlファイルを直接修正する必要が無くなってきたことで初学者の学習コストやハードルも下がってきました。</p>
+<p>Layout Editor内、各領域の名称は以下の通りです。<br><img src="https://developer.android.com/studio/images/write/layout-editor-callouts_2-2_2x.png?hl=ja" alt="alt" title="Layout Editor" width="550"></p>
 <table>
 <thead>
 <tr>
@@ -58,20 +59,22 @@
 </tr>
 </tbody>
 </table>
-<h2><span id="constraintlayout">ConstraintLayout</span></h2><p>Android 2.3(Gingerbread)以上を対象に開発を行う場合に利用することが可能。<br>constraint(制約)をViewやWidgetに設けることでレイアウトを決めることができる。<br>従来の”Linear Layout”や”Relative Layout”に比べネスト構造を減らした実装を行うことができるようになった。</p>
-<p><strong>ConstraintLayoutの画像を表示</strong></p>
-<p>制約という単語ですがgoogle翻訳としては</p>
-<blockquote>
-<p>ある条件を課して、自由にはさせないこと。その物事のために必要な条件</p>
-</blockquote>
-<p>とあります、Layoutに当てはめるとコンポーネント同士を隣接させるという制約を</p>
-<h2><span id="レイアウト作成">レイアウト作成</span></h2><p>では検索画面のレイアウト作成にはいっていきます<br>まずは以下のxmlレイアウトファイルを開きましょう</p>
+<h2><span id="constraintlayout">ConstraintLayout</span></h2><p>Android 2.3(Gingerbread)以上を対象に開発を行う場合に利用することが可能なコンポーネントです。<br>constraint(制約)をWidgetやViewに設定することで画面内での配置を決めることができます。</p>
+<p>また、従来からあるの”Linear Layout”や”Relative Layout”コンポーネントに比べネスト構造を減らした実装を行うことができるようになりxmlファイルを確認する場合でも簡単になりました。</p>
+<h2><span id="検索画面のレイアウト作成">検索画面のレイアウト作成</span></h2><p>アプリ起動時に表示される検索画面のレイアウトを作成を始めます、<br>Androidアプリで画面レイアウトを構成するのは、<code>xml</code>という形式のファイルになります。<br><code>activity_main.xml</code>というファイルを開き修正していきます。</p>
 <blockquote>
 <p>app -&gt; res -&gt; layout -&gt; activity_main.xml</p>
 </blockquote>
-<p><img src="le0.png" alt="alt" title="create layout" width="500"><br>以下の画像のようにLayout Editorが表示されたら、サンプルの為で始めから表示されている<strong>“Hello World”</strong>をクリックして<code>delete</code>キーで削除します<br><img src="le1.png" alt="alt" title="create layout" width="500"><br>これで画面上に何もなくなりスッキリしました。<br>まず検索を行うためには何かしらの情報が必要になります今回は、<strong>蔵書検索</strong>を行いたいので、そのために蔵書名の一部が知りたいです、検索する蔵書は利用者によって違いますので、検索したい本の一部を入力してもらえると検索の情報になりそうです。</p>
-<p>文字入力をアプリで受け付けるためには文字入力を受け付けるためのウィジェットを使う必要があり、<br>その場合は<code>EditText</code>というウィジェットを使います、ではこれをデザインビューに配置していきます。</p>
-<p>Layout Editor内にある<font color="red">Palette</font>から<code>Plain Text</code>をクリックしたまま引っ張ってデザインビューでクリックを離すと<strong>editText</strong>が表示されます<br><img src="le2.png" alt="alt" title="create layout" width="500"><br>続いてウィジェットやビューをデザインビューに乗せたら表示させたい位置に配置します、そのために”editText”に制約をつけていきます。<br>まずは”editText”は画面左隅と隣合うように配置させるため、”editText”左枠に表示されている <strong>◯</strong>をクリックしたまま画面の左端まで引っ張って放します<br><img src="le3.png" alt="alt" title="create layout" width="500"><br>“editText”が以下の画面のように画面左隅に近づいたと思います。<br><img src="le4.png" alt="alt" title="create layout" width="500"><br>先ほどの手順により画面左端とeditTextを隣り合わせる”制約”が設定されたことになります。<br>では上下と右辺も同じように各画面端と隣接する制約を設定してみましょう。<br><img src="le5.png" alt="alt" title="create layout" width="500"><br>上下左右に制約を付けるとeditTextは画面の真ん中に表示されると思います<br><img src="le6.png" alt="alt" title="create layout" width="500"><br>続いて一つ目のeditTextを中央より少し左上に配置するために縦横の”バイアス”を以下の通り調整します<br>バイアスを動かすと対象の方向に制約の範囲で動かすことができます<br><img src="le7.png" alt="alt" title="create layout" width="500"></p>
+<p><img src="le0.png" alt="alt" title="create layout" width="500"><br>以下の画像のようにLayout Editorが表示されたら、サンプルの為で始めから表示されている<strong>“Hello World”</strong>をクリックして<code>delete</code>キーを押して削除します<br><img src="le1.png" alt="alt" title="create layout" width="500"><br>これで画面上に何もなくなりスッキリしました。</p>
+<p>では新しくウィジェットなどを配置する前に今回開発する蔵書検索アプリの起動時画面を見直してみましょう。<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/CompleteScreen.png" width="500" title="CompleteScreen"><br>完成した画面を見ると以下のウィジェットが配置されています。</p>
+<ul>
+<li>文字入力できるウィジェットが一つ</li>
+<li>ボタンとしてクリックができるウィジェットが２つ</li>
+</ul>
+<p>全部で３つのウィジェットを使いレイアウトが構成されていることがわかりました。</p>
+<p>まずはアプリで文字入力を行うために<code>EditText</code>というウィジェットからデザインビューに配置していきます。<br>Android開発で用意されているウィジェットやビューはLayout Editor内の<font color="red">Paletteエリア</font>に全て表示されています。</p>
+<p>では<code>EditText</code>を配置するために<font color="red">Paletteエリア</font>から<strong>Plain Text</strong>をクリックしたまま引っ張ってデザインビューでクリックを離します。<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le2.png" width="500" title="create layout"><br>続いてウィジェットやビューをデザインビューに乗せたら表示させたい位置に配置するために、”editText”の各変に制約を設定していきます、<br>“editText”は画面中央より少し左上に表示したいので、まずは画面左隅と隣合うように制約をつけます。</p>
+<p>“editText”左枠に表示されている <strong>◯</strong>をクリックしたまま画面の左端まで引っ張って放します。<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le3.png" width="500" title="create layout"><br>“editText”が以下の画面のように画面左隅に近づきます。<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le4.png" width="500" title="create layout"><br>上記の手順で画面左端と”editText”の左辺を隣接する”制約”が設定されました。<br>続けて上下と右辺も同じように各画面端と隣接する制約を設定してみてください。<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le5.png" width="500" title="create layout"><br>上下左右の全てに制約を付けると”editText”は画面の真ん中に表示さされます。<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le6.png" width="500" title="create layout"><br>“editText”は中央より少し左上に配置したいので制約の縦横”バイアス”細かい位置調整します<br>バイアス設定のツマミを動かすと対象の方向で位置を動かすことができます<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le7.png" width="500" title="create layout"></p>
 <table>
 <thead>
 <tr>
@@ -82,7 +85,7 @@
 <tbody>
 <tr>
 <td style="text-align:left">垂直バイアス</td>
-<td style="text-align:left">30</td>
+<td style="text-align:left">40</td>
 </tr>
 <tr>
 <td style="text-align:left">水平バイアス</td>
@@ -90,26 +93,7 @@
 </tr>
 </tbody>
 </table>
-<p>次に<strong><em>図書館検索</em></strong>用の<code>EditText</code>を追加し画面の上下左右と制約をつけます<br><img src="le8.png" alt="alt" title="create layout" width="500"><br>２つ目のeditTextを１つ目のEditTextの下に配置するために縦横の”バイアス”を以下の通り調整します<br><img src="le9.png" alt="alt" title="create layout" width="500"></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">バイアス方向</th>
-<th style="text-align:left">設定値</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">垂直バイアス</td>
-<td style="text-align:left">50</td>
-</tr>
-<tr>
-<td style="text-align:left">水平バイアス</td>
-<td style="text-align:left">25</td>
-</tr>
-</tbody>
-</table>
-<p>次は２種類の検索のために２つボタンを配置していきます<br>“Plain Text”の時と同じように今度は<font color="red">Palette</font>から<code>Button</code>をクリックしたまま引っ張りデザインビュー上で放します<br><img src="le10.png" alt="alt" title="create layout" width="500"><br>“蔵書検索”用のボタンの配置のため制約を設定していきます<br><img src="le11.png" alt="alt" title="create layout" width="500"></p>
+<p>ボタンを２つ配置していきます、<font color="red">Paletteエリア</font>から<code>Button</code>をクリックしたまま引っ張りデザインビュー上で放します<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le8.png" width="500" title="create layout"><br>“蔵書検索”ボタンを配置のため制約を設定していきます<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le9.png" width="500" title="create layout"></p>
 <table>
 <thead>
 <tr>
@@ -136,7 +120,7 @@
 </tr>
 </tbody>
 </table>
-<p>上の”editText”と同じ高さに調整するため、バイアスを調整します<br><img src="le12.png" alt="alt" title="create layout" width="500"></p>
+<p>先ほどの”editText”と同じ高さに調整するため、バイアスを調整します<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le10.png" width="500" title="create layout"></p>
 <table>
 <thead>
 <tr>
@@ -147,7 +131,7 @@
 <tbody>
 <tr>
 <td style="text-align:left">垂直バイアス</td>
-<td style="text-align:left">30</td>
+<td style="text-align:left">40</td>
 </tr>
 <tr>
 <td style="text-align:left">水平バイアス</td>
@@ -155,17 +139,16 @@
 </tr>
 </tbody>
 </table>
-<p>残りの”図書館検索”用ボタン、検索履歴ボタンの２つを以下の画面の通り制約を使って配置してみましょう<br><img src="le13.png" alt="alt" title="create layout" width="500"></p>
-<ul>
-<li>レイアウト完成時にはComponent Treeに<strong>Button2</strong>、<strong>Button3</strong>が追加されます</li>
-</ul>
-<p>最後に各ボタンに表示される文字を修正します<br>右上の<strong>Button</strong>をクリックし、右に表示される<font color="red">Attributes</font>エリアから”text”項目を探し、<br><strong>蔵書検索</strong>と入力します<br><img src="le14.png" alt="alt" title="create layout" width="500"><br>他の２つのボタンも以下のように表示される文字を変更しましょう<br><img src="le15.png" alt="alt" title="create layout" width="500"></p>
-<p>これで検索画面のレイアウトは完成です、変更された画面を確認してみましょう。</p>
-<h1><span id="動作確認">動作確認</span></h1><p>配置したレイアウトで実行されることを確認してみましょう、<br>今回はAndroid Studioに内臓されているエミュレータ（仮想デバイス）を使って動作確認を行います。</p>
-<p>アプリを実行するためには下記画面の<code>Run</code>ボタンをクリックします<br><img src="runemurate01.png" alt="alt" title="Run Project" width="500"><br>実行するデバイスかエミュレータの選択画面が表示されますが、以下のように何も表示されないか、<br>AndroidデバイスをPCに繋いでいる場合はデバイスが表示されているかもしれません。</p>
-<p>今回はエミュレータを使用しますので、<code>Create New Virtual Device</code>をクリックしてエミュレータを作成します。<br><img src="runemurate02.png" alt="alt" title="Run Project" width="500"><br>作成するエミュレータを選びますので<font color="red"><strong>Pixel</strong></font>を選択して<code>Next</code>をクリックします<br><img src="runemurate03.png" alt="alt" title="Run Project" width="500"><br>エミュレータにインストールするAndorid OSのバージョンを選択します。</p>
-<p><font color="red"><strong>Marshmallow</strong></font>を選択して<code>Next</code>をクリックします<br><img src="runemurate04.png" alt="alt" title="Run Project" width="500"><br>エミュレータの名前や設定変更画面では変更は行わずに<code>Finish</code>をクリックします<br><img src="runemurate05.png" alt="alt" title="Run Project" width="500"><br>エミュレータの作成が終わり実行するデバイスの選択画面に戻ります<br>今回は作成したエミュレータの名前が表示されるので、<font color="red"><strong>Pixel API 23</strong></font>を選択して<code>OK</code>をクリックします<br><img src="runemurate06.png" alt="alt" title="Run Project" width="500"><br>Androidのエミュレータが起動し<br><img src="runemurate07.png" alt="alt" title="Run Project" width="300"><br>“layout_main.xml”で作成したレイアウトが表示されれば成功です！<br><img src="runemurate08.png" alt="alt" title="Run Project" width="300"></p>
-<p>これで検索画面のレイアウト作成が完了です、次のページで今回作成したレイアウトのボタンやEditTextにプログラムでイベントを<br>実装していきます。 <a href="/AndroidCourse/android/05-ButtonAction">ボタンイベントの実装</a></p>
+<p><strong>Button</strong>に表示される文言を変更するために、右の<font color="red">Attributesエリア</font>から”text”項目を探し、<strong>“蔵書検索”</strong>と入力します<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le11.png" width="500" title="create layout"></p>
+<p>残りの”閲覧履歴”ボタンを画面の通り制約を使って配置してみましょう</p>
+<p><font color="red">ヒント１：ウィジェットの辺同士に制約をつけることもできます</font><br><img src="/AndroidCourse/android/04-MakeLayoutDesign/le12.png" width="500" title="create layout"></p>
+<p>これで検索画面のレイアウトが完成しましたのでエミュレータにて表示確認をしてみましょう。</p>
+<h2><span id="表示確認">表示確認</span></h2><p>レイアウトやプログラムを修正したら動かして確認してみたくなりますね、<br>今回はAndroid Studioに内臓されているエミュレータ（仮想デバイス）を使って表示確認をしてみます。</p>
+<p>エミュレータや実機でアプリを実行するためには下記画面の<code>Run</code>ボタンをクリックします<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/runemurate01.png" width="500" title="Run Project"></p>
+<p>“Select Deployment Target”と書かれたダイアログが表示されますが、ここには接続されている実機やエミュレータなど、Androidアプリを実行するデバイスを選ぶことができます。</p>
+<p>USBで接続されたAndroidデバイスや既にエミュレータをインストールされているPCでない場合は以下のように何も表示されないと思います。<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/runemurate02.png" width="500" title="Run Project"><br>今回はエミュレータを新規作成して使用しますので、<code>Create New Virtual Device</code>をクリックして新しいエミュレータを作成します。<br>作成するエミュレータを選びますので<font color="red"><strong>Pixel</strong></font>を選択して<code>Next</code>をクリックします<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/runemurate03.png" width="500" title="Run Project"><br>エミュレータにインストールするAndorid OSのバージョンを選択します。</p>
+<p><font color="red"><strong>Marshmallow</strong></font>を選択して<code>Next</code>をクリックします<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/runemurate04.png" width="500" title="Run Project"><br>エミュレータの名前や設定変更画面では変更は行わずに<code>Finish</code>をクリックします<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/runemurate05.png" width="500" title="Run Project"><br>エミュレータの作成が終わると、実行するデバイスの選択画面に戻ります<br>今回は作成したエミュレータの名前が表示されるので、<font color="red"><strong>Pixel API 23</strong></font>を選択して<code>OK</code>をクリックします<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/runemurate06.png" width="500" title="Run Project"><br>Androidのエミュレータが起動し<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/runemurate07.png" width="300" title="Run Project"><br>エミュレータの画面に作成したレイアウトが表示されれば成功です！<br><img src="/AndroidCourse/android/04-MakeLayoutDesign/runemurate08.png" width="250" title="Run Project"></p>
+<p>これでAndroidアプリのレイアウト作成とエミュレータでの実行方法と表示確認は完了です。<br>次のページでは作成したレイアウトのボタンやEditTextがクリックや文字入力された時のプログラムを実装していきます。<br><a href="/AndroidCourse/android/05-ButtonAction">ボタンイベントの実装</a></p>
 </div><!-- comment system--><div class="container"><hr></div></article><footer id="footer"><div class="container"><div class="bar"><div class="social"><a href="/atom.xml" target="_blank"><i class="fa fa-rss"></i></a></div><div class="footer">© 2018 <a href="/" rel="nofollow">kuririnz</a>. Powered by <a rel="nofollow" target="_blank" href="https://hexo.io">Hexo</a>. Theme <a target="_blank" href="https://github.com/lotabout/very-simple">very-simple</a>.</div></div></div></footer><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.css"><script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script><script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script><script>$(document).ready(function() {
     $(".fancybox").fancybox();
 });

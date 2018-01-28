@@ -1,20 +1,30 @@
-<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Android アプリ開発を始める | Android programing getstart</title><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/normalize.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/highlight.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/very-simple.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><link rel="Shortcut Icon" type="image/x-icon" href="/AndroidCourse/favicon.ico"></head><body><!-- include the sidebar--><!-- include ./includes/sidebar.jade--><!-- Blog title and subtitle--><header><div class="container header"><a id="logo" href="/AndroidCourse/." class="title">Android programing getstart</a><span class="subtitle"></span><label id="toggle-menu" for="menu" onclick><i class="fa fa-bars"></i></label></div></header><!-- use checkbox hack for toggle nav-bar on small screens--><input id="menu" type="checkbox"><!-- Navigation Links--><nav id="nav"><div class="container"><a href="/AndroidCourse/" class="sidebar-nav-item">Home</a></div></nav><div id="header-margin-bar"></div><!-- gallery that comes before the header--><div class="wrapper"><div class="container post-header"><h1>Android アプリ開発を始める</h1></div></div>
+<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Androidアプリ開発を始める | Android programing getstart</title><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/normalize.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/highlight.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/very-simple.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><link rel="Shortcut Icon" type="image/x-icon" href="../../favicon.ico"></head><body><!-- include the sidebar--><!-- include ./includes/sidebar.jade--><!-- Blog title and subtitle--><header><div class="container header"><a id="logo" href="../../." class="title">Android programing getstart</a><span class="subtitle"></span><label id="toggle-menu" for="menu" onclick><i class="fa fa-bars"></i></label></div></header><!-- use checkbox hack for toggle nav-bar on small screens--><input id="menu" type="checkbox"><!-- Navigation Links--><nav id="nav"><div class="container"><a href="../../index.html" class="sidebar-nav-item">Home</a></div></nav><div id="header-margin-bar"></div><!-- gallery that comes before the header--><div class="wrapper"><div class="container post-header"><h1>Androidアプリ開発を始める</h1></div></div>
 <article><div class="container post"><p>講座で解説のために作成するアプリの紹介とプロジェクトの作成</p>
 <!-- toc -->
 <ul>
-<li><a href="#蔵館検索アプリ">蔵館検索アプリ</a></li>
+<li><a href="#当ページ内の学習ポイント">当ページ内の学習ポイント</a></li>
+<li><a href="#蔵書検索アプリ">蔵書検索アプリ</a><ul>
+<li><a href="#ライブラリとは">ライブラリとは</a></li>
+</ul>
+</li>
 <li><a href="#新しいプロジェクトを作る">新しいプロジェクトを作る</a></li>
 </ul>
 <!-- tocstop -->
-<h1><span id="蔵館検索アプリ">蔵館検索アプリ</span></h1><p>今回の講座でAndroid アプリ開発を学ぶ上で１つのアプリを開発します。<br>機能として以下</p>
+<h1><span id="当ページ内の学習ポイント">当ページ内の学習ポイント</span></h1><p>蔵書検索アプリの開発を始めるにあたり、<br>Androidアプリのプロジェクト作成について基本的な手順を学習します。<br>また、当記事全体を通して完成するアプリのイメージを把握していきます、</p>
+<h1><span id="蔵書検索アプリ">蔵書検索アプリ</span></h1><p>今回の講座でAndroid アプリ開発を学ぶ上で１つのアプリを開発します。<br>機能として以下</p>
 <ul>
-<li>図書館で管理されている蔵書の検索機能</li>
-<li>蔵書名からレンタルできる図書館の検索機能</li>
+<li>蔵書名から部分一致、一致する蔵書の検索機能</li>
+<li>蔵書名から検索した結果を一覧で画面表示する機能</li>
 <li>蔵書検索した履歴管理機能</li>
 </ul>
-<p>検索機能に利用するサービス<br><a href="https://calil.jp/doc/api.html" target="_blank" rel="external">カーリル 図書館 API</a><br><a href="https://developers.google.com/books/" target="_blank" rel="external">Google Books API</a></p>
+<p>検索機能に利用するサービス<br><a href="https://developers.google.com/books/" target="_blank" rel="external">Google Books API</a></p>
 <p>ネットワーク通信処理に利用するライブラリ<br><a href="http://square.github.io/okhttp/" target="_blank" rel="external">okHttp</a></p>
 <p>検索履歴を保存するアプリ内データベースに利用するライブラリ<br><a href="https://realm.io/jp/" target="_blank" rel="external">Realm</a></p>
+<h2><span id="ライブラリとは">ライブラリとは</span></h2><p>便利な機能を纏め、アプリ開発を簡単にしてくれるプログラム。</p>
+<ul>
+<li>okHttp：インターネット通信を行うプログラムを簡略化する機能を持ったライブラリ</li>
+<li>Realm：データベースの作成から操作を簡略化する機能を持ったライブラリ</li>
+</ul>
 <h1><span id="新しいプロジェクトを作る">新しいプロジェクトを作る</span></h1><p>1.Windows ホーム画面の左下にある<code>検索欄</code>に<code>Android</code>と入力し<strong>Android Studio</strong>をクリックし起動します。<br><img src="sad01.png" alt="alt" title="SetUp" width="600"><br>2.<code>Start a new Android Studio project</code>をクリック<br><img src="sad02.png" alt="alt" title="SetUp" width="450"><br>3.新規プロジェクト作成時にはアプリ名などを入力します<br>以下の表の通りに項目を設定して<code>Next</code>をクリックします。</p>
 <table>
 <thead>

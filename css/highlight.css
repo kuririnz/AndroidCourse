@@ -107,8 +107,7 @@ article .gist-not-used {
 article iframe {
   border: 1px solid #CCC; }
 
-pre .comment,
-pre .title {
+pre .comment {
   color: #999999; }
 
 pre .variable,
@@ -130,8 +129,9 @@ pre .preprocessor,
 pre .built_in,
 pre .literal,
 pre .params,
+pre .class .title,
 pre .constant {
-  color: #f99157; }
+  color: #cccccc; }
 
 pre .class,
 pre .ruby .class .title,
@@ -149,6 +149,7 @@ pre .xml .cdata {
 pre .css .hexcolor {
   color: #66cccc; }
 
+pre .meta,
 pre .function,
 pre .python .decorator,
 pre .python .title,
@@ -157,8 +158,8 @@ pre .ruby .title .keyword,
 pre .perl .sub,
 pre .javascript .title,
 pre .coffeescript .title {
-  color: #6699cc; }
+  color: #ffcc66; }
 
 pre .keyword,
 pre .javascript .function {
-  color: #cc99cc; }
+  color: #f99157; }

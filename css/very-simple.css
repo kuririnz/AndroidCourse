@@ -41,7 +41,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   color: #333;
-  font-family: Helvetica, Tahoma, Arial, STXihei, "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, Heiti, ubuntu, sans-serif; }
+  font-family: Helvetica, Tahoma, Arial, "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, Heiti, ubuntu, sans-serif; }
 
 article {
   flex-grow: 1; }

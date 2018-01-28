@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>検索結果画面への遷移実装 | Android programing getstart</title><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/normalize.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/highlight.css"><link rel="stylesheet" type="text/css" href="/AndroidCourse//css/very-simple.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><link rel="Shortcut Icon" type="image/x-icon" href="../../favicon.ico"></head><body><!-- include the sidebar--><!-- include ./includes/sidebar.jade--><!-- Blog title and subtitle--><header><div class="container header"><a id="logo" href="../../." class="title">Android programing getstart</a><span class="subtitle"></span><label id="toggle-menu" for="menu" onclick><i class="fa fa-bars"></i></label></div></header><!-- use checkbox hack for toggle nav-bar on small screens--><input id="menu" type="checkbox"><!-- Navigation Links--><nav id="nav"><div class="container"><a href="../../index.html" class="sidebar-nav-item">Home</a></div></nav><div id="header-margin-bar"></div><!-- gallery that comes before the header--><div class="wrapper"><div class="container post-header"><h1>検索結果画面への遷移実装</h1></div></div>
+<article><div class="container post"><p>検索結果一覧を表示する検索結果画面の作成とリスト表示レイアウトの実装方法を学習します。<br>また検索画面から検索結果画面を表示するための画面遷移処理の実装方法を学習します。</p>
+<!-- toc -->
+<ul>
+<li><a href="#当ページでの学習ポイント">当ページでの学習ポイント</a></li>
+<li><a href="#新しい画面を作成する">新しい画面を作成する</a><ul>
+<li><a href="#androidmanifestファイルの確認">AndroidManifestファイルの確認</a></li>
+</ul>
+</li>
+<li><a href="#画面遷移処理機能">画面遷移処理機能</a><ul>
+<li><a href="#intent">Intent</a></li>
+</ul>
+</li>
+<li><a href="#検索結果画面レイアウト作成">検索結果画面レイアウト作成</a></li>
+</ul>
+<!-- tocstop -->
+<p><a href="/AndroidCourse/android/05-ButtonAction">ボタンイベントの実装</a>からの引き続きの学習ページです。</p>
+<h1><span id="当ページでの学習ポイント">当ページでの学習ポイント</span></h1><ul>
+<li>ListViewを利用したリストレイアウトの実装方法</li>
+<li>新規画面の作り方</li>
+<li>画面遷移処理の実装方法</li>
+<li>xmlファイルでのレイアウト作成のおさらい</li>
+</ul>
+<p>蔵書検索を行なった結果複数の蔵書情報を取得できる場合があります、複数取得した蔵書情報を一覧表示します。<br>その前段として、一覧表示を行うためのウィジェットListViewの使い方を学習します。<br>また、検索画面で入力された文字の検索を行うために画面遷移処理及び、画面遷移時に次の画面へ情報を渡す処理の実装方法を学習します。</p>
+<h1><span id="新しい画面を作成する">新しい画面を作成する</span></h1><p>Androidアプリに置いて<strong>画面 = Activity</strong>であることは<a href="/AndroidCourse/android/02-AndroicConcept">Androidの概念</a>で解説しました。<br>今回は蔵書検索アプリのプロジェクトに新しいActivityを追加していきます。</p>
+<p>新しいActivityの追加はメニューかもしくは左のプロジェクトツリーが表示されているウィンドウで右クリック(macでは２本指でクリック)から新しいActivityの追加を行えます。</p>
+<p>新しく作成するActivityは<strong>Empty Activity</strong>を選びます。</p>
+<ol>
+<li>メニュー &gt; File &gt; New &gt; Activity &gt; Empty Activity<img src="/AndroidCourse/android/06-TransitionScreen/createactivity01_1.png" width="500" title="CreateNewActivity"></li>
+<li>ウィンドウ右クリック &gt; New &gt; Activity &gt; Empty Activity<img src="/AndroidCourse/android/06-TransitionScreen/createactivity01_2.png" width="500" title="CreateNewActivity">
+</li>
+</ol>
+<p>新しく作成するActivityのファイル名と同時に作成するxmlファイルの名称の入力を求められます。<br>以下の名称で新しいActivityを作成します。</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>設定値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Activity Name</td>
+<td>ResultListActivity</td>
+</tr>
+<tr>
+<td>Generate Layout File</td>
+<td>チェックを<font color="blue">つける</font></td>
+</tr>
+<tr>
+<td>Layout Name</td>
+<td>activity_result_list</td>
+</tr>
+<tr>
+<td>Luncher Activity</td>
+<td>チェックを<font color="red">つけない</font></td>
+</tr>
+<tr>
+<td>Backwords Compatibility(AppCompat)</td>
+<td>チェックを<font color="blue">つける</font></td>
+</tr>
+</tbody>
+</table>
+<img src="/AndroidCourse/android/06-TransitionScreen/createactivity02.png" width="500" title="CreateNewActivity">
+<p>項目の入力が終わったら<code>Finish</code>ボタンを押下します。</p>
+<p>新しいActivityの作成が終わるとウィンドウは閉じAndroid Studioのエディタに戻ります。<br>プロジェクトツリーには<font color="green">ResultListActivity.java</font>と<font color="green">activity_result_list.xml</font>のファイルが追加されます。<br><img src="/AndroidCourse/android/06-TransitionScreen/createactivity03.png" width="350" title="CreateNewActivity"></p>
+<h2><span id="androidmanifestファイルの確認">AndroidManifestファイルの確認</span></h2><p>Activityがプロジェクトに追加された場合でも、アプリで表示するためにはアプリの設計書となる<code>AndroidManifest.xml</code>に利用することを記述する必要があります。<br><code>AndroidManifest.xml</code>の場所は以下にあります。</p>
+<blockquote>
+<p>app -&gt; manifests -&gt; AndroidManifest.xml</p>
+</blockquote>
+<img src="/AndroidCourse/android/06-TransitionScreen/createactivity04.png" width="400" title="CreateNewActivity">
+<p>作成した<strong>ResultListActivity</strong>が記載されているか確認すると<br><img src="/AndroidCourse/android/06-TransitionScreen/createactivity05.png" width="550" title="CreateNewActivity"><br>無事に記述されていることが確認できました、他の行を確認すると検索画面として表示している<strong>MainActivity</strong>も記載されています。</p>
+<p><code>AndroidManifest.xml</code>ではアプリ名やアプリアイコン、アプリ起動時に表示するActivityなどの設定が記述された概要設計書のようなファイルになります、Push通知などの機能を追加する時にもファイルの修正が必要になるので覚えて置いてください。</p>
+<h1><span id="画面遷移処理機能">画面遷移処理機能</span></h1><p>新しいActivityが作成できたので、MainActivityの<em>蔵書検索ボタン</em>をクリックした時、ResultListActivityに表示が切り替わる様にMainActivity.javaを修正していきます。<br><figure class="highlight java"><figcaption><span>MainActivity.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">    View.OnClickListener bookSearchEvent = <span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// コンソールログにボタンが押されたことを出力(表示)</span></span><br><span class="line">            Log.d(<span class="string">"BookSearchBtn"</span>, <span class="string">"onClick: BookSearch Button"</span>);</span><br><span class="line">            <span class="comment">// 入力された文字をToast(トースト)に表示</span></span><br><span class="line">            Toast.makeText(getBaseContext()</span><br><span class="line">                    , <span class="string">"入力された文字は ["</span> + bookSearchEditor.getText().toString() + <span class="string">"]です。"</span></span><br><span class="line">                    , Toast.LENGTH_LONG).show();</span><br><span class="line">            <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">            <span class="comment">// 画面遷移するためのIntentをインスタンス化</span></span><br><span class="line">            Intent intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, ResultListActivity.class);</span><br><span class="line">            <span class="comment">// 画面遷移アクションを実行</span></span><br><span class="line">            startActivity(intent);</span><br><span class="line">            <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>コードの修正が終わったらエミュレータで動作確認してください。<br>以下のように画面遷移できましたか？<br><img src="/AndroidCourse/android/06-TransitionScreen/TransitionScreen.gif" width="300" title="TransitionScreen"><br>またエミュレータ左下の三角ボタンをクリックすると前の画面に戻ります。<br><img src="/AndroidCourse/android/06-TransitionScreen/BackScreen.png" width="400" title="BackScreen"></p>
+<h2><span id="intent">Intent</span></h2><p>Android開発における４大要素の一つとして紹介されている<code>Intent</code>が出てきました。<br>Intentは別Activityの呼び出し（画面遷移）や別のアプリを起動する時などに利用する要素になります、画面遷移時の利用方法としては</p>
+<ol>
+<li>Intentクラスを宣言、インスタンス化</li>
+<li>startActivityメソッドの引数に”1.”で宣言したIntentをセット</li>
+</ol>
+<p>この２つの手順でActivity間の画面遷移が実装できてしまいます。<br>今回画面遷移時に生成したIntentですが、<br>一つ目の引数にはContextと呼ばれるクラスをセット<font color="red">(Contextは少々ややこしいクラスなので今後のページで詳しく解説します）</font>Contextは現在開いているActivityが該当するので自身を表す”this”と言う属性を記述してセットする。<br>２つ目の引数に遷移したいActivityのクラス情報をセットする。</p>
+<p>最初のうちは画面遷移を行う場合、上記のルールで画面遷移のコードを実装するよう癖をつけておきましょう。</p>
+<h1><span id="検索結果画面レイアウト作成">検索結果画面レイアウト作成</span></h1><p>検索画面同様にLayoutEditorとConstraintsLayoutを使って検索結果画面のレイアウト構成を作成していきます。</p>
+</div><!-- comment system--><div class="container"><hr></div></article><footer id="footer"><div class="container"><div class="bar"><div class="social"><a href="/atom.xml" target="_blank"><i class="fa fa-rss"></i></a></div><div class="footer">© 2018 <a href="/" rel="nofollow">kuririnz</a>. Powered by <a rel="nofollow" target="_blank" href="https://hexo.io">Hexo</a>. Theme <a target="_blank" href="https://github.com/lotabout/very-simple">very-simple</a>.</div></div></div></footer><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.css"><script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script><script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script><script>$(document).ready(function() {
+    $(".fancybox").fancybox();
+});
+</script></body></html>
