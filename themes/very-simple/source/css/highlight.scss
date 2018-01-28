@@ -171,8 +171,7 @@ article {
 
 
 pre {
-    .comment,
-    .title {
+    .comment {
         color: $highlight-comment;
     }
     .variable,
@@ -194,8 +193,9 @@ pre {
     .built_in,
     .literal,
     .params,
+    .class .title,
     .constant {
-        color: $highlight-orange;
+        color: $highlight-foreground;
     }
     .class,
     .ruby .class .title,
@@ -213,6 +213,7 @@ pre {
     .css .hexcolor{
         color: $highlight-aqua;
     }
+    .meta,
     .function,
     .python .decorator,
     .python .title,
@@ -221,10 +222,10 @@ pre {
     .perl .sub,
     .javascript .title,
     .coffeescript .title {
-        color: $highlight-blue;
+        color: $highlight-yellow;
     }
     .keyword,
     .javascript .function {
-        color: $highlight-purple;
+        color: $highlight-orange;
     }
 }
