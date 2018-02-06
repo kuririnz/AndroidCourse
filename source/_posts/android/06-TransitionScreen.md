@@ -9,7 +9,7 @@ tags:
 <!-- toc -->
 
 [ボタンイベントの実装](/AndroidCourse/android/05-ButtonAction)からの引き続きの学習ページです。
-# 当ページでの学習ポイント
+# 学習ポイント
 * ListViewを利用したリストレイアウトの実装方法
 * 新規画面の作り方
 * 画面遷移処理の実装方法
@@ -66,7 +66,7 @@ Activityがプロジェクトに追加された場合でも、アプリで表示
 # 画面遷移処理機能
 新しいActivityが作成できたので、MainActivityの*蔵書検索ボタン*をクリックした時、ResultListActivityに表示が切り替わる様にMainActivity.javaを修正していきます。
 ```java MainActivity.java
-...
+...一部省略
     View.OnClickListener bookSearchEvent = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -84,7 +84,6 @@ Activityがプロジェクトに追加された場合でも、アプリで表示
             //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
         }
     };
-...
 ```
 コードの修正が終わったらエミュレータで動作確認してください。
 以下のように画面遷移できましたか？
@@ -153,22 +152,61 @@ public class ResultListActivity extends AppCompatActivity {
                 , listData);
         // ListViewに表示情報をまとめたAdapterをセット
         resultListView.setAdapter(adapter);
-
-        // ListViewの各行をクリックした時の命令を実装
-        AdapterView.OnItemClickListener listItemClickEvent = new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // クリックした行番号をToastで表示する
-                Toast.makeText(ResultListActivity.this
-                        , i + "行目をクリックしました"
-                        , Toast.LENGTH_SHORT).show();
-            }
-        };
-        // ListViewに行をクリックした時のイベントを登録
-        resultListView.setOnItemClickListener(listItemClickEvent);
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 }
+```
+合わせてListViewの行をクリックされた時のイベントをセットしていきます。
+行毎のクリックイベントはMainActivity.javaのボタンクリックとは別の実装方法を試していきます、クラス名の後ろに`implements AdapterView.OnItemClickListener`と入力
+```java ResultListActivity.java
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+public class ResultListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+	...
+}
+```
+するとエラーの様な<font color="red">赤い下線</font>が表示されます。
+クラス名 "ResultListActivity"をクリックし少し経過すると、赤い電球のようなアイコンが表示されるのでクリックします。
+{% img /android/06-TransitionScreen/additemclick01.png 500 add Item ClickEvent %}
+`implement methods`をクリックします。
+{% img /android/06-TransitionScreen/additemclick02.png 500 add Item ClickEvent %}
+`onItemClick...`が選択されている(青くなっている)状態で`OK`をクリックします。
+{% img /android/06-TransitionScreen/additemclick03.png 300 add Item ClickEvent %}
+`onItemClick()`メソッドが自動的に追加されます。
+{% img /android/06-TransitionScreen/additemclick04.png 500 add Item ClickEvent %}
+あとは行をクリックした時の命令を実装します。
+```java ResultListActivity.java
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_result_list);
+
+        // xmlファイルのコンポーネントと関連付け
+        resultListView = findViewById(R.id.ResultListView);
+        // ListViewに表示する情報をまとめるAdapterをインスタンス化
+        adapter = new ArrayAdapter<>(ResultListActivity.this
+                , android.R.layout.simple_list_item_1
+                , listData);
+        // ListViewに表示情報をまとめたAdapterをセット
+        resultListView.setAdapter(adapter);
+
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // ListViewに行をクリックした時のイベントを登録
+        resultListView.setOnItemClickListener(ResultListActivity.this);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    }
+
+    // ListViewの各行をクリックした時の命令を実装
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // クリックした行番号をToastで表示する
+        Toast.makeText(ResultListActivity.this
+                , i + "行目をクリックしました"
+                , Toast.LENGTH_SHORT).show();
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    }
+
 ```
 コードの実装が終わったらエミュレータで動作確認してみましょう。
 
@@ -182,7 +220,7 @@ Android SDKに用意されているリストと行のレイアウトを使用し
 ## コレクション、配列
 Androidアプリの開発に用いられるjava言語では複数のデータを一つのまとまりとして利用することができます。
 データの持ち方としては２つ方法がありそれぞれ**コレクション**、**配列**という概念があります、
-どちらの形式においても一つのまとまりのデータは同じ形である必要があり、<font color="blue">**	型の違うデータを複数記憶することはできません**</font>
+どちらの形式においても一つのまとまりのデータは同じ形である必要があり、<font color="blue">**型の違うデータを複数記憶することはできません**</font>
 
 主な違いとして
 * 配列は宣言時に要素の上限を決める必要がある。
@@ -282,7 +320,7 @@ ListViewの表示をカスタマイズするためには行のレイアウトフ
 public class MainActivity extends AppCompatActivity { ... }
 ```
 ```java ResultListActivity.java
-public class ResultListActivity extends AppCompatActivity { ... }
+public class ResultListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener { ... }
 ```
 と２つのActivityは "AppCompatActivity"クラスを継承しています。
 
@@ -293,7 +331,7 @@ public class ResultListActivity extends AppCompatActivity { ... }
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-		...
+		...一部省略
 	}
 ```
 メソッド名の上の行に`@Override`と記述されている、アノテーションと呼ばれる<font color="red">おまじない</font>によって、"AppCompatActivity"が持つ "onCreate"メソッドの命令を一旦無視(**オーバーライド(override)**)して `MainActivity`の "onCreate"メソッドの命令を実行すると実装しているのです。
@@ -337,9 +375,19 @@ Javaクラス名、親クラスの設定して`OK`ボタンをクリックしま
 {% img /android/06-TransitionScreen/createadpt06.png 500 Create List Adapter %}
 
 ## カスタム一覧機能の実装
+ListViewの表示をカスタマイズするために作成した`ResultListAdapter.java`を実装し`ResultListActivity.java`で利用する実装にコードを修正します。
 
+実装の前に**コンストラクタ**という機能を紹介します。
+### コンストラクタ
+コンストラクタはクラスをインスタンス化した時に実行される命令(メソッドと認識しても概ね大丈夫です)でクラスの内部的な初期化処理を行う機能です。
+今回`ResultListAdapter`は内部で持つデータだけでは機能を果たせず、少なくとも`ResultListActivity`から　"Context"データを引数として受け取ることで、
+ 行毎のレイアウトを読み込むために"LayoutInflater"クラスをインスタンス化する必要があります。
+そのため、オリジナルのコンストラクタを実装することになります。
+他の場合でもクラス内の変数を初期化する場合などにコンストラクタを利用するとプログラムが見やすくなります。
 
-ListViewの表示をカスタマイズするために作成した`ResultListAdapter.java`を実装し`ResultListActivity.java`で`ResultListAdapter.java`を利用する実装にコードを修正します。
+---
+
+ではカスタムレイアウトでの検索結果一覧画面を実装します。
 ```java ResultListAdapter.java
 public class ResultListAdapter extends BaseAdapter {
 
@@ -406,7 +454,7 @@ public class ResultListAdapter extends BaseAdapter {
 ```
 
 ```java ResultListActivity.java
-public class ResultListActivity extends AppCompatActivity {
+public class ResultListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     // xmlファイルのコンポーネントと関連付ける要素
     ListView resultListView;
@@ -440,19 +488,25 @@ public class ResultListActivity extends AppCompatActivity {
         // ListViewに表示情報をまとめたAdapterをセット
         resultListView.setAdapter(adapter);
 
-        // ListViewの各行をクリックした時の命令を実装
-        AdapterView.OnItemClickListener listItemClickEvent = new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // クリックした行番号をToastで表示する
-                Toast.makeText(ResultListActivity.this
-                        , (i + 1) + "行目をクリックしました"
-                        , Toast.LENGTH_SHORT).show();
-            }
-        };
         // ListViewに行をクリックした時のイベントを登録
-        resultListView.setOnItemClickListener(listItemClickEvent);
+        resultListView.setOnItemClickListener(ResultListActivity.this);
     }
-}```
 
+    // ListViewの各行をクリックした時の命令を実装
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        // クリックした行番号をToastで表示する
+        Toast.makeText(ResultListActivity.this
+                , i + "行目をクリックしました"
+                , Toast.LENGTH_SHORT).show();
+    }
+
+}```
 コードの実装が終わったらエミュレータで確認して見ましょう。
+
+今回のコード修正のポイントは`ResultListAdapter`クラスで利用した`LayoutInflater`クラスです。
+各Activityでは画面に表示するレイアウトファイルの読み込みを`setContentView()`メソッドが担当していましたが、ListViewに表示するレイアウトの読み込みは`LayoutInflater`クラスを使う必要があるので注意しましょう。
+
+以上で**検索結果一覧画面の作成**は一旦完了です。
+次の[蔵書検索機能の作成](/AndroidCourse/android/07-AsyncProcess)ではAPI通信を通して蔵書検索機能を作成します、
+データが検索機能が完成したら、検索データを "ResultListActivity"で表示出来るよう修正していきます。

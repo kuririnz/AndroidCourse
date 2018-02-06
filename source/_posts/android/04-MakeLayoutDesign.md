@@ -7,7 +7,7 @@ Layout Editor / ConstraintLayoutを使用したレイアウト実装と動作確
 <!-- toc -->
 
 [Androidアプリ開発を始める](/AndroidCourse/android/03-StartAndroidDevelopment)から引き続きの学習ページです。
-# ページ内の学習ポイント
+# 学習ポイント
 * Layout Editor
 * Widget / View などのコンポーネント
 * エミュレータの起動、確認方法
@@ -122,27 +122,39 @@ Android開発で用意されているウィジェットやビューはLayout Edi
 今回はAndroid Studioに内臓されているエミュレータ（仮想デバイス）を使って表示確認をしてみます。
 
 エミュレータや実機でアプリを実行するためには下記画面の`Run`ボタンをクリックします
-{% img /android/04-MakeLayoutDesign/runemurate01.png 500 Run Project %}
+{% img /android/04-MakeLayoutDesign/runemu01.png 500 Run Project %}
 
 "Select Deployment Target"と書かれたダイアログが表示されますが、ここには接続されている実機やエミュレータなど、Androidアプリを実行するデバイスを選ぶことができます。
 
 USBで接続されたAndroidデバイスや既にエミュレータをインストールされているPCでない場合は以下のように何も表示されないと思います。
-{% img /android/04-MakeLayoutDesign/runemurate02.png 500 Run Project %}
+{% img /android/04-MakeLayoutDesign/runemu02.png 500 Run Project %}
 今回はエミュレータを新規作成して使用しますので、`Create New Virtual Device`をクリックして新しいエミュレータを作成します。
 作成するエミュレータを選びますので<font color="red">**Pixel**</font>を選択して`Next`をクリックします
-{% img /android/04-MakeLayoutDesign/runemurate03.png 500 Run Project %}
+{% img /android/04-MakeLayoutDesign/runemu03.png 500 Run Project %}
 エミュレータにインストールするAndorid OSのバージョンを選択します。
-<font color="red">**Marshmallow**</font>を選択して`Next`をクリックします
-{% img /android/04-MakeLayoutDesign/runemurate04.png 500 Run Project %}
+<font color="red">**API Level 24のNougat**</font>のDownloadをクリックします
+{% img /android/04-MakeLayoutDesign/runemu04.png 500 Run Project %}
+<font color="red">**API Level 24 Nougat**</font>の仮想OSイメージのダウンロードが始まるので、完了を待ちます。
+{% img /android/04-MakeLayoutDesign/runemu05.png 500 Run Project %}
+仮想OSイメージのダウンロードが終わったら`Finish`をクリックします。
+{% img /android/04-MakeLayoutDesign/runemu06.png 500 Run Project %}
+ダウンロードの完了した<font color="red">**Nougat**</font>を選択して`Next`をクリックします。
+{% img /android/04-MakeLayoutDesign/runemu07.png 500 Run Project %}
 エミュレータの名前や設定変更画面では変更は行わずに`Finish`をクリックします
-{% img /android/04-MakeLayoutDesign/runemurate05.png 500 Run Project %}
+{% img /android/04-MakeLayoutDesign/runemu08.png 500 Run Project %}
 エミュレータの作成が終わると、実行するデバイスの選択画面に戻ります
-今回は作成したエミュレータの名前が表示されるので、<font color="red">**Pixel API 23**</font>を選択して`OK`をクリックします
-{% img /android/04-MakeLayoutDesign/runemurate06.png 500 Run Project %}
+今回は作成したエミュレータの名前が表示されるので、<font color="red">**Pixel API 24**</font>を選択して`OK`をクリックします
+{% img /android/04-MakeLayoutDesign/runemu09.png 500 Run Project %}
 Androidのエミュレータが起動し
-{% img /android/04-MakeLayoutDesign/runemurate07.png 300 Run Project %}
+{% img /android/04-MakeLayoutDesign/runemu10.png 300 Run Project %}
 エミュレータの画面に作成したレイアウトが表示されれば成功です！
-{% img /android/04-MakeLayoutDesign/runemurate08.png 250 Run Project %}
+{% img /android/04-MakeLayoutDesign/runemu11.png 250 Run Project %}
+
+# デザイン課題
+最後に一つ課題で復習してみましょう。
+EditTextの上にTextViewを以下のレイアウトの様に配置してください。
+画面に表示される文言や制約の設定まで設定してください。
+{% img /android/04-MakeLayoutDesign/MakeLayoutTask.png 500 Make Layout Task %}
 
 これでAndroidアプリのレイアウト作成とエミュレータでの実行方法と表示確認は完了です。
 次のページでは作成したレイアウトのボタンやEditTextがクリックや文字入力された時のプログラムを実装していきます。

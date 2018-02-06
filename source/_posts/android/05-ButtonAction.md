@@ -8,11 +8,12 @@ date: 2017-11-06
 <!-- toc -->
 
 [検索画面レイアウト作成](/AndroidCourse/android/04-MakeLayoutDesign)からの引き続きの学習ページです。
-# ページ内の学習ポイント
+# 学習ポイント
 * レイアウトファイルとjavaファイル間のウィジェットの関連付け
 * ボタンクリックイベントの実装方法
 * クラス、変数
 * メソッド
+* 条件分岐と繰り返し処理
 
 レイアウト作成した画面に配置したボタンがクリックされた時に実行したい命令を作りながらレイアウトファイルとjavaファイルでの関連付けやプログラミングにおける重要な変数、メソッドを学習します。
 
@@ -41,7 +42,6 @@ date: 2017-11-06
 実は"MainActivity.java"の中ですでに関連付けのプログラムが実装されています。
 それが以下のコード内矢印に囲まれてる`setContentView()`という命令でMainActivity.javaが表示され`setContentView()`の命令を実行する際に "()" 内で指定したレイアウトxmlファイルと関連付けを行い、内部で画面に表示するという命令を実行してくれています。
 ```java MainActivity.java
-...
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -90,7 +90,6 @@ ButtonやEditTextなどのウィジェットをjavaプログラムで操作で�
 
 上記の便利機能を踏まえて`findViewById`メソッドと "activity_main.xml"で設定した**ID**を使ってButtonウィジェットの関連付けを行います。
 ```java MainActivity.java
-...
 public class MainActivity extends AppCompatActivity {
 
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
@@ -134,7 +133,6 @@ xmlファイル内のウィジェットなどとjavaファイルの関連付け�
 "蔵書検索"ボタンのクリックした時にクリックされたことを開発者に確認させるためログを出力するプログラムを作っていきます。
 プログラムが上手く動かない時などどこまでプログラムが実行されたかを確認したり、実行中のデータを確認する時にも利用できるので試してみます。
 ```java MainActivity.java
-...
 public class MainActivity extends AppCompatActivity {
 
     // レイアウトxmlと関連付けるWidget
@@ -288,7 +286,6 @@ void型の変数は存在しないのでメソッドの宣言時以外ではあ�
 先程までのコードを拡張してToast表示機能を実装していきます。
 EditTextに入力された文字を画面に表示するプログラムに作り変えていきます。
 ```java  MainActivity.java
-...
 public class MainActivity extends AppCompatActivity {
 
     // レイアウトxmlと関連付けるWidget
@@ -349,7 +346,6 @@ Toastは一定時間で自動的に非表示になりますので、Toast用の�
 ボタンが押された時のプログラムが短いものなど多く使われるパターンです
 
 ```java
-...
 public class MainActivity extends AppCompatActivity {
 
     Button bookSearchBtn;
@@ -376,7 +372,6 @@ public class MainActivity extends AppCompatActivity {
 パターン２は`bookSearchBtn`インスタンスの宣言スコープが違う実装方法です
 
 ```java
-...
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -400,7 +395,6 @@ public class MainActivity extends AppCompatActivity {
 当ページで紹介したパターンと違い`MainActivityクラス`全体で使うことができます
 
 ```java
-...
 public class MainActivity extends AppCompatActivity {
 
     Button bookSearchBtn;
@@ -428,8 +422,7 @@ public class MainActivity extends AppCompatActivity {
 パターン４はボタンが押された時の実装をMainActivityクラスに委譲した実装方法です
 
 ```java
-...
-    public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button bookSearchBtn;
 
@@ -454,7 +447,6 @@ public class MainActivity extends AppCompatActivity {
 この方法はリスト表示されている時などに使うことが多いです
 
 ```java
-...
 public class MainActivity extends AppCompatActivity {
 
     Button bookSearchBtn;
@@ -484,4 +476,183 @@ public class MainActivity extends AppCompatActivity {
 ですが、<font color="red">**プログラムを細かく見る（読む）**</font>ことで名前のつけ方に共通点を見つけたり単語を検索しながら考え、失敗を繰り返しながら試すことで
 プログラムを深く理解することができるようになります。
 
-以上でボタンが押された時のプログラム実装ができました、次の[検索結果画面への遷移実装](/AndroidCourse/android/06-TransitionScreen)ではリスト表示レイアウト及び、画面遷移処理に関して実装していきます。
+# プログラミング課題
+今回の課題ではプログラミングを進める中で必ず出てくる**超重要**な処理の、"条件分岐"、"繰り返し"処理の書き方を学習していきます。
+蔵書検索アプリを作る中でもこの先で何度も出てくるので忘れない様しっかり課題にしていきます。
+## 条件分岐処理
+１つ目の**超重要**処理は"条件分岐"です。
+単語だけを聞くと使い方など難しく感じるかもしれませんが、
+* 晴れているので外で遊ぶ
+* 雨が降っているので家で勉強する
+
+上記の様に「〜だったら○○をする」という条件に該当した時に特定の処理を実行する制御文です。
+晴れている条件だけをプログラムにすると
+```java
+    if (晴れている) {
+        外で遊ぶ
+    }
+```
+さらに、雨が降った時の条件を加えて見ます
+```java
+    if (晴れている) {
+        外で遊ぶ
+    } else if (雨が降っている) {
+        家で勉強する
+    }
+```
+さらにさらにそれ以外の天気全ての場合には "電車で図書館に向かう"条件をつか加えます
+```java
+    if (晴れている) {
+        外で遊ぶ
+    } else if (雨が降っている) {
+        家で勉強する
+    } else {
+        電車で図書館に向かう
+    }
+```
+条件分岐処理`if`文の実装方法は以上のパターンが多く "else if"をなしに"if~else"だけで記述することも可能です。
+`if`文の使い方のテンプレートとしては以下です。
+```java
+    if (条件判定文) {
+        条件判定文に該当した場合に処理する命令
+    }
+```
+
+試しにEditTextに入力された文字数が３文字より多い時だけToastを表示する様に修正します。
+String型変数の文字数を参照するには`length()`メソッドを使います。
+```java  MainActivity.java
+    ...一部省略
+        // 蔵書検索ボタンが押された時の処理を実装
+        View.OnClickListener bookSearchEvent = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // コンソールログにボタンが押されたことを出力(表示)
+                Log.d("BookSearchBtn", "onClick: BookSearch Button");
+                //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                // EditTextの文字列を別の変数に代入
+                String inputText = bookSearchEditor.getText().toString();
+                // inputTextの文字数が3文字より多いか判定
+                if (inputText.length() > 3) {
+                    // 3文字より多い場合はToastを表示する
+                    Toast.makeText(getBaseContext()
+                            , "EditTextの文字数は " + inputText.length() + "文字です。"
+                            , Toast.LENGTH_LONG).show();
+                }
+                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+            }
+        };
+        // 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録
+        bookSearchBtn.setOnClickListener(bookSearchEvent);
+    ...一部省略
+```
+上記コードを実装したら動作確認します。
+EditTextが3文字より多い場合だけToastが表示される様になりましたか？
+
+`if`文で判定処理を行う場合は、必ず条件の結果が「正(true)/非(false)」のどちらかになる様に条件を記述します。
+上記でEditTextの文字列を判定する際に **>**という記号を使いましたが、これを***比較演算子***と呼びます。
+比較演算子には以下の通りの種類がありますので、状況に応じて使い分けます。
+
+|論理演算子|正(true)判定の条件                     |
+|:--------|:------------------------------------|
+|==       |左右の値が同じ場合のみ正(true)           |
+|>        |右の値より右の値が1以上大きい時に正(true) |
+|<        |左の値より右の値が1以上大きい時に正(true) |
+|>=       |左の値が右の値以上の時に正(true)         |
+|<=       |右の値が左の値以上の時に正(true)         |
+
+上記、"正(true)判定の条件"以外の場合は非(false)となります。
+では改めて`if`構文を使った課題です、以下の条件を満たすプログラムに修正してください。
+* EditTextに入力されている文字数が3文字以下の場合はToastで「EditTextの文字数は○文字です。」と表示します。
+    * ○の中はEditTextの文字数を表示します。
+* EditTextに入力されている文字数が10文字より多い場合はToastで「10文字以下で入力してください。」と表示します。
+* それ以外の場合はToastで「EditTextに○○と入力されています。」と表示します。
+    * ○の中はEditTextの文字列を表示します。
+
+## 繰り返し処理
+２つ目の**超重要**処理は"繰り返し"です。
+文字通り同じ処理を繰り返します。指定処理を指定の回数繰り返し処理する制御文です。
+繰り返し処理の基本は`for`文と呼ばれています。
+ある処理を10回繰り返したい時以下の様に実装します。
+```java
+    for (int i = 0; i < 10; i++) {
+        繰り返したい処理
+    }
+```
+上記のコードをテンプレートとして解説すると、
+```java
+    for (繰り返し変数の初期化; 繰り返す回数を決める条件; 繰り返し変数の増減式) {
+        繰り返したい処理
+    }
+```
+となります。
+まずは使って見ましょう、`if`文の課題の続きでプログラムを修正します、
+ログを使って繰り返されているか確認してます。
+```java  MainActivity.java
+    ...一部省略
+        // 蔵書検索ボタンが押された時の処理を実装
+        View.OnClickListener bookSearchEvent = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                // コンソールログにボタンが押されたことを５回出力(表示)
+                for (int i = 0; i < 5; i++) {
+                    Log.d("BookSearchBtn", "蔵書検索ボタンが押されました：" + (i + 1) + "回目");
+                }
+                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                // EditTextの文字列を別の変数に代入
+                String inputText = bookSearchEditor.getText().toString();
+                // inputTextの文字数が3文字より多いか判定
+                if (inputText.length() > 3) {
+                    // 3文字より多い場合はToastを表示する
+                    Toast.makeText(getBaseContext()
+                            , "EditTextの文字数は " + inputText.length() + "文字です。"
+                            , Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+        // 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録
+        bookSearchBtn.setOnClickListener(bookSearchEvent);
+    ...一部省略
+```
+上記コードを実装したら動作確認します。
+`Logcat`を確認して「蔵書検索ボタンが押されました：○回目」と５回表示されていれば成功です。
+次はログに星を沢山表示させて見ます。
+```java  MainActivity.java
+    ...一部省略
+        // 蔵書検索ボタンが押された時の処理を実装
+        View.OnClickListener bookSearchEvent = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                // コンソールログにボタンが押されたことを５回出力(表示)
+                String star = "☆";
+                for (int i = 0; i < 5; i++) {
+                    Log.d("BookSearchBtn", star);
+                    star += "☆";
+                }
+                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                // EditTextの文字列を別の変数に代入
+                String inputText = bookSearchEditor.getText().toString();
+                // inputTextの文字数が3文字より多いか判定
+                if (inputText.length() > 3) {
+                    // 3文字より多い場合はToastを表示する
+                    Toast.makeText(getBaseContext()
+                            , "EditTextの文字数は " + inputText.length() + "文字です。"
+                            , Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+        // 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録
+        bookSearchBtn.setOnClickListener(bookSearchEvent);
+    ...一部省略
+```
+上記コードで動作確認します。
+`Logcat`にて５行の星が一個づつ増えて表示されたでしょうか？
+では最後に`for`と`if`構文を合わせて使う課題です、
+以下の条件を満たすプログラムに修正してください。
+* 繰り返し処理において、何回目の繰り返し処理かログに表示します。
+    * 「○回目の繰り返し処理」とログに出力されている。(○は繰り返し回数を表示)
+* 偶数の時だけ「☆」を表示する。星の表示個数は繰り返しの回数と同じ個数とします。
+* 最後に表示される「☆」の数が10個であること。
+
+以上でボタンが押された時のプログラム実装ができました、次の[検索結果一覧画面作成](/AndroidCourse/android/06-TransitionScreen)ではリスト表示レイアウト及び、画面遷移処理に関して実装していきます。
