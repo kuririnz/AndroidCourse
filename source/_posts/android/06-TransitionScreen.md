@@ -45,7 +45,7 @@ Androidアプリに置いて**画面 = Activity**であることは[Androidの�
 |Luncher Activity|チェックを<font color="red">つけない</font>|
 |Backwords Compatibility(AppCompat)|チェックを<font color="blue">つける</font>|
 {% img /android/06-TransitionScreen/createactivity02.png 500 CreateNewActivity %}
-項目の入力が終わったら`Finish`ボタンを押下します。
+項目の入力が終わったら`Finish`ボタンをクリックします。
 
 新しいActivityの作成が終わるとウィンドウは閉じAndroid Studioのエディタに戻ります。
 プロジェクトツリーには<font color="green">ResultListActivity.java</font>と<font color="green">activity_result_list.xml</font>のファイルが追加されます。
