@@ -2,7 +2,6 @@
 <article><div class="container post"><p>Androidアプリ開発に必要になる概念を学んでいきます</p>
 <!-- toc -->
 <ul>
-<li><a href="#ページ内の学習ポイント">ページ内の学習ポイント</a></li>
 <li><a href="#android開発における4大要素">Android開発における４大要素</a><ul>
 <li><a href="#activity">Activity</a></li>
 <li><a href="#intent">Intent</a></li>
@@ -22,7 +21,6 @@
 </li>
 </ul>
 <!-- tocstop -->
-<h1><span id="ページ内の学習ポイント">ページ内の学習ポイント</span></h1><p>Androidアプリを構成する要素を解説します。<br>当ページではAndroidアプリを開発する際に出てくる要素、概念を解説しますので、詳しい理解はせずともどんなものを指しているかイメージできるように学習します。</p>
 <h1><span id="android開発における4大要素">Android開発における４大要素</span></h1><p>Android アプリの開発には重要に扱われている4大要素があります。<br>各要素を一言で表すと以下４つになります。</p>
 <p>１. 画面<br>２. アプリ/機能の呼び出し<br>３. バックグラウンド実行<br>４. 外部からの呼び出し受付</p>
 <p>また上記の要素をAndroidアプリの開発に当てはめると以下名称にて使われます。</p>
@@ -32,7 +30,7 @@
 <li>Service(3.バックグラウンド実行)</li>
 <li>Broad Cast Receiver (4.外部からの呼び出し受付)</li>
 </ul>
-<h2><span id="activity">Activity</span></h2><p>アプリ開発における画面を指し、ユーザーからの操作の受付、ユーザーへの情報表示のために使用します。<br>Activity内にはwidgetまたはviewと呼ばれる要素（ボタンや画像）を配置して機能を追加する。<br>また画面単位の要素としてFragmentが存在し、Activity内に表示させて使うことが推奨されている。</p>
+<h2><span id="activity">Activity</span></h2><p>アプリ開発における画面を指し、ユーザーの操作受付（ボタンタップやスワイプなど）、ユーザーへ向けた情報表示のために使用します。<br>Activity内にはwidgetまたはviewと呼ばれる要素（ボタンや画像）を配置して機能を追加する。<br>類似するFragmentという画面コンポーネントも存在しますが大きな違いはFragmentを表示する為にはActivityが必要で、Activity内に複数のFragmentを表示することができます。</p>
 <h2><span id="intent">Intent</span></h2><p>Activity間の呼び出しを行うための仕組み。<br>画面遷移やActivity間でのデータのやりとり、他にもメールアプリやブラウザアプリなど、<br>外部アプリの呼び出しを行う時に利用します。</p>
 <h2><span id="service">Service</span></h2><p>バックグラウンドで長時間の作業を行うためのコンポーネントです。<br>例として、Content Providerや非同期通信によるデータのやりとり、画面を表示しないまま音楽再生をする場合などに利用します。</p>
 <h2><span id="content-provider">Content Provider</span></h2><p>構造化されたデータへのアクセスを管理する仕組み。<br>アプリ内のデータベースとのやりとりや端末内の別アプリが管理しているデータへのアクセスを行う場合などに利用します。</p>
