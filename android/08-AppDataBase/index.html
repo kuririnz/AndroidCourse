@@ -4,6 +4,19 @@
 <ul>
 <li><a href="#学習ポイント">学習ポイント</a></li>
 <li><a href="#新しい画面を作成する">新しい画面を作成する</a></li>
+<li><a href="#画面遷移処理機能">画面遷移処理機能</a></li>
+<li><a href="#realmデータベースの導入">Realmデータベースの導入</a></li>
+<li><a href="#検索履歴機能">検索履歴機能</a><ul>
+<li><a href="#applicationクラス作成">Applicationクラス作成</a></li>
+<li><a href="#realmobject作成">RealmObject作成</a></li>
+<li><a href="#履歴登録機能">履歴登録機能</a></li>
+</ul>
+</li>
+<li><a href="#検索履歴一覧画面リスト表示対応">検索履歴一覧画面リスト表示対応</a><ul>
+<li><a href="#検索履歴一覧画面レイアウト修正">検索履歴一覧画面レイアウト修正</a></li>
+<li><a href="#検索歴一覧画面一覧表示実装">検索歴一覧画面一覧表示実装</a></li>
+</ul>
+</li>
 </ul>
 <!-- tocstop -->
 <p><a href="/AndroidCourse/android/07-AsyncProcess">蔵書検索機能の作成</a>からの引き続きの学習ページです。</p>
@@ -13,6 +26,320 @@
 </ul>
 <p>Realmというデータベースライブラリを使いアプリが閉じたり端末電源が落ちた後でもデータが残る機能を使って検索を行った条件を保存しておき、過去の履歴が確認できる画面を作っていきます。<br>また、検索結果画面で使ったListViewとは別にRecyclerViewというListViewよりも自由度の高い一覧表示ができるコンポーネントを学習します。</p>
 <h1><span id="新しい画面を作成する">新しい画面を作成する</span></h1><p>検索履歴一覧画面の実装を進めるために、新しくActivityを作成します。</p>
+<p>検索結果画面の時と同様にメニューもしくはプロジェクトツリーが表示されているウィンドウで右クリック(macでは２本指でクリック)から新しいActivityの追加を行います。</p>
+<p>新しく作成するActivityは<strong>Empty Activity</strong>を選びます。</p>
+<ul>
+<li>メニュー &gt; File &gt; New &gt; Activity &gt; Empty Activity<img src="/AndroidCourse/android/06-TransitionScreen/createactivity01_1.png" width="500" title="CreateNewActivity"></li>
+<li>ウィンドウ右クリック &gt; New &gt; Activity &gt; Empty Activity<img src="/AndroidCourse/android/06-TransitionScreen/createactivity01_2.png" width="500" title="CreateNewActivity">
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>設定値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Activity Name</td>
+<td>HistoryActivity</td>
+</tr>
+<tr>
+<td>Generate Layout File</td>
+<td>チェックを<font color="blue">つける</font></td>
+</tr>
+<tr>
+<td>Layout Name</td>
+<td>activity_history</td>
+</tr>
+<tr>
+<td>Luncher Activity</td>
+<td>チェックを<font color="red">つけない</font></td>
+</tr>
+<tr>
+<td>Backwords Compatibility(AppCompat)</td>
+<td>チェックを<font color="blue">つける</font></td>
+</tr>
+</tbody>
+</table>
+<img src="/AndroidCourse/android/08-AppDataBase/crehistactivity.png" width="500" title="CreateNewActivity">
+<p>項目の入力が終わったら<code>Finish</code>ボタンをクリックします。</p>
+<p>AndroidStudioでは作成したActivityのエディタ画面が表示されます。</p>
+<h1><span id="画面遷移処理機能">画面遷移処理機能</span></h1><p>検索履歴一覧画面、<code>HistoryActivity</code>ができたので<code>MainActivity</code>からの画面遷移処理を実装します。<br>“検索履歴”ボタンはまだ画面との関連付けを実装していないので、関連付けから実装します。<br><figure class="highlight java"><figcaption><span>MainActivity.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// レイアウトxmlと関連付けるWidget</span></span><br><span class="line">    <span class="keyword">private</span> Button bookSearchBtn;</span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="keyword">private</span> Button historyBtn;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">    <span class="keyword">private</span> EditText bookSearchEditor;</span><br><span class="line">    <span class="comment">// Timerクラス</span></span><br><span class="line">    <span class="keyword">private</span> Timer timer;</span><br><span class="line">    <span class="comment">// メインスレッドに帰って来るためのハンドラー</span></span><br><span class="line">    <span class="keyword">private</span> Handler handler;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ハンドラーオブジェクトをMainThreadでインスタンス化</span></span><br><span class="line">        handler = <span class="keyword">new</span> Handler();</span><br><span class="line">        <span class="comment">// 蔵書検索ボタンをjavaプログラムで操作できるように名前をつける</span></span><br><span class="line">        bookSearchBtn = findViewById(R.id.BookSearchBtn);</span><br><span class="line">        <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">        <span class="comment">// 検索履歴ボタンを関連付ける</span></span><br><span class="line">        historyBtn = findViewById(R.id.HistoryBtn);</span><br><span class="line">        <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line"></span><br><span class="line">		...一部省略</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録</span></span><br><span class="line">        bookSearchBtn.setOnClickListener(bookSearchEvent);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">        <span class="comment">// 検索履歴ボタンをクリックした時の処理を実装</span></span><br><span class="line">        historyBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// 検索履歴画面へ遷移するためのIntentをインスタンス化</span></span><br><span class="line">                Intent intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, HistoryActivity.class);</span><br><span class="line">                <span class="comment">// 画面遷移アクションを実行</span></span><br><span class="line">                startActivity(intent);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">		...一部省略</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1><span id="realmデータベースの導入">Realmデータベースの導入</span></h1><p><strong><a href="https://realm.io/docs/java/latest" target="_blank" rel="external">Realm</a></strong>データベースは次世代次世代モバイル向けデータベースと言われており、データ抽出速度など基本的な機能が既存のモバイル向けデータベースより優れている点、またデータの登録、更新などの際に必要だったSQLと呼ばれるデータベースを操作する言語の学習も不要になっている点が大きい。</p>
+<p>では実際に導入していきます。<br>ライブラリの導入には<code>build.gradle</code>を修正します、今回はプロジェクト階層の<code>build.gradle</code>ファイルです。</p>
+<p>ファイルの”dependencies”にRealmの設定を追記します。<br><img src="/AndroidCourse/android/08-AppDataBase/includeRealm01.png" width="450" title="Include Realm"><br><figure class="highlight gradle"><figcaption><span>build.gradle(Project: ***)</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    <span class="keyword">classpath</span> <span class="string">'com.android.tools.build:gradle:3.0.1'</span></span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="keyword">classpath</span> <span class="string">"io.realm:realm-gradle-plugin:4.3.3"</span></span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>続いて<strong>Module</strong>階層の<code>build.gradle</code>も修正します。<br><img src="/AndroidCourse/android/08-AppDataBase/includeRealm02.png" width="450" title="Include Realm"><br><figure class="highlight gradle"><figcaption><span>build.gradle(Module: app)</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">'com.android.application'</span></span><br><span class="line"><span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">apply plugin: <span class="string">'realm-android'</span></span><br><span class="line"><span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">26</span></span><br><span class="line">    defaultConfig &#123;...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>２つの<code>build.gradle</code>コードを修正したら右上に表示された<font color="blue">Sync Now</font>リンクをクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/includeRealm03.png" width="650" title="Include Realm"><br>Gradleの同期処理が実行されるので同期処理の終了にて<strong>Realm</strong>ライブラリの導入は完了です。</p>
+<h1><span id="検索履歴機能">検索履歴機能</span></h1><p>Realmデータベースを使うにはアプリの起動した時（MainActivity）など起動時画面が表示されるより前にRealmのインスタンスを初期化する必要があります。<br>起動時画面が表示される前にアプリ全体を管理する<code>Application</code>というクラスのライフサイクルが実行され、Activityが表示されています。<br>デフォルトのプロジェクトには<code>Application</code>クラスは存在せずAndroid SDK側で自動的に処理されています、そのため必要に応じて<code>Application</code>クラスを継承したカスタムクラスを作って実装していきます。</p>
+<h2><span id="applicationクラス作成">Applicationクラス作成</span></h2><p>新規Javaファイルを作成します</p>
+<blockquote>
+<p>プロジェクトウィンドウ右クリック &gt; New &gt; Java Class</p>
+</blockquote>
+<img src="/AndroidCourse/android/06-TransitionScreen/createadpt01.png" width="500" title="Create Custom Application">
+<p>新しいクラスの作成に関する設定を行ったら<code>OK</code>ボタンをクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/initialrealm01.png" width="500" title="Create Custom Application"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">項目</th>
+<th>設定値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Name</td>
+<td>BDApplication</td>
+</tr>
+<tr>
+<td style="text-align:center">Kind</td>
+<td>Class</td>
+</tr>
+<tr>
+<td style="text-align:center">Superclass</td>
+<td>android.app.Application</td>
+</tr>
+<tr>
+<td style="text-align:center">Interface(s)</td>
+<td>-</td>
+</tr>
+<tr>
+<td style="text-align:center">Package</td>
+<td>***.***.bookbookdiscovery</td>
+</tr>
+<tr>
+<td style="text-align:center">Visibility</td>
+<td>Public</td>
+</tr>
+<tr>
+<td style="text-align:center">Modifiers</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p><code>Application</code>クラスが作成されたら、Realmのインスタンス化を実装します。<br>エラーはないですが、メソッドが実装されていないのでデベロッパが実装する必要があります。<br>Realmのインスタンス化までを実装します。<br><strong>開発時の便利ショートカットの紹介です。</strong><br>コンストラクタや継承メソッドやインターフェースメソッド(インターフェースは後で解説します)を自動的に実装してくれる<em>“Generate”</em>ショートカットがありますOSごとにコマンドは違いますが、<code>BDApplication.java</code>を表示して以下のコマンドを入力します。</p>
+<ul>
+<li>Windowsの場合：<kbd>Alt</kbd><kbd>+</kbd><kbd>Insert</kbd></li>
+<li>Macの場合：<kbd>command</kbd><kbd>+</kbd><kbd>n</kbd></li>
+</ul>
+<p>以下のウィンドウが表示されるので、今回は<strong><em>Override Methoeds…</em></strong>を選択します。<br><img src="/AndroidCourse/android/08-AppDataBase/initialrealm02.png" width="400" title="Create Custom Application"><br>次のウィンドウでは<strong><em>onCreate():void</em></strong>を選択し<code>OK</code>をクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/initialrealm03.png" width="300" title="Create Custom Application"><br>以下の様に選択したメソッドがクラスに実装されます。<br><img src="/AndroidCourse/android/08-AppDataBase/initialrealm04.png" width="500" title="Create Custom Application"></p>
+<p>ではRealmインスタンスを初期化していきます。<br><figure class="highlight java"><figcaption><span>BDApplication.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BDApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">        <span class="comment">// Realmをインスタンス化</span></span><br><span class="line">        Realm.init(<span class="keyword">this</span>);</span><br><span class="line">        <span class="comment">// Realm データベースを設定</span></span><br><span class="line">        RealmConfiguration conf = <span class="keyword">new</span> RealmConfiguration.Builder().name(<span class="string">"BookDiscovery.realm"</span>).build();</span><br><span class="line">        Realm.setDefaultConfiguration(conf);</span><br><span class="line">        <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>作成したカスタムApplicationクラスはこのままでは実行されません、Activityよりも階層にしてみれば上に位置するものなのでActivityからも設定することはできません。<br>ここで出てくるのが<code>AndroidManifest.xml</code>です、API通信の実装の時にはインターネット通信を許可する設定を追記しました、今回は実行するApplicationクラスを設定を変更します。<br><figure class="highlight xml"><figcaption><span>AndroidManifest.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">package</span>=<span class="string">"kuririnz.xyz.bookdiscovery"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Androidアプリでインターネット通信を許可する設定 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line">        &lt;!-- ↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓ --&gt;</span><br><span class="line">        android:name=".BDApplication"</span><br><span class="line">        <span class="comment">&lt;!-- ↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑ --&gt;</span></span><br><span class="line">        android:allowBackup="true"</span><br><span class="line">        android:icon="@mipmap/ic_launcher"</span><br><span class="line">        android:label="@string/app_name"</span><br><span class="line">        android:roundIcon="@mipmap/ic_launcher_round"</span><br><span class="line">        android:supportsRtl="true"</span><br><span class="line">        <span class="comment">&lt;!-- 一部省略  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!-- 一部省略  --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>上記で初期化、および<code>カスタムApplication</code>クラスの反映が完了しました。</p>
+<h2><span id="realmobject作成">RealmObject作成</span></h2><p>通常データベースにはテーブルという概念があります、テーブルとは複数の項目とその項目に沿ったデータを複数もった表のようなもので、表で再現すると以下のようなデータの持ち方をしています。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">検索日付</th>
+<th>検索文字列</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">2018/2/6 13:02</td>
+<td>東京都</td>
+</tr>
+<tr>
+<td style="text-align:left">2018/2/6 13:25</td>
+<td>Android入門</td>
+</tr>
+<tr>
+<td style="text-align:left">2018/2/6 14:03</td>
+<td>ごはんのお供</td>
+</tr>
+<tr>
+<td style="text-align:left">2018/2/13 16:46</td>
+<td>ミステリー小説</td>
+</tr>
+<tr>
+<td style="text-align:left">2018/2/13 17:11</td>
+<td>プログラマー三代美徳</td>
+</tr>
+</tbody>
+</table>
+<p>例えば上記の表を<em>SearchHistory</em>というテーブルとした場合<br><blockquote><p><em>SearchHistory</em>テーブル[表]は”検索日付”、”検索文字列”というカラム[列、項目]を持ち、現状は５ロウ(Row)[行]分のデータを持っている。</p>
+</blockquote><br>と言い換えることができます。</p>
+<p>Realmでは上記のテーブルを<code>RealmObject</code>クラスを継承したカスタムクラスを作成するだけでテーブル構成が完成します。<br>今回作成する検索履歴機能は上記の表と同じ構成で作成します、新規javaファイルの作成から実装していきましょう。</p>
+<blockquote>
+<p>プロジェクトウィンドウ右クリック &gt; New &gt; Java Class</p>
+</blockquote>
+<img src="/AndroidCourse/android/06-TransitionScreen/createadpt01.png" width="500" title="Create Custom Application">
+<p>新しいクラスの作成に関する設定を行ったら<code>OK</code>ボタンをクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/initialrealm05.png" width="500" title="Create Custom Application"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">項目</th>
+<th>設定値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Name</td>
+<td>SearchHistoryModel</td>
+</tr>
+<tr>
+<td style="text-align:center">Kind</td>
+<td>Class</td>
+</tr>
+<tr>
+<td style="text-align:center">Superclass</td>
+<td>io.realm.RealmObject</td>
+</tr>
+<tr>
+<td style="text-align:center">Interface(s)</td>
+<td>-</td>
+</tr>
+<tr>
+<td style="text-align:center">Package</td>
+<td>***.***.bookbookdiscovery</td>
+</tr>
+<tr>
+<td style="text-align:center">Visibility</td>
+<td>Public</td>
+</tr>
+<tr>
+<td style="text-align:center">Modifiers</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>上記で作成された<code>SearchHistoryModel</code>クラスがテーブル（表）になります。<br>次にカラム(列)を作っていきます。<br><figure class="highlight java"><figcaption><span>SearchHistoryModel.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SearchHistoryModel</span> <span class="keyword">extends</span> <span class="title">RealmObject</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="comment">// 検索日時カラム</span></span><br><span class="line">    <span class="keyword">private</span> String searchDate;</span><br><span class="line">    <span class="comment">// 検索文字列カラム</span></span><br><span class="line">    <span class="keyword">private</span> String searchTerm;</span><br><span class="line">	<span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>次に各カラムのデータを参照、代入するメソッドを実装します。<br>それぞれ参照を<strong>ゲッター(getter)</strong>、代入を<strong>セッター(setter)</strong>と呼びます。<br><code>SearchHistoryModel</code>クラスを開いた状態で、<em>“Generate”</em>ショートカットを入力して<strong>Getter and Setter</strong>を選択します。<br><img src="/AndroidCourse/android/08-AppDataBase/realmtable01.png" width="400" title="Create Custom Table"><br>表示された２項目を選択し<code>OK</code>をクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/realmtable02.png" width="300" title="Create Custom Table"><br>以下の通り４つのメソッドが追加されれば完了です。<br><img src="/AndroidCourse/android/08-AppDataBase/realmtable03.png" width="550" title="Create Custom Table"></p>
+<h2><span id="履歴登録機能">履歴登録機能</span></h2><p>登録先となるRealmObjectが完成したので、実際にRealmDBへの登録処理を実装します。<br>今回データの登録タイミングは検索結果画面へ遷移する前とします。<br><figure class="highlight java"><figcaption><span>MainActivity.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">...一部省略</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ...一部省略</span><br><span class="line">    <span class="comment">// 蔵書検索ボタンをクリックした時の処理を実装</span></span><br><span class="line">    View.OnClickListener bookSearchEvent = <span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// コンソールログにボタンが押されたことを出力(表示)</span></span><br><span class="line">            Log.d(<span class="string">"BookSearchBtn"</span>, <span class="string">"onClick: BookSearch Button"</span>);</span><br><span class="line">            <span class="comment">// EditTextの文字列を取得</span></span><br><span class="line">            String termString = bookSearchEditor.getText().toString();</span><br><span class="line">            <span class="comment">// Timerスレッドを止める</span></span><br><span class="line">            timer.cancel();</span><br><span class="line">            <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">            <span class="comment">// Realmインスタンスを生成</span></span><br><span class="line">            Realm realm = Realm.getDefaultInstance();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 検索履歴テーブルへのアクセスを開始</span></span><br><span class="line">                realm.beginTransaction();</span><br><span class="line">                <span class="comment">// 新規検索履歴データを作成</span></span><br><span class="line">                SearchHistoryModel history = realm.createObject(SearchHistoryModel.class);</span><br><span class="line">                <span class="comment">// 検索文字列カラムにデータを登録</span></span><br><span class="line">                history.setSearchTerm(termString);</span><br><span class="line">                <span class="comment">// 現在時刻を文字列で取得する</span></span><br><span class="line">                Date now = <span class="keyword">new</span> Date();</span><br><span class="line">                <span class="comment">// 現在時刻を定まった形式で文字列に変換</span></span><br><span class="line">                String dateStr = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy/MM/dd HH:mm"</span>).format(now);</span><br><span class="line">                <span class="comment">// 現在日時の文字列をカラムデータに登録</span></span><br><span class="line">                history.setSearchDate(dateStr);</span><br><span class="line">                <span class="comment">// 検索履歴テーブルへのアクセスを終了</span></span><br><span class="line">                realm.commitTransaction();</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                <span class="comment">// Realmインスタンスがちゃんとクローズされること</span></span><br><span class="line">                realm.close();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 検索結果画面へ遷移するためのIntentをインスタンス化</span></span><br><span class="line">            Intent intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, ResultListActivity.class);</span><br><span class="line">            <span class="comment">// EditTextに入力された文字列を"KeyValuePair"でResultListActivityに渡す</span></span><br><span class="line">            intent.putExtra(<span class="string">"terms"</span>, termString);</span><br><span class="line">            <span class="comment">// 画面遷移アクションを実行</span></span><br><span class="line">            startActivity(intent);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録</span></span><br><span class="line">    bookSearchBtn.setOnClickListener(bookSearchEvent);</span><br><span class="line">    ...一部省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上記の実装でRealm DBへのデータ登録処理は完了です。<br>モバイル向けデータベースのデメリットとして中身を直接確認しにくいという点があるのですが、これはRealmDBも同様です。<br>RealmにはGUIでデータを確認するアプリがありますが、データを保存した<code>BookDiscovery.realm</code>を取り出すのに手間がかかるため、実際に読み込んで参照した方がデータの確認は早いのです。</p>
+<p>データ確認のため、検索履歴一覧画面にTextViewを配置しRealmから<code>SearchHistoryModel</code>の内容を全て抽出し、表示してみます。<br>検索履歴一覧画面のレイアウトファイルを開きます。</p>
+<blockquote>
+<p>app -&gt; res -&gt; layout -&gt; activity_history.xml</p>
+</blockquote>
+<p><code>activity_history.xml</code>を表示したら、”TextView”を画面に配置します。<br><img src="/AndroidCourse/android/08-AppDataBase/confirmrealm01.png" width="550" title="realmconfirm"><br>画面の上下左右と制約を設定します。<br><img src="/AndroidCourse/android/08-AppDataBase/confirmrealm02.png" width="550" title="realmconfirm"><br>最後に<strong>Attributes</strong>エリアから属性を設定します。<br><img src="/AndroidCourse/android/08-AppDataBase/confirmrealm03.png" width="550" title="realmconfirm"></p>
+<table>
+<thead>
+<tr>
+<th>設定項目</th>
+<th>設定値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ID</td>
+<td>HistoryText</td>
+</tr>
+<tr>
+<td>layout_width</td>
+<td>match_sonstraint</td>
+</tr>
+<tr>
+<td>text</td>
+<td>テキストなし</td>
+</tr>
+</tbody>
+</table>
+<p>上記の表の通り、入力が完了したらレイアウトは一旦OKです！<br>最後に<code>HistoryActivity.java</code>でRealm Realm DBからデータを取得し、配置したTextViewに表示させていきます。<br><figure class="highlight java"><figcaption><span>HistoryActivity.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HistoryActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="comment">// Realmインスタンスを宣言</span></span><br><span class="line">    <span class="keyword">private</span> Realm realm;</span><br><span class="line">    <span class="comment">// 画面紐付けコンポーネントを宣言</span></span><br><span class="line">    <span class="keyword">private</span> TextView historyTextView;</span><br><span class="line">    <span class="comment">// 検索履歴テーブルのデータを全て取得</span></span><br><span class="line">    <span class="keyword">private</span> RealmResults&lt;SearchHistoryModel&gt; resultData;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_history);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">        <span class="comment">// 画面コンポーネント関連付け</span></span><br><span class="line">        historyTextView = findViewById(R.id.HistoryText);</span><br><span class="line">        <span class="comment">// Realmクラスをインスタンス化</span></span><br><span class="line">        realm = Realm.getDefaultInstance();</span><br><span class="line">        <span class="comment">// 検索履歴テーブルのデータを全て取得</span></span><br><span class="line">        resultData = realm.where(SearchHistoryModel.class).findAll();</span><br><span class="line">        <span class="comment">// 検索履歴の件数が１件以上なら繰り返し処理でTextViewに表示する</span></span><br><span class="line">        <span class="keyword">if</span> (!resultData.isEmpty() &amp;&amp; resultData.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 検索履歴テーブルの行数分、繰り返し処理を実行する</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; resultData.size(); i++) &#123;</span><br><span class="line">                <span class="comment">// 検索履歴画面のtextViewに検索文字列を随時結合して表示する</span></span><br><span class="line">                historyTextView.setText(historyTextView.getText() + resultData.get(i).getSearchTerm());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">        <span class="comment">// Realmインスタンスをちゃんとクローズすること</span></span><br><span class="line">        realm.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑    </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上記のコードを実装したら動作確認します。<br>動作確認の手順として以下の手順で操作を行い、[1.]のタイミングに入力した文字列が検索履歴一覧画面に表示されれば成功です。</p>
+<ol>
+<li>EditTextに何かしらの文字列を入力</li>
+<li>“蔵書検索”ボタンをクリック</li>
+<li>Androidエミュレータ(または実機)のバックボタンをクリック</li>
+<li>“検索履歴”ボタンをクリック</li>
+</ol>
+<p>Realmデータベースの基礎的な使い方は以上です。</p>
+<p>上記のコードでは新しく<code>onDestroy</code>というライフサイクルメソッドが登場しました、この<code>onDestroy</code>はActivityを表示するために保持しておいた領域を解放する前に実行されるメソッドです。<br>RealmインスタンスはActivityごとにインスタンス化して使用しているため、Activityが解放される前にRealmの領域も解放しないといけません、<strong>Realmの解放を忘れるとアプリの強制終了の原因にもなり得る</strong>のでRealmを利用する場合は注意して実装を行います。</p>
+<h1><span id="検索履歴一覧画面リスト表示対応">検索履歴一覧画面リスト表示対応</span></h1><p>Realmにて検索した文字列が正常に保存されていることが確認できましたが、現状とても見難いレイアウトです、これをリスト表示にしていきます。</p>
+<p>検索履歴一覧画面での一覧表示には”ListView”ではなく、<strong>RecyclerView</strong>というコンポーネントを利用します。</p>
+<p><strong>RecyclerView</strong>は”Android API 22”の頃に追加されたコンポーネントでListViewや格子状にViewを表示するGridViewよりさらに自由な配置を行えるようになった一覧表示コンポーネントです。<br>またListViewやGridViewに比べ軽い動作が行えることから最近ではこちらのコンポーネントで一覧画面を作ることが増えています。</p>
+<h2><span id="検索履歴一覧画面レイアウト修正">検索履歴一覧画面レイアウト修正</span></h2><p><strong>RecyclerView</strong>コンポーネントは以下の場所にあります。</p>
+<blockquote>
+<p>Palette -&gt; AppCmpat -&gt; RecyclerView</p>
+</blockquote>
+<img src="/AndroidCourse/android/08-AppDataBase/addrecycler01.png" width="450" title="Add RecyclerView">
+<p>続いて制約の設定です。<br>コンポーネントが端に寄っていて設定しにくい場合、少し上下させて右端/左端にドラッグ&amp;ドロップするとやりやすいです。<br><img src="/AndroidCourse/android/08-AppDataBase/addrecycler02.png" width="300" title="Add RecyclerView"><br>制約設定が終わったら<strong>RecyclerView</strong>の属性を設定していきます。<br><img src="/AndroidCourse/android/08-AppDataBase/addrecycler03.png" width="450" title="Add RecyclerView"></p>
+<table>
+<thead>
+<tr>
+<th>設定項目</th>
+<th>設定値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ID</td>
+<td>HistoryRecycler</td>
+</tr>
+<tr>
+<td>layout_width</td>
+<td>match_sonstraint</td>
+</tr>
+<tr>
+<td>layout_height</td>
+<td>match_sonstraint</td>
+</tr>
+</tbody>
+</table>
+<p>先ほど表示していたTextView(ID:HistoryText)は履歴が０件だった場合のメッセージを表示するように修正します、TextViewの用途が変わるのでIDも変更します。<br><img src="/AndroidCourse/android/08-AppDataBase/addrecycler04.png" width="450" title="Add RecyclerView"></p>
+<table>
+<thead>
+<tr>
+<th>設定項目</th>
+<th>設定値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ID</td>
+<td>EmptyRecyclerText</td>
+</tr>
+<tr>
+<td>text</td>
+<td>検索履歴はありません</td>
+</tr>
+<tr>
+<td>visibility</td>
+<td>invisible</td>
+</tr>
+</tbody>
+</table>
+<p>テキストの配置が不恰好なので位置を調整します、TextViewの文字位置の調整は”textAlignment”属性を修正します。<br>“textAlignment”属性は基本属性の画面には表示されておらず、全属性を表示する詳細ウィンドウに切り替える必要があります、詳細ウィンドウへの切り替えはAttributesウィンドウの左右に矢印のアイコンをクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/addrecycler04.png" width="450" title="Add RecyclerView"><br>“textAlignment”属性を探し、”center”を選択して完了です。</p>
+<h2><span id="検索歴一覧画面一覧表示実装">検索歴一覧画面一覧表示実装</span></h2><p>検索履歴一覧画面の行レイアウトを作成していきます。<br>新規でxmlレイアウトファイルを作成し、検索日時と検索時の文字列を表示する行レイアウトを作成します。</p>
+<blockquote>
+<p>プロジェクトウィンドウ右クリック &gt; New &gt; XML &gt; Layout XML File</p>
+</blockquote>
+<img src="/AndroidCourse/android/08-AppDataBase/addrowrecycler01.png" width="450" title="Add RecyclerView Row">
+<p>xmlレイアウトファイル名と一番上の階層になるLayoutを設定して<code>Finish</code>をクリックします<br><img src="/AndroidCourse/android/08-AppDataBase/addrowrecycler02.png" width="450" title="Add RecyclerView Row"><br>デザインビューが表示されたらXMLの編集画面に切り替えてレイアウトを実装していきます。<br>デザインエリアの左したにある<strong>Text</strong>と書かれてるタブをクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/addrowrecycler03.png" width="450" title="Add RecyclerView Row"><br>検索履歴一覧画面の行レイアウトはLinearLayoutという初期からあるレイアウトコンポーネントを使います、またXMLを使った実装も試していきます。<br><figure class="highlight xml"><figcaption><span>row_history_recycle.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="comment">&lt;!-- ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ --&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/RowHistoryDate"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_margin</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:textSize</span>=<span class="string">"14dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">tools:text</span>=<span class="string">"蔵書検索した日付を表示"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/RowHistoryTerm"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_margin</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:textSize</span>=<span class="string">"20dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">tools:text</span>=<span class="string">"蔵書検索した文字列を表示"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>toolsを設定する際にもjavaクラスでのimportと同じように自動的に追加が可能ですので、<code>tools:text..</code>と入力した後に<code>tools</code>にマウスカーソルでクリックし、以下のようにツールチップが表示されたら<br>Windowsの場合は[Alt + insert],Macの場合は[option + Enter]でxml内での参照が追加されます。<br><img src="/AndroidCourse/android/08-AppDataBase/addrowrecycler04.png" width="500" title="Add RecyclerView Row"></p>
+<p>この<code>tools</code>という属性ですが、プレビューの際にだけ反映される項目を設定できる属性になります。そのため<strong>アプリを実行した際には追加した２つのTextViewはプログラム上、表示する文字列を持っていない状態</strong>となります。。</p>
+<p>そして上記xmlファイルで初めて利用した<code>LinearLayout</code>というコンポーネントは縦もしくは横どちらか一方方向に子Viewを並べて表示するという特性を持っています。<br>縦横の設定は<code>orientation</code>属性を使用します。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">設定値</th>
+<th style="text-align:left">並べて表示する方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">horizontal</td>
+<td style="text-align:left">横(左から右)へ子Viewを並べて表示</td>
+</tr>
+<tr>
+<td style="text-align:left">vertical</td>
+<td style="text-align:left">縦(上から下)へ子Viewを並べて表示</td>
+</tr>
+</tbody>
+</table>
+<p><code>orientation</code>属性が設定されていない場合は<strong>horizontal</strong>が設定されたと認識され、不具合通知は表示されないので注意しましょう。</p>
+<p>行レイアウトができたので行ごとの表示プロセスを担当するAdapterクラスを実装していきます。<br>一覧表示を行うViewを使う場合、Adapterクラスを継承して独自のレイアウト表示する方法はListViewと一緒です。<br>RecyclerViewには<code>RecyclerView.Adapter</code>というRecyclerView用のAdapterクラスがあるのでこれを継承した独自クラスを作成します。<br><img src="/AndroidCourse/android/08-AppDataBase/addadapter01.png" width="400" title="Add RecyclerView Adapter"><br>クラス作成時の設定項目を入力したら<code>OK</code>をクリックします<br><img src="/AndroidCourse/android/08-AppDataBase/addadapter02.png" width="400" title="Add RecyclerView Adapter"><br><code>HistoryRecyclerAdapter.java</code>が表示されたら<font color="red">赤い電球</font>アイコンをクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/addadapter03.png" width="500" title="Add RecyclerView Adapter"><br>表示された小さいウィンドウから<em>Implement methods</em>をクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/addadapter04.png" width="500" title="Add RecyclerView Adapter"><br>３つのメソッドが選択状態（背景が青色）になっていることを確認し<code>OK</code>をクリックします。<br><img src="/AndroidCourse/android/08-AppDataBase/addadapter05.png" width="300" title="Add RecyclerView Adapter"><br>選択した３つのメソッドが<code>HistoryRecyclerAdapter.java</code>に表示されたら新しいクラスの作成は完了です。<br><img src="/AndroidCourse/android/08-AppDataBase/addadapter06.png" width="500" title="Add RecyclerView Adapter"><br>検索結果画面では利用していませんでしたが、検索履歴一覧画面では<strong>ViewHolderパターン</strong>での実装を行います。</p>
+<blockquote>
+<p><strong>ViewHolderパターン</strong>とはスクロールするたびにViewを生成/抽出(findViewById)などの処理コストが高く描画に時間がかかってしまうため、一度生成したViewHolderを再利用することでコストを軽減するパターンを指します。</p>
+</blockquote>
+<p><code>HistoryRecyclerAdapter</code>の主なメソッドを実装する前にViewHolderの実装を行なっていきます。<br><figure class="highlight java"><figcaption><span>HistoryRecyclerAdapter.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HistoryRecyclerAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">HistoryRecyclerAdapter</span>.<span class="title">HistoryHolder</span>&gt; </span>&#123;</span><br><span class="line"><span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="keyword">public</span> RecyclerView.<span class="function">ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(RecyclerView.ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="comment">// ViewHolderパターンクラス</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">HistoryHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Rowレイアウトと関連づけるコンポーネントを宣言</span></span><br><span class="line">        <span class="keyword">public</span> TextView historyDate;</span><br><span class="line">        <span class="keyword">public</span> TextView historyTerm;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// コンストラクタ</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">HistoryHolder</span><span class="params">(View itemView)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(itemView);</span><br><span class="line">            <span class="comment">// xmlファイルと関連付け</span></span><br><span class="line">            historyDate = itemView.findViewById(R.id.RowHistoryDate);</span><br><span class="line">            historyTerm = itemView.findViewById(R.id.RowHistoryTerm);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上記の実装で<strong>ViewHolderパターン</strong>での実装は完了です。<br>続いて履歴データを表示するための実装を進めます。<br>修正箇所等かなり多いので追加、修正箇所に注意しながら実装を進めてください。<br><figure class="highlight java"><figcaption><span>HistoryRecyclerAdapter.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HistoryRecyclerAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">HistoryRecyclerAdapter</span>.<span class="title">HistoryHolder</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="comment">// 表示に必要なクラスを宣言</span></span><br><span class="line">    <span class="keyword">private</span> Context context;</span><br><span class="line">    <span class="keyword">private</span> LayoutInflater inflater;</span><br><span class="line">    <span class="keyword">private</span> RealmResults&lt;SearchHistoryModel&gt; historyData;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// コンストラクタ</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HistoryRecyclerAdapter</span><span class="params">(Context context, RealmResults&lt;SearchHistoryModel&gt; historyData)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// レイアウトのインスタンス化に必要なクラス</span></span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">        <span class="keyword">this</span>.inflater = LayoutInflater.from(context);</span><br><span class="line">        <span class="comment">// 表示するデータリスト</span></span><br><span class="line">        <span class="keyword">this</span>.historyData = historyData;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="comment">// 表示するレイアウトを指定するメソッド</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HistoryHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// row_history_recycleのレイアウトをインスタンス化</span></span><br><span class="line">        View view = inflater.inflate(R.layout.row_history_recycle, parent, <span class="keyword">false</span>);</span><br><span class="line">        <span class="comment">// HistoryHolderクラスをインスタンス化して返却する</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HistoryHolder(view);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 表示するレイアウトにデータを設定するメソッド</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(HistoryHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 検索履歴一覧から一つの履歴データを抽出</span></span><br><span class="line">        SearchHistoryModel history = historyData.get(position);</span><br><span class="line">        <span class="comment">// ViewHolderにデータをセット</span></span><br><span class="line">        holder.historyDate.setText(history.getSearchDate());</span><br><span class="line">        holder.historyTerm.setText(history.getSearchTerm());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 表示するリストの件数を指定するメソッド</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// RealmDBから取得した検索履歴全件分、行の表示処理を繰り返す</span></span><br><span class="line">        <span class="keyword">return</span> historyData.size();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line"></span><br><span class="line">    ...一部省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><figcaption><span>HistoryActivity.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HistoryActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Realmインスタンスを宣言</span></span><br><span class="line">    <span class="keyword">private</span> Realm realm;</span><br><span class="line">    <span class="comment">// 履歴0件用TextView</span></span><br><span class="line">    <span class="keyword">private</span> TextView historyTextView;</span><br><span class="line">    <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">    <span class="comment">// 検索履歴RecyclerView</span></span><br><span class="line">    <span class="keyword">private</span> RecyclerView historyRecycler;</span><br><span class="line">    <span class="comment">// 検索履歴RecyclerAdapter</span></span><br><span class="line">    <span class="keyword">private</span> HistoryRecyclerAdapter historyAdapter;</span><br><span class="line">    <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">    <span class="comment">// 検索履歴抽出データ</span></span><br><span class="line">    RealmResults&lt;SearchHistoryModel&gt; resultData;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_history);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 画面コンポーネント関連付け</span></span><br><span class="line">        <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">        historyTextView = findViewById(R.id.EmptyRecyclerText);</span><br><span class="line">        <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">        historyRecycler = findViewById(R.id.HistoryRecycler);</span><br><span class="line">        <span class="comment">// Realmクラスをインスタンス化</span></span><br><span class="line">        realm = Realm.getDefaultInstance();</span><br><span class="line">        <span class="comment">// 検索履歴テーブルのデータを全て取得</span></span><br><span class="line">        resultData = realm.where(SearchHistoryModel.class).findAll();</span><br><span class="line">        <span class="comment">//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span></span><br><span class="line">        <span class="comment">// 検索履歴の件数が１件以上なら繰り返し処理でTextViewに表示する</span></span><br><span class="line">        <span class="keyword">if</span> (!resultData.isEmpty() &amp;&amp; resultData.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// adapterクラスをインスタンス化</span></span><br><span class="line">            historyAdapter = <span class="keyword">new</span> HistoryRecyclerAdapter(<span class="keyword">this</span>, resultData);</span><br><span class="line">            <span class="comment">// RecyclerViewの表示形式を決める</span></span><br><span class="line">            RecyclerView.LayoutManager layoutManager = <span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>);</span><br><span class="line">            <span class="comment">// RecyclerViewの初期設定</span></span><br><span class="line">            historyRecycler.setAdapter(historyAdapter);</span><br><span class="line">            historyRecycler.setLayoutManager(layoutManager);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 検索履歴の件数が１件もない場合、履歴0件のメッセージを表示する</span></span><br><span class="line">            <span class="comment">// 検索履歴一覧を非表示に設定</span></span><br><span class="line">            historyRecycler.setVisibility(View.GONE);</span><br><span class="line">            historyTextView.setVisibility(View.VISIBLE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑</span></span><br><span class="line">    &#125;</span><br><span class="line">    ...一部省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最後に<code>historyTextView</code>ですが、変数としての意味合いが変わっているので変数名を変更します。<br>ただ、一箇所づつの変更は手間なので一気に全箇所が変更される方法をで修正します。<br>変数名にマウスカーソルを当て右クリックから</p>
+<blockquote>
+<p>Refactor -&gt; Rename…</p>
+</blockquote>
+<p>をクリックします<br><img src="/AndroidCourse/android/08-AppDataBase/refactvalid01.png" width="500" title="Refactor Valid Name"><br>変更する変数名が赤枠で囲われるので変数名を修正します。<br><img src="/AndroidCourse/android/08-AppDataBase/refactvalid02.png" width="500" title="Refactor Valid Name"><br>変数名の修正に合わせて他に使用されている同変数も修正されているのがわかります。<br>変数名の修正が終わったわ<code>Enter</code>キーを押下し完了です。<br><img src="/AndroidCourse/android/08-AppDataBase/refactvalid03.png" width="500" title="Refactor Valid Name"></p>
+<p>上記までコードを実装したら動作確認します。<br>閲覧履歴ボタンをクリックし、画面遷移した検索履歴一覧画面に検索した文字列のリストが表示されてるでしょうか？</p>
 </div><!-- comment system--><div class="container"><hr></div></article><footer id="footer"><div class="container"><div class="bar"><div class="social"><a href="/atom.xml" target="_blank"><i class="fa fa-rss"></i></a></div><div class="footer">© 2018 <a href="/" rel="nofollow">kuririnz</a>. Powered by <a rel="nofollow" target="_blank" href="https://hexo.io">Hexo</a>. Theme <a target="_blank" href="https://github.com/lotabout/very-simple">very-simple</a>.</div></div></div></footer><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.css"><script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script><script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script><script>$(document).ready(function() {
     $(".fancybox").fancybox();
 });
