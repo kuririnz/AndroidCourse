@@ -85,8 +85,14 @@ ButtonやEditTextなどのウィジェットをjavaプログラムで操作で�
 "setContentView" で関連付けたレイアウトxml内のウィジェットやビューに設定した"ID"を`findViewById`の後ろの "()"内に 指定することでjavaプログラムで”ボタンをクリックした時"の命令を登録したり、"ボタンに表示する文言などを表示後に変更する"ことができる様になります。
 
 ## コード記述時の便利機能
-これからコード記述する中でIDの入力中に小さいリスト表示がされると思いますので十字キーの上下を押して選択し、`Enter`キーを押せばプログラムに反映されるので試してみてください。
-{% img /android/05-ButtonAction/setid05.png 650 rerationcode %}
+これからコード記述する中でボタンやIDの入力中に小さいリスト表示がされると思います,
+例えばButtonなどは"Button"と入力している間に以下の様に表示されるので矢印と同じ項目を十字キーで選択して`Enter`を押すことで"Button"クラスをjavaファイルで使用できる様になります。
+{% img /android/05-ButtonAction/importclass01.png 500 Import Class %}
+もし、上記のタイミングを逃してしまった場合は赤くなっている<font color="red">Button</font>をマウスカーソルでクリックし下図の様に出てきたコマンドを入力するとjavaクラスで利用できる様になります。
+* Windowsの場合：<kbd>Alt</kbd><kbd>+</kbd><kbd>Enter</kbd>
+* Macの場合：<kbd>option</kbd><kbd>+</kbd><kbd>Enter</kbd>
+{% img /android/05-ButtonAction/importclass02.png 450 Import Class %}
+
 
 上記の便利機能を踏まえて`findViewById`メソッドと "activity_main.xml"で設定した**ID**を使ってButtonウィジェットの関連付けを行います。
 ```java MainActivity.java
@@ -95,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // レイアウトxmlと関連付けるWidget
     Button bookSearchBtn;
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         // 蔵書検索ボタンをjavaプログラムで操作できるように名前をつける
         bookSearchBtn = findViewById(R.id.BookSearchBtn);
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 }
 ```
@@ -129,9 +135,18 @@ xmlファイル内のウィジェットなどとjavaファイルの関連付け�
 その工程が③〜⑤に該当しオブジェクト化を行なっており、この工程後に`bookSearchBtn`がもつ"ボタンの色"、"ボタンに表示する文字"などの情報を
 参照したり変更したりすることが可能になります。
 
+追加した行の最後に`;`が入力されていますが、これは行末を示すコードです。
+*{}*の後ろには基本`;`入力は不要ですが、例外の場合もあるのでプログラミングを進めながら解説していきます。
+
 # ボタンクリックアクションの実装
 "蔵書検索"ボタンのクリックした時にクリックされたことを開発者に確認させるためログを出力するプログラムを作っていきます。
 プログラムが上手く動かない時などどこまでプログラムが実行されたかを確認したり、実行中のデータを確認する時にも利用できるので試してみます。
+
+`new View.OnClickListener...`を実装する時にも小さいウィンドウが表示されたらそちらから選択すると内部の`onClick`メソッドまで自動的に入力してくれます。
+{% img /android/05-ButtonAction/addClickEvent01.png 600 insert Click Event %}
+`OnClick`メソッドまでは実装してくれます、行末を表す`;`だけが未入力になるので注意してください。
+{% img /android/05-ButtonAction/addClickEvent02.png 600 insert Click Event %}
+では実装していきます。
 ```java MainActivity.java
 public class MainActivity extends AppCompatActivity {
 
@@ -156,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         };
         // 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録
         bookSearchBtn.setOnClickListener(bookSearchEvent);
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        ///↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 }
 ```
@@ -292,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
     Button bookSearchBtn;
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     EditText bookSearchEditor;
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -304,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         // 蔵書検索する文字を入力するEditTextをjavaプログラムで操作できるように名前をつける
         bookSearchEditor = findViewById(R.id.BookSearchEdit);
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
         // 蔵書検索ボタンが押された時の処理を実装
         View.OnClickListener bookSearchEvent = new View.OnClickListener() {
             @Override
@@ -316,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext()
                         , "入力された文字は [" + bookSearchEditor.getText().toString() + "]です。"
                         , Toast.LENGTH_LONG).show();
-                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
             }
         };
         // 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録
@@ -476,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
 ですが、<font color="red">**プログラムを細かく見る（読む）**</font>ことで名前のつけ方に共通点を見つけたり単語を検索しながら考え、失敗を繰り返しながら試すことで
 プログラムを深く理解することができるようになります。
 
-# プログラミング課題
+# プログラム課題
 今回の課題ではプログラミングを進める中で必ず出てくる**超重要**な処理の、"条件分岐"、"繰り返し"処理の書き方を学習していきます。
 蔵書検索アプリを作る中でもこの先で何度も出てくるので忘れない様しっかり課題にしていきます。
 ## 条件分岐処理
@@ -538,7 +553,7 @@ String型変数の文字数を参照するには`length()`メソッドを使い�
                             , "EditTextの文字数は " + inputText.length() + "文字です。"
                             , Toast.LENGTH_LONG).show();
                 }
-                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
             }
         };
         // 蔵書検索ボタンが押された時に実行するプログラムをボタンに登録
@@ -561,7 +576,8 @@ EditTextが3文字より多い場合だけToastが表示される様になりま
 |<=       |右の値が左の値以上の時に正(true)         |
 
 上記、"正(true)判定の条件"以外の場合は非(false)となります。
-では改めて`if`構文を使った課題です、以下の条件を満たすプログラムに修正してください。
+<font color="blue">**では改めてここからが課題です。**</font>
+`if`構文を使った課題です、以下の条件を満たすプログラムに修正してください。
 * EditTextに入力されている文字数が3文字以下の場合はToastで「EditTextの文字数は○文字です。」と表示します。
     * ○の中はEditTextの文字数を表示します。
 * EditTextに入力されている文字数が10文字より多い場合はToastで「10文字以下で入力してください。」と表示します。
@@ -598,7 +614,7 @@ EditTextが3文字より多い場合だけToastが表示される様になりま
                 for (int i = 0; i < 5; i++) {
                     Log.d("BookSearchBtn", "蔵書検索ボタンが押されました：" + (i + 1) + "回目");
                 }
-                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
                 // EditTextの文字列を別の変数に代入
                 String inputText = bookSearchEditor.getText().toString();
                 // inputTextの文字数が3文字より多いか判定
@@ -630,7 +646,7 @@ EditTextが3文字より多い場合だけToastが表示される様になりま
                     Log.d("BookSearchBtn", star);
                     star += "☆";
                 }
-                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
                 // EditTextの文字列を別の変数に代入
                 String inputText = bookSearchEditor.getText().toString();
                 // inputTextの文字数が3文字より多いか判定
