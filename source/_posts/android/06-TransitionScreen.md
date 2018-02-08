@@ -17,6 +17,7 @@ tags:
 * コレクション / 配列
 * 継承
 * コンストラクタ
+* アクセス修飾子
 
 蔵書検索を行なった結果複数の蔵書情報を取得できる場合があります、複数取得した蔵書情報を一覧表示します。
 その前段として、一覧表示を行うためのウィジェットListViewの使い方を学習します。
@@ -61,7 +62,7 @@ Activityがプロジェクトに追加された場合でも、アプリで表示
 {% img /android/06-TransitionScreen/createactivity05.png 550 CreateNewActivity %}
 無事に記述されていることが確認できました、他の行を確認すると検索画面として表示している**MainActivity**も記載されています。
 
-`AndroidManifest.xml`ではアプリ名やアプリアイコン、アプリ起動時に表示するActivityなどの設定が記述された概要設計書のようなファイルになります、Push通知などの機能を追加する時にもファイルの修正が必要になるので覚えて置いてください。
+`AndroidManifest.xml`はアプリ名やアプリアイコン、アプリ起動時に表示するActivityなどの設定が記述されたアプリの概要設計書のようなファイルです、他にはPush通知機能を追加する時にもファイルの修正が必要になるので覚えておきましょう。
 
 # 画面遷移処理機能
 新しいActivityが作成できたので、MainActivityの*蔵書検索ボタン*をクリックした時、ResultListActivityに表示が切り替わる様にMainActivity.javaを修正していきます。
@@ -81,7 +82,7 @@ Activityがプロジェクトに追加された場合でも、アプリで表示
             Intent intent = new Intent(MainActivity.this, ResultListActivity.class);
             // 画面遷移アクションを実行
             startActivity(intent);
-            //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+            //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
         }
     };
 ```
@@ -136,7 +137,7 @@ public class ResultListActivity extends AppCompatActivity {
     List<String> listData = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
     // ListViewの表示内容を管理するクラス
     ArrayAdapter<String> adapter
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +153,7 @@ public class ResultListActivity extends AppCompatActivity {
                 , listData);
         // ListViewに表示情報をまとめたAdapterをセット
         resultListView.setAdapter(adapter);
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 }
 ```
@@ -161,7 +162,7 @@ public class ResultListActivity extends AppCompatActivity {
 ```java ResultListActivity.java
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 public class ResultListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 	...
 }
 ```
@@ -193,7 +194,7 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         // ListViewに行をクリックした時のイベントを登録
         resultListView.setOnItemClickListener(ResultListActivity.this);
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 
     // ListViewの各行をクリックした時の命令を実装
@@ -204,7 +205,7 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
         Toast.makeText(ResultListActivity.this
                 , i + "行目をクリックしました"
                 , Toast.LENGTH_SHORT).show();
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 
 ```
@@ -273,7 +274,7 @@ ListViewの表示をカスタマイズするためには行のレイアウトフ
 先ほど１〜１０の数字が表示されていたところ縦に２つ並ぶテキストに作り変えて表示していきます。
 
 新規レイアウトファイルを作成するため、以下の通り"Layout XML File"をクリックします。
-> ウィンドウ右クリック > New > XML > Layout XML File
+> プロジェクトウィンドウ右クリック > New > XML > Layout XML File
 
 {% img /android/06-TransitionScreen/createrow01.png 400 Create List Row %}
 レイアウトファイル名、一番上位の要素を設定して`Finish`ボタンをクリックします。
@@ -347,21 +348,21 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
 まずは新しいクラスを作成します、新規クラス作成時に親クラスを設定することができます。
 
 新規Javaクラスファイルを作成するため、以下の通り"Java Class"をクリックします。
-> ウィンドウ右クリック > New > Java Class
+> プロジェクトウィンドウ右クリック > New > Java Class
 
 {% img /android/06-TransitionScreen/createadpt01.png 500 Create List Adapter %}
 Javaクラス名、親クラスの設定して`OK`ボタンをクリックします。
 {% img /android/06-TransitionScreen/createadpt02.png 500 Create List Adapter %}
 
-|項目          |設定値                     |
-|:-----------:|--------------------------|
-|Name         |ResultListAdapter         |
-|Kind         |Class                     |
-|Superclass   |android.widget.BaseAdapter|
-|Interface(s) |-                         |
-|Package      |元の設定のまま              |
-|Visibility   |Public                    |
-|Modifiers    |None                      |
+|項目          |設定値                            |
+|:-----------:|---------------------------------|
+|Name         |ResultListAdapter                |
+|Kind         |Class                            |
+|Superclass   |android.widget.BaseAdapter       |
+|Interface(s) |-                                |
+|Package      |\*\*\*\.\*\*\*\.bookbookdiscovery|
+|Visibility   |Public                           |
+|Modifiers    |None                             |
 
 新しい`ResultListApater`クラスが作成されエディタに表示されますが、BaseAdapterクラスを継承したクラスを作成した場合には必ず*オーバーライド*しないといけないメソッドがいくつかあるので、まずはそのメソッド群を`ResultListAdapter`に宣言していきます。
 
@@ -393,22 +394,22 @@ public class ResultListAdapter extends BaseAdapter {
 
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // ListViewの描画に必要な変数を宣言
-    List<String> summaryList;
-    LayoutInflater layoutInflater;
+    private List<String> summaryList;
+    private LayoutInflater layoutInflater;
 
     // コンストラクタ(インスタンス時に呼び出されるメソッドのようなもの)
     public ResultListAdapter(Context context, List<String> summaryList) {
         this.summaryList = summaryList;
         this.layoutInflater = LayoutInflater.from(context);
     }
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     @Override
     public int getCount() {
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         // 一覧表示する要素数を返却する
         return summaryList.size();
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 
     @Override
@@ -443,12 +444,12 @@ public class ResultListAdapter extends BaseAdapter {
 
         titleView.setText((i + 1) + "ページ目");
         summaryView.setText(summaryList.get(i));
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         // 文字情報を代入されたviewを返却
         return view;
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
 }
 ```
@@ -456,11 +457,11 @@ public class ResultListAdapter extends BaseAdapter {
 ```java ResultListActivity.java
 public class ResultListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    // xmlファイルのコンポーネントと関連付ける要素
-    ListView resultListView;
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // xmlファイルのコンポーネントと関連付ける要素
+    private ListView resultListView;
     // 検証用コレクションデータ
-    List<String> listData = Arrays.asList("Android アプリ開発の環境構築"
+    private List<String> listData = Arrays.asList("Android アプリ開発の環境構築"
             , "Android OS とは"
             , "Androidの概念"
             , "Androidアプリ開発を始める"
@@ -471,8 +472,8 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
             , "検索履歴機能"
             , "Firebase導入");
     // ListViewの表示内容を管理するクラス
-    ResultListAdapter adapter;
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    private ResultListAdapter adapter;
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -484,7 +485,7 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
         //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         // ListViewに表示する情報をまとめるAdapterをインスタンス化
         adapter = new ResultListAdapter(ResultListActivity.this, listData);
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
         // ListViewに表示情報をまとめたAdapterをセット
         resultListView.setAdapter(adapter);
 
@@ -506,6 +507,27 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
 
 今回のコード修正のポイントは`ResultListAdapter`クラスで利用した`LayoutInflater`クラスです。
 各Activityでは画面に表示するレイアウトファイルの読み込みを`setContentView()`メソッドが担当していましたが、ListViewに表示するレイアウトの読み込みは`LayoutInflater`クラスを使う必要があるので注意しましょう。
+
+## アクセス修飾子
+上記の修正コードにおいて変数の前に新しくキーワード`private`を付与しました。
+このキーワードを**アクセス修飾子**と呼びます。
+アクセス修飾子は継承や外部クラスでインスタンス化されたクラスから対象の変数/メソッドにアクセスができるかを定めるキーワードです。
+例えば`private`で宣言された変数は宣言したクラス内でしか参照/代入ができません。
+`public`の場合には継承関係にある子クラス、インスタンス化されたクラスから参照/代入が可能と特徴が違います。
+下表にてアクセス修飾子のアクセス可能箇所を"○"、不可能な領域には"×"にて示します。
+
+|アクセス修飾子|外部クラス|継承子クラス|宣言クラス内部|
+|------------|---------|----------|------------|
+|public      |○        |○         |○           |
+|protected   |×        |○         |○           |
+|private     |×        |×         |○           |
+
+アクセス修飾子を設定できる項目は"クラス","メソッド","メンバ変数"の３項目です。
+
+今回の実装で設定した内容においては`private`になるので外部からの一切のアクセスを禁じるように宣言しています。
+javaプログラムにおいて色々なクラスから値の代入処理を行うと不具合やエラーが発生する原因になるため、それを防ぐ方法として必要以上のクラスからのアクセスを防ぐために活用します。
+
+ここまでアクセス修飾子に触れませんでしたが、開発で不具合を減らすためには重要な概念です、覚えておきましょう。
 
 以上で**検索結果一覧画面の作成**は一旦完了です。
 次の[蔵書検索機能の作成](/AndroidCourse/android/07-AsyncProcess)ではAPI通信を通して蔵書検索機能を作成します、
