@@ -15,7 +15,7 @@ tags:
 * インターネット通信ライブラリ**OkHttp**の利用方法
 
 Googleが公開している蔵書検索サービスの"Google Books API"を利用して入力された文言を元にインターネット上の蔵書情報を検索し、アプリの検索結果情報を表示します。
-API通信を行う上で非同期処理の基礎知識が必要になりますので合わせて学習します。
+REST API通信を行う上で非同期処理の基礎知識が必要になりますので合わせて学習します。
 
 # 非同期処理
 アプリ開発における非同期処理とは画面の表示や操作に影響なく別のプログラムや命令を実行することを指します。
@@ -267,7 +267,6 @@ Handlerクラスを使いタイマースレッドからメインスレッドに�
 非同期処理の基礎を学んだところで、本命のインターネット上にあるデータを取得するプログラムを実装していきます。
 今回のアプリは蔵書検索する機能を実装するためにインターネット上にあるデータが必要になりますが、その問題を解決するために "Google Books API"サービスを使いインターネット上からデータを取得する機能を実装していきます。
 
-API通信とは「REST API」通信の略称で
 REST APIとは**Representational State Transfer Application Programming Interface**の略称で
 さらにそれぞれ"REST"と"API"で使われることもあります。
 
@@ -292,7 +291,7 @@ RESTの設計条件として以下が該当します。
 <font color="blue">**インターネット上に公開された、URLを知っていれば誰でも使えるデータ**</font>
 
 例として実際にAPIのデータをgoogle ChromeなどWebブラウザで確認できるので確認してみましょう。
-以下で紹介しているURLはgoogleが一般公開している"google books API"というAPIで、蔵書の情報を取得することができるAPIです。
+以下で紹介しているURLはgoogleが一般公開している"google books API"というREST APIで、蔵書の情報を取得することができるAPIです。
 また、Google Books APIを使うためには "?q=\*\*\*"という検索条件を必ずつけないといけないのでサンプルで参考書タイトルで検索する指定しています。
 {% blockquote Google Books APIs https://developers.google.com/books/docs/v1/using Reference %}
 https://www.googleapis.com/books/v1/volumes?q=ほんきで学ぶAndroidアプリ開発入門
@@ -306,12 +305,12 @@ Google Books APIでは"?q=\*\*\*"の"\*"の文字を変更することで表示�
 
 上記で紹介したAPIの検索条件等は[Google Books APIs](https://developers.google.com/books/docs/v1/using#WorkingVolumes)に記載されています。（全て英語です）
 
-下図はAPI通信を行う流れからデータを取得し、画面に反映するまでの簡単な流れを示しています。
+下図はREST API通信を行う流れからデータを取得し、画面に反映するまでの簡単な流れを示しています。
 {% img /android/07-AsyncProcess/APISequence.svg 550 APISequence %}
 
 Andoridアプリでは画面表示や更新はMainThreadのみ可能と解説をしましたが、更に<font color="blue">**MainThreadは時間のかかる処理を行なってはいけない**</font>という制約もあるため、MainThreadでネットワーク通信を行うとアプリが強制終了してしまいます。
 
-上記の図の通りですが<font color="red">**API通信を実行し、画面に反映するためには大まかに以下の手順が必要になります**</font>
+上記の図の通りですが<font color="red">**REST API通信を実行し、画面に反映するためには大まかに以下の手順が必要になります**</font>
 1. メインスレッドでハンドラーをインスタンス化
 1. メインスレッドからサブスレッドを起動
 1. サブスレッドでAPI通信処理を実行し検索結果データを取得
@@ -319,7 +318,7 @@ Andoridアプリでは画面表示や更新はMainThreadのみ可能と解説を
 1. メインスレッドで検索結果データを使い画面を更新
 
 ## OkHttpライブラリの導入
-API通信、ネットワーク通信処理を行うために、ここでは**[OkHttp]**という*ライブラリ*を使っていきます、**OkHttp**はAndroid に元々備わっているネットワーク通信機能をさらに簡単に実装することができる機能群です。
+REST API通信、ネットワーク通信処理を行うために、ここでは**[OkHttp]**という*ライブラリ*を使っていきます、**OkHttp**はAndroid に元々備わっているネットワーク通信機能をさらに簡単に実装することができる機能群です。
 このようにプログラムを一部簡単にしてくれる機能群を*ライブラリ*と呼びます。
 
 **OkHttp**を導入するために修正するファイルは`build.gradle`というファイルです。
@@ -336,7 +335,7 @@ dependencies {
 {% img /android/07-AsyncProcess/includeokHttp02.png 600 Include okHttp %}
 これで**OkHttp**ライブラリの導入は完了です。
 
-## API通信機能
+## REST API通信機能
 **OkHttp**の導入が完了しましたので、実際にアプリで使っていきます！
 実装の完成形として`MainActivity`の蔵書検索ボタンがクリックされたらEditTextの文字データを`ResultListActivity`に渡します。
 そして`ResultListActivity`では受け取った文字データをGoogle Books APIから検索する蔵書情報として利用して期待する検索結果をインターネット上から取得します。
@@ -394,7 +393,7 @@ javaファイルの実装の前にAndroidアプリでインターネット通信
                 Log.d("Success API Response", response.body().string());
             }
         };
-        // 非同期処理でAPI通信を実行
+        // 非同期処理でREST API通信を実行
         okHttpClient.newCall(request).enqueue(callBack);
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     }
@@ -421,7 +420,7 @@ Jsonデータは必ず**{}(波括弧)**で閉じられています。
 }
 ```
 Jsonのデータには文字列や数値、配列や真偽値などを設定することが可能です。
-APIを使う場合の多くはこのJson形式でデータを取得することが多いので解析できる様に覚えておくと便利です。
+REST APIを使う場合の多くはこのJson形式でデータを取得することが多いので解析できる様に覚えておくと便利です。
 
 次に取得したデータをアプリ内でパース(解析)して取得した蔵書データの件数と件数分のタイトルをログに出力してみます。
 ```java ResultListActivity.java
@@ -468,7 +467,7 @@ APIを使う場合の多くはこのJson形式でデータを取得すること�
                 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
             }
         };
-        // 非同期処理でAPI通信を実行
+        // 非同期処理でREST API通信を実行
         okHttpClient.newCall(request).enqueue(callBack);
 ```
 上記コードを実装したら動作確認します。
@@ -618,7 +617,7 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
                 }
             }
         };
-        // 非同期処理でAPI通信を実行
+        // 非同期処理でREST API通信を実行
         okHttpClient.newCall(request).enqueue(callBack);
     }
 
@@ -683,7 +682,7 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
 
 ## 入力文字列で蔵書検索する
 先ほどまでは決まった文字列("ほんきで学ぶAndroidアプリ開発入門")でしか検索できませんが、
-動的に検索が行える様に、`MainActivity`の"EditText"で入力された文字列を`ResultListActivity`に渡しGoogle Books APIの検索条件になる様にプログラムを修正していきます。
+動的に検索が行える様に、`MainActivity`の"EditText"で入力された文字列を`ResultListActivity`に渡しGoogle Books REST APIの検索条件になる様にプログラムを修正していきます。
 ```java MainActivity.java
     ...一部省略
             @Override

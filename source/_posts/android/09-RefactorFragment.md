@@ -11,7 +11,9 @@ tags:
 # 学習ポイント
 * Fragment
 * Fragmentによる画面遷移
+* 定数
 * Gson
+* Glide
 
 複数のデータをひとまとめにして管理するための方法としてモデルクラスを学習します。
 また、検索結果一覧画面の各蔵書ごとの詳細情報を表示する蔵書詳細画面を作成し、遷移できるように修正していきます、その工程の中でActivity内に配置できるライフサイクルを持ったViewコンポーネント**Fragment**の利用方法と**Fragment**間の画面遷移に関して学習します。
@@ -146,6 +148,10 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // 定数
+    // データ渡しのキー情報
+    private final static String BUNDLE_KEY = "BUNDLE_TERM";
+
     // xmlファイルのコンポーネントと関連付ける要素
     private ListView resultListView;
     // ListViewの表示内容を管理するクラス
@@ -164,7 +170,7 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
         // ResultListFragmentに渡すデータ格納クラスを生成
         Bundle args = new Bundle();
         // 検索文字列データを連携データにセット
-        args.putString("term", term);
+        args.putString(BUNDLE_KEY, term);
         // データ格納クラスをResultListFragmentインスタンスにセット
         fragment.setArguments(args);
         // 生成したResultListFragmentを返却
@@ -198,7 +204,7 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
         // 連携データが存在するか確認
         if (getArguments() != null) {
             // 連携データ内から"term"キーのデータを代入、なければ"Android"と文字列を代入
-            term = getArguments().getString("term", "Android");
+            term = getArguments().getString(BUNDLE_KEY, "Android");
         }
 
         // xmlファイルのコンポーネントと関連付け
@@ -458,6 +464,15 @@ Android端末ではメモリが不足した場合にActivityやFragmentを一旦
 Fragmentのインスタンス化時に引数ありのコンストラクタを使用していた場合、万が一メモリ不足からFragmentが再生成された時にアプリが強制終了する可能性が考えられます。
 画面が回転した時など画面サイズに変更が加わった場合などを考慮する場合は注意して実装する必要がある。
 
+## 定数
+文字通り宣言時にセットした値を変更することができない要素。
+上記で実装した通り**final**のキーワードを変数宣言時に記述することで定数としての扱いになります。
+また**static**のキーワードをつけることでクラスがインスタンス化されていなくても参照することができるようになります。
+java,Androidでは定数と変数を見分けやすくするために全て大文字で定数名を宣言することが多いです。
+```java
+    private final static String BUNDLE_KEY = "BUNDLE_TERM";
+```
+
 ## Context概要
 Androidアプリ開発の中ではxmlレイアウトをjavaファイルで参照する時などには必ず必要になる"Context"は一体何か。
 Activity,Service,Applicationの親クラスであり、アプリケーショングローバル情報へアクセスするためのインターフェースの役割を持つクラス。
@@ -481,8 +496,7 @@ Contextはレイアウトなどの"res"ディレクトリ内を参照したり�
 
 # 蔵書詳細画面作成
 ActivityからFragmentへの移行が完了したら蔵書詳細画面を作成していきます。
-
-<font color="red">**蔵書詳細画面のサンプルをここに表示**</font>
+{% img /android/09-RefactorFragment/detailExample.png 250 Detail Example %}
 
 検索結果画面の時と同様にメニューもしくはプロジェクトツリーが表示されているウィンドウで右クリック(macでは２本指でクリック)から以下の項目を選択します。
 
@@ -657,10 +671,8 @@ Fragmentには"ID"や"TAG"という情報を設定することができ、一つ
 
 # 蔵書詳細画面実装
 蔵書の詳細情報として著作者や概要などを表示していきます。
-蔵書を単一で特定するためには"ISBN"と呼ばれる蔵書ごとに振られたユニークなコードがあり、このコードを元に再度APIからデータを取得するを詳細画面では実装していきます。
+蔵書を一つを特定するために今回は検索結果一覧画面でREST APIから取得したデータに含まれる"selfLink"キーに含まれるurl情報を蔵書詳細画面で改めてREST APIを使用して取得する形で実装していきます。
 蔵書詳細画面で取得したデータのパースに関してはJSONデータをモデルクラスに一発変換してくれるライブラリを使ってJSONObjectでの実装の手間を軽くする方法を使います。
-
-"ISBN"ですがデータ自体は検索結果一覧画面のAPIから戻ってきたデータに含まれており、検索結果一覧画面のパース処理を追加して使用できる状態に実装を修正します。
 また、検索結果一覧画面で表示するデータも増えてきたため、まとめてデータを持てるようにモデルクラスを作成して管理します。
 
 まずは、JSON文字列の簡単パースライブラリ**Gson**を導入します。
@@ -681,42 +693,70 @@ dependencies {
 次に新しくモデルクラスを作成します。
 > プロジェクトウィンドウ右クリック > New > Java Class
 
+モデルクラスは２つ作成します。
+一つは検索結果一覧でデータを表示するためのモデルクラス、もう一つは蔵書詳細画面のREST APIをパースするためのモデルクラスです。
+まずは検索結果一覧に一覧表示しているデータをモデルクラスとしてまとめます。
+
 クラス名とパッケージを確認したら`OK`をクリック
 {% img /android/09-RefactorFragment/addDetail07.png 550 Include GSON %}
-新しいファイルができたら各項目用の変数を作っていきます。
-```java DetailDataModal.java
-public class DetailDataModel {
+こちらは検索結果一覧画面で利用するモデルクラスとして変数を宣言していきます。
+```java ResultListMdel.java
+public class ResultListModel {
 
-    public List<item> items;
-
-    public class item {
-        public VolumeInfo volumeInfo;
-    }
-
-    public class VolumeInfo {
-        public String title;
-        public String subTitle;
-        public List<String> authors;
-        public List<Identifiers> industryIdentifiers;
-        public String publishedDate;
-        public String description;
-        public int pageCount;
-        public List<ImageLinks> imageLinks;
-    }
-
-    public class Identifiers {
-        public String type;
-        public String identifier;
-    }
-
-    public class ImageLinks {
-        public String smallThumbnail;
-        public String thumbnail;
-    }
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // 蔵書タイトル
+    public String title;
+    // 蔵書概要
+    public String summary;
+    // 蔵書単体リンク
+    public String selfLink;
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }
 ```
 
-続いてFragment等を修正します。
+クラス名とパッケージを確認したら`OK`をクリック
+{% img /android/09-RefactorFragment/addDetail08.png 550 Include GSON %}
+２つ目のクラスは蔵書詳細画面のREST APIデータをパースして使用するためのモデルクラスです。
+```java DetailDataModal.java
+public class DetailDataModel {
+
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // 蔵書単体リンク
+    public String selfLink;
+    // 蔵書概要データ
+    public VolumeInfo volumeInfo;
+
+    // 蔵書概要クラス
+    public class VolumeInfo {
+        // 蔵書タイトル
+        public String title;
+        // 蔵書サブタイトル
+        public String subTitle;
+        // 蔵書著者リスト
+        public List<String> authors;
+        // 蔵書発売日
+        public String publishedDate;
+        // 蔵書概要
+        public String description;
+        // 蔵書ページ数
+        public int pageCount;
+        // 蔵書サムネイル画像URL
+        public ImageLinks imageLinks;
+    }
+
+    // 蔵書サムネイルクラス
+    public class ImageLinks {
+        // 蔵書小サイズサムネイル
+        public String smallThumbnail;
+        // 蔵書サムネイル
+        public String thumbnail;
+        // 中サイズ表示画像
+        public String medium;
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+}
+```
+`DetailFragment.java`のプログラムを修正する前に"import"設定を修正します。
 `ResultListFragment.java`と同様に`import..`の一覧から
 *import android.app.Fragment;*を削除します。
 {% img /android/09-RefactorFragment/addDetail03.png 600 Import Change %} 
@@ -725,7 +765,516 @@ public class DetailDataModel {
 {% img /android/09-RefactorFragment/addDetail04.png 600 Import Change %}
 ウィンドウに選択肢が表示されたら**Fragment (android.support.v4.app)**を選択します。
 {% img /android/09-RefactorFragment/addDetail05.png 600 Import Change %} 
-
+`DetailFragment.java`では取得したAPIデータをパースし、一旦タイトルをログに出力させてみます。
 ```java DetailFragment.java
+public class DetailFragment extends Fragment {
+	
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // データ渡しのキー情報
+    private final static String BUNDLE_KEY = "BUNDLE_SELFLINK";
 
+    // xmlファイルのコンポーネントと関連付ける要素
+    private TextView titleText;
+    private TextView subTitleText;
+    private TextView authorText;
+    private TextView descriptText;
+    private TextView pageText;
+    private TextView publishDateText;
+    // APIの検索に使うISBNコード
+    private String isbn;
+    // APIのデータ取得後処理を行うためのHandler
+    private Handler handler;
+    // OkHttp通信クライアント
+    private OkHttpClient okHttpClient;
+
+    // スタティックコンストラクタ
+    public static DetailFragment getInstance(String selfLink) {
+        // DetailFragmentインスタンスを生成
+        DetailFragment fragment = new DetailFragment();
+        // DetailFragmentに渡すデータ格納クラスを生成
+        Bundle args = new Bundle();
+        // 検索文字列データを連携データにセット
+        args.putString(BUNDLE_KEY, selfLink);
+        // データ格納クラスをDetailFragmentインスタンスにセット
+        fragment.setArguments(args);
+        // 生成したResultListFragmentを返却
+        return fragment;
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+    public DetailFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_detail, container, false);
+    }
+
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // Handlerをインスタンス化
+        handler = new Handler();
+        // 連携データが存在するか確認
+        if (getArguments() != null) {
+            // 連携データ内から"BUNDLE_SELFLINK"キーのデータを代入、なければ"Android"と文字列を代入
+            selfLink = getArguments().getString(BUNDLE_KEY, "");
+        }
+
+        // selfLinkが空の場合は検索結果一覧画面に強制バック
+        if (TextUtils.isEmpty(selfLink)) {
+            getFragmentManager().popBackStack();
+        }
+
+        // xmlファイルのコンポーネントと関連付け
+        titleText = getView().findViewById(R.id.DetailTitle);
+        subTitleText = getView().findViewById(R.id.DetailSubTitle);
+        authorText = getView().findViewById(R.id.DetailAuthor);
+        descriptText = getView().findViewById(R.id.DetailDescription);
+        pageText = getView().findViewById(R.id.DetailPageText);
+        publishDateText = getView().findViewById(R.id.DetailPublishDateText);
+
+        // OkHttp通信クライアントをインスタンス化
+        okHttpClient = new OkHttpClient();
+        // 通信するための情報
+        // ResultListFragmentから取得したselfLinkURLにREST API通信を行う
+        Request request = new Request.Builder().url(selfLink).build();
+        // データの取得後の命令を実装
+        Callback callBack = new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 通信に失敗した原因をログに出力
+                Log.e("failure API Response", e.getLocalizedMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                // JsonパースライブラリGsonのインスタンス化
+                Gson gson = new Gson();
+                // 返却されたJson文字列を一旦変数に代入
+                String jsonString = response.body().string();
+                // DetailDataModelクラスに代入
+                DetailDataModel detailData = gson.fromJson(jsonString, DetailDataModel.class);
+                // パースが正常に行えたかLogcatに出力して確認。
+                Log.d("DetailFragment parse", detailData.volumeInfo.title);
+            }
+        };
+        // 非同期処理でREST API通信を実行
+        okHttpClient.newCall(request).enqueue(callBack);
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+}
 ```
+```java ResultListAdapter.java
+public class ResultListAdapter extends BaseAdapter {
+
+    // ListViewの描画に必要な変数を宣言
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    private List<String> titleList;
+    private List<String> summaryList;
+    private LayoutInflater layoutInflater;
+
+    // コンストラクタ(インスタンス時に呼び出されるメソッドのようなもの)
+    public ResultListAdapter(Context context, List<String> titleList, List<String> summaryList) {
+        this.titleList = titleList;
+        this.summaryList = summaryList;
+        this.layoutInflater = LayoutInflater.from(context);
+    }
+
+    @Override
+    public int getCount() {
+        // 一覧表示する要素数を返却する
+        return titleList.size();
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    private List<ResultListModel> resultList;
+    private LayoutInflater layoutInflater;
+
+    // コンストラクタ
+    public ResultListAdapter(Context context, List<ResultListModel> resultList) {
+        this.resultList = resultList;
+        this.layoutInflater = LayoutInflater.from(context);
+    }
+
+    @Override
+    public int getCount() {
+        // 一覧表示する要素数を返却する
+        return resultList.size();
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+    ...一部省略
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        // 各行の表示レイアウト読み込みや、描画情報の設定を実装する
+        // getViewで返却されたViewがListViewに表示される
+
+        // viewの中身が空かチェック
+        if (view == null) {
+            // viewがレイアウトを読み込んでいない場合は"row_result_list"を読み込む
+            view = layoutInflater.inflate(R.layout.row_result_list, viewGroup, false);
+        }
+
+        // row_result_listのTitleとSummaryに文言を代入
+        TextView titleView = view.findViewById(R.id.RowListTitle);
+        TextView summaryView = view.findViewById(R.id.RowListSummary);
+
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        titleView.setText(titleList.get(i));
+        summaryView.setText(summaryList.get(i));
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        titleView.setText(resultList.get(i).title);
+        summaryView.setText(resultList.get(i).summary);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+        // 文字情報を代入されたviewを返却
+        return view;
+    }
+```
+```java ResultListFragment.java
+public class ResultListFragment extends Fragment implements AdapterView.OnItemClickListener{
+
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // 検索結果一覧データ
+    private List<ResultListModel> resultList;
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+    ...一部省略
+    // ListViewの各行をクリックした時の命令を実装
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        // クリックした行番号をToastで表示する
+        Toast.makeText(getContext()
+                , (i + 1) + "行目をクリックしました"
+                , Toast.LENGTH_SHORT).show();
+        // 蔵書詳細画面用Fragmentをインスタンス化
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        DetailFragment detailFragment = new DetailFragment();
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        DetailFragment detailFragment = DetailFragment.getInstance(resultList.get(i).selfLink);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        // support.v4.app.Fragment内ではgetFragmentManager = Activity.getSupportFragmentManager
+        FragmentManager fm = getFragmentManager();
+        // 別のFragmentに遷移するためのクラスをインスタンス化
+        FragmentTransaction ft = fm.beginTransaction();
+        // Fragmentを表示させるViewのidとFragmentクラスを設定
+        ft.replace(R.id.FragmentContainer, detailFragment);
+        // 表示していたFragmentをバックスタックに追加
+        ft.addToBackStack(null);
+        // FragmentManagerに反映
+        ft.commit();
+    }
+
+    // 検索結果をListViewに反映するメインスレッドの処理クラス
+    private class ReflectResult implements Runnable {
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // 蔵書一覧タイトルデータリスト
+        private List<String> titleList;
+        // 蔵書一覧概要データリスト
+        private List<String> summaryList;
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // 蔵書モデルクラスリスト
+        private List<ResultListModel> resultList;
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        
+        // コンストラクタ
+        public ReflectResult(JSONArray items) {
+            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            titleList = new ArrayList<>();
+            summaryList = new ArrayList<>();
+            //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+            // Jsonのパースエラーが発生した時に備えてtry~catchする
+            try{
+                // 蔵書リストの件数分繰り返しタイトルをログ出力する
+                for (int i = 0; i < items.length(); i ++) {
+                    // 蔵書リストから i番目のデータを取得
+                    JSONObject item = items.getJSONObject(i);
+                    // 蔵書のi番目データから蔵書情報のグループを取得
+                    JSONObject volumeInfo = item.getJSONObject("volumeInfo");
+                    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                    // タイトルデータをリストに追加
+                    titleList.add(volumeInfo.getString("title"));
+                    // 概要データをリストに追加
+                    summaryList.add(volumeInfo.getString("description"));
+                    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                    // 蔵書データクラスをインスタンス化
+                    ResultListModel resultData = new ResultListModel();
+                    // タイトルをモデルクラスに代入
+                    resultData.title = volumeInfo.getString("title");
+                    // 個体蔵書データURLをモデルクラスに代入
+                    resultData.selfLink = item.getString("selfLink");
+                    // データに"description"キーが含まれている場合は情報を代入
+                    if (volumeInfo.has("description")) {
+                        // 概要をモデルクラスに代入
+                        resultData.summary = volumeInfo.getString("description");
+                    } else {
+                        // "description"キーが含まれていない場合は空文字データを代入
+                        resultData.summary = "";
+                    }
+                    // 蔵書情報をリストに登録
+                    resultList.add(resultData);
+                    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Handlerから実行されるメソッド
+        @Override
+        public void run() {
+            // ListViewに表示する情報をまとめるAdapterをインスタンス化
+            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            adapter = new ResultListAdapter(getContext(), titleList, summaryList);
+            //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            adapter = new ResultListAdapter(getContext(), resultList);
+            //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+            // ListViewに表示情報をまとめたAdapterをセット
+            resultListView.setAdapter(adapter);
+            // ListViewに行をクリックした時のイベントを登録
+            resultListView.setOnItemClickListener(ResultListFragment.this);
+        }
+    }
+}
+```
+上記コード修正が終わったら動作確認してみます。
+正常に処理が実行されれば蔵書詳細画面に遷移し、**Logcat**に検索結果一覧で選択した蔵書のタイトルが表示されると思います。
+
+AndroidアプリではREST API通信を行い取得したデータをGsonというライブラリを利用することで簡単にパースすることができます。
+ただGsonでパースするときには取得データと同じ階層構造を指定したクラスを作成して上げる必要があるので期待通りパースされない場合、まずJSONデータと作成したクラスの階層構造をお確認すると良いでしょう。
+また取得するデータキーとクラスの変数名を合わせて実装する必要があるので入力ミスにも注意が必要です。
+
+今回の実装で便利なUtilクラスを使いましたので紹介です、`DetailFragment.java`において"selfLink"変数にデータが格納されているか判定するために
+```java
+TextUtils.isEmpty(selfLink)
+```
+という実装をしています、`TextUtils`はString型変数の処理で便利な機能が揃っており上記のメソッドでは、引数の内容が"null"や空文字列かを判定し"true"を返却してくれます。
+多く使うメソッドはこの`TextUtils.isEmpty()`が多くなると思いますが、判定処理を完結しにてくれるのでとても有効です。
+
+続いて蔵書詳細データを画面のTextViewにセットしていきます。
+```java DetailFragment.java
+public class DetailFragment extends Fragment {
+    ...一部省略
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+	    ...一部省略
+
+        // データの取得後の命令を実装
+        Callback callBack = new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // 通信に失敗した原因をログに出力
+                Log.e("failure API Response", e.getLocalizedMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                // JsonパースライブラリGsonのインスタンス化
+                Gson gson = new Gson();
+                // 返却されたJson文字列を一旦変数に代入
+                String jsonString = response.body().string();
+                // DetailDataModelクラスに代入
+                DetailDataModel detailData = gson.fromJson(jsonString, DetailDataModel.class);
+                // パースが正常に行えたかLogcatに出力して確認。
+                Log.d("DetailFragment parse", detailData.volumeInfo.title);
+                //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+                // MainThreadに処理を渡し画面にデータを反映する
+                handler.post(new ReflectDetail(detailData));
+                //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+            }
+        };
+        // 非同期処理でREST API通信を実行
+        okHttpClient.newCall(request).enqueue(callBack);
+    }
+
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // REST APIで取得したデータを画面に反映するためのクラス
+    private class ReflectDetail implements Runnable {
+        // 蔵書詳細データ
+        DetailDataModel detailData;
+
+        // コンストラクタ
+        public ReflectDetail(DetailDataModel detailData) {
+            this.detailData = detailData;
+        }
+
+        // Handlerから実行されるメソッド
+        @Override
+        public void run() {
+            // タイトルを反映
+            titleText.setText(detailData.volumeInfo.title);
+            // サブタイトルが取得できていたら反映
+            if (!TextUtils.isEmpty(detailData.volumeInfo.subTitle)) {
+                subTitleText.setText(detailData.volumeInfo.subTitle);
+            }
+            // 概要が取得できていたら反映
+            if (!TextUtils.isEmpty(detailData.volumeInfo.description)) {
+                descriptText.setText(detailData.volumeInfo.description);
+            }
+            // 著作者名が取得できていたら反映
+            if (detailData.volumeInfo.authors != null && detailData.volumeInfo.authors.size() > 0) {
+                String authorString = new String();
+                // 著作者名が複数設定されていう場合があるので繰り返し処理で全て表示する
+                for (String author : detailData.volumeInfo.authors) {
+                    authorString += author + ",";
+                }
+                authorText.setText(authorString);
+            }
+            // ページ数を反映
+            pageText.setText(String.valueOf(detailData.volumeInfo.pageCount));
+            // 発売日が取得できていたら反映
+            if (!TextUtils.isEmpty(detailData.volumeInfo.publishedDate)) {
+                publishDateText.setText(detailData.volumeInfo.publishedDate);
+            }
+        }
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+}
+```
+上記コードを実装したら動作確認します。
+蔵書詳細画面に遷移してREST APIのデータを取得できるまでに少し間が空きますが、正常に実装されるとTextViewに文言が反映されます。
+
+上記の実装では必要なタイミングで**論理演算子(&&)**が使われました、そしてポイントは著作者名リストの**for**文の使い方です。
+## for-each
+繰り返し処理を実装する方法として"for文"を学習しました、今回の**for-each**文ではコレクション型の変数に登録されている要素の回数分、繰り返し処理を実行する時の実装方法です。
+コレクション型以外にもMap型(講座の中ではまだ未使用)や配列型の変数でも同様の実装が可能です。
+**for-each**文の実装テンプレート
+```java
+for (配列要素の型 一時変数 : リスト型の変数) {
+	// 繰り返し処理
+}
+```
+一時変数にはリスト型変数の要素が0番目〜最後の要素まで代入された状態で繰り返し処理で参照することが可能です。
+実際には**for-each**文の方が利用頻度は多いと思われます。
+
+## URL画像読み込み処理の実装
+このページではActivity → Fragmentの移行に始まり、新規のクラスを作る回数も多かったので非常にコーディングに時間がかかったと思います。
+それも今回の実装で終わりです！
+
+Web上にアップロードされた画像をアプリで読み込みむためにも便利なライブラリがあります。
+本来はBitmapという形式で画像インスタンスを生成し使用しなくなるときにはちゃんとAndroid OSの処理の阻害にならないよう解放する必要があるのですが、
+**Glide**というライブラリを使用することでそういったメモリ管理などの忘れがちな処理を補ってくれます。
+
+では他のライブラリと同様に`build.gradle`に依存関係を追加します。
+プロジェクトからappディレクトリの`build.gradle`を開き、"dependencies" の "{}"内に以下のコードを記述します
+開くのは`build.gradle`の後ろに***(Module: app)***と表示されている方です。
+```gradle build.gradle(Module: app)
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "kuririnz.xyz.bookdiscovery"
+        minSdkVersion 23
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:design:27.0.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.google.code.gson:gson:2.2.4'
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+}
+```
+上記コードを追加後、<font color="blue">**Sync Now**</font>をクリックして**Glide**の導入は完了です。
+**Glide**の最新版(バージョン4.6.1)を使用する際には`dependencies`内の`implementation 'com.android.support:appcompat-v7...'`と`implementation 'com.android.support:design...'`の指定バージョンを"27.0.2"に設定する必要があるため、合わせて"compileSdkVersion"、"targetSdkVersion"の指定を**27**に設定しなければいけません。
+
+これは**Glide**が依存関係を持っているandroid.supportバージョンが**27**であることが原因で、**Glide**の古いバージョンの場合には開発アプリ側の"compileSdkVersion"、"targetSdkVersion"を古いものでも実装が可能だと思われます。
+
+では**Glide**を使って蔵書詳細画面のImageViewに画像を読み込ませてみます。
+```java DetailFragment.java
+public class DetailFragment extends Fragment {
+
+    // 定数
+    // データ渡しのキー情報
+    private final static String BUNDLE_KEY = "BUNDLE_SELFLINK";
+
+    // xmlファイルのコンポーネントと関連付ける要素
+    private TextView titleText;
+    private TextView subTitleText;
+    private TextView authorText;
+    private TextView descriptText;
+    private TextView pageText;
+    private TextView publishDateText;
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    private ImageView detailImage;
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    // 個体リンクのURL
+    private String selfLink;
+  
+    ...一部省略
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+       
+       ...一部省略
+        publishDateText = getView().findViewById(R.id.DetailPublishDateText);
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        detailImage = getView().findViewById(R.id.DetailImage);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+       ...一部省略
+    }
+
+    // REST APIで取得したデータを画面に反映するためのクラス
+    private class ReflectDetail implements Runnable {
+       ...一部省略
+
+        // Handlerから実行されるメソッド
+        @Override
+        public void run() {
+    
+           ...一部省略
+    
+            // 発売日が取得できていたら反映
+            if (!TextUtils.isEmpty(detailData.volumeInfo.publishedDate)) {
+                publishDateText.setText(detailData.volumeInfo.publishedDate);
+            }
+            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            // Glideを使ってWeb上の画像をImageViewに表示させる
+            if (detailData.volumeInfo.imageLinks != null) {
+                Glide.with(DetailFragment.this)
+                        .applyDefaultRequestOptions(RequestOptions.fitCenterTransform())
+                        .load(detailData.volumeInfo.imageLinks.medium)
+                        .into(detailImage);
+            }
+            //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        }
+    }
+}
+```
+上記コードを実装したら動作確認します。
+正常に動作した場合、蔵書詳細画面に蔵書の表紙画像が表示されます。
+
+**Glide**はメソッドからメソッドに繋げる形の実装でも画像のURLをImageViewに表示することができます。（変数を挟まなくていいのでコード量が少なくなります）
+`with()`ではContextを取得できるインスタンスを引数にセットします、`load()`の引数には画像のURLをセット、最後に`into()`の引数に画像を表示するImageViewをセットして表示します。
+`applyDefaultRequestOptions()`は画像の表示設定を指定できます、今回は画像をはい出さずに表示するように"fitCenterTransform"を指定しています。
+
+以上で、蔵書詳細画面作成の解説は完了です。
