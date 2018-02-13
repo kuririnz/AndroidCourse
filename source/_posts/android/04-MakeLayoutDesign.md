@@ -157,5 +157,4 @@ EditTextの上にTextViewを以下のレイアウトの様に配置してくだ�
 {% img /android/04-MakeLayoutDesign/MakeLayoutTask.png 500 Make Layout Task %}
 
 これでAndroidアプリのレイアウト作成とエミュレータでの実行方法と表示確認は完了です。
-次のページでは作成したレイアウトのボタンやEditTextがクリックや文字入力された時のプログラムを実装していきます。
-[ボタンイベントの実装](/AndroidCourse/android/05-ButtonAction)
+次の[ボタンイベントの実装](/AndroidCourse/android/05-ButtonAction)ページでは作成したレイアウトのボタンやEditTextがクリックや文字入力された時のプログラムを実装していきます。

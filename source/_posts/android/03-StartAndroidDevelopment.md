@@ -55,7 +55,7 @@ Androidアプリのプロジェクト作成について基本的な手順を学�
 また、Kotlinは後半で利用方法を紹介しますので一旦チェックを外しておいてください。
 <img src="sad03.png" alt="alt" title="SetUp" width="450">
 4.今回作成するAndroidアプリでサポート対象とするOSバージョンの下限設定を行います
-**Phone and Tablet**のみチェックをつけ、```API 23: Android 6.0 (Marshmallow)```を選択したら、```Next```をクリックします
+**Phone and Tablet**のみチェックをつけ、```API 24: Android 7.0 (Nougat)```を選択したら、```Next```をクリックします
 <img src="sad04.png" alt="alt" title="SetUp" width="450">
 5.**Empty Activity**を選択し```Next```をクリックします
 <img src="sad05.png" alt="alt" title="SetUp" width="450">
@@ -85,3 +85,8 @@ Androidアプリのプロジェクト作成について基本的な手順を学�
 <img src="sad11.png" alt="alt" title="SetUp" width="450">
 12.Android Studioの開発画面に戻りエラーが消えていたらセットアップ完了です
 <img src="sad12.png" alt="alt" title="SetUp" width="450">
+
+AndroidStudioのエディタ画面でエラー（**Messages**エリアの<font color="red">赤いメッセージ</font>）が消えない場合は声をかけてください。
+
+以上でAndroidアプリの新規プロジェクト作成が完了です。
+次の[検索画面レイアウト作成](/AndroidCourse/android/04-MakeLayoutDesign)ページでは作成したプロジェクトが起動した時に表示される画面のレイアウトを実装していきます。

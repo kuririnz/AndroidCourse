@@ -266,6 +266,9 @@ public class SearchHistoryModel extends RealmObject {
 以下の通り４つのメソッドが追加されれば完了です。
 {% img /android/08-AppDataBase/realmtable03.png 550 Create Custom Table %}
 
+このように複数のデータを管理するためのクラスを**モデルクラス**と呼びます。
+リスト構造の表示を行いたいときなどモデルクラスのように表示したい項目をまとめて保存しておくことでデータの管理が簡潔になり、プログラムが未訳なります。
+
 ## 履歴登録機能
 登録先となるRealmObjectが完成したので、実際にRealmDBへの登録処理を実装します。
 今回データの登録タイミングは検索結果画面へ遷移する前とします。
@@ -386,7 +389,7 @@ public class HistoryActivity extends AppCompatActivity {
         // Realmインスタンスをちゃんとクローズすること
         realm.close();
     }
-    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑    
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }
 ```
 上記のコードを実装したら動作確認します。
@@ -423,8 +426,8 @@ Realmにて検索した文字列が正常に保存されていることが確認
 |設定項目       |設定値                |
 |--------------|---------------------|
 |ID            |HistoryRecycler      |
-|layout_width  |match_sonstraint     |
-|layout_height |match_sonstraint     |
+|layout_width  |match_constraint     |
+|layout_height |match_constraint     |
 
 先ほど表示していたTextView(ID:HistoryText)は履歴が０件だった場合のメッセージを表示するように修正します、TextViewの用途が変わるのでIDも変更します。
 {% img /android/08-AppDataBase/addrecycler04.png 450 Add RecyclerView %}
@@ -496,6 +499,18 @@ Windowsの場合は[Alt + insert],Macの場合は[option + Enter]でxml内での
 |vertical  |縦(上から下)へ子Viewを並べて表示 |
 
 `orientation`属性が設定されていない場合は**horizontal**が設定されたと認識され、不具合通知は表示されないので注意しましょう。
+
+XMLでレイアウトの実装を行う時に気をつけるポイントとして`layout_width`属性、`layout_height`属性があります。
+設定できる値とその意味合いをそれぞれ記述します。
+
+|設定値                |設定値の意味                   |
+|:--------------------|:----------------------------|
+|wrap_content         |要素の表示に必要な領域を自動的に確保 |
+|match_parent         |親要素と同じ幅(縦/横)に設定        |
+|match_constraint(0dp)|親要素と同じ幅(縦/横)に設定ConstraintLayoutの場合で"Design"タブを開いている場合に設定できる。xml上の値は"0dp" |
+|fill_parent          |親要素と同じ幅(縦/横)に設定Android OS 2.2(API Level 8)以降は非推奨 |
+
+アプリ開発の上で端末の種類が多いAndroidでは固定値を設定することはほぼレイアウト崩れに直結するので基本的には"wrap_content"や"match_parent"を使い隣接するViewとのスペース設定で調整することになると思います。
 
 行レイアウトができたので行ごとの表示プロセスを担当するAdapterクラスを実装していきます。
 一覧表示を行うViewを使う場合、Adapterクラスを継承して独自のレイアウト表示する方法はListViewと一緒です。
@@ -675,6 +690,9 @@ public class HistoryActivity extends AppCompatActivity {
 {% img /android/08-AppDataBase/refactvalid03.png 500 Refactor Valid Name %}
 
 上記までコードを実装したら動作確認します。
-閲覧履歴ボタンをクリックし、画面遷移した検索履歴一覧画面に検索した文字列のリストが表示されてるでしょうか？
+正常な動作では閲覧履歴ボタンをクリックし、画面遷移した検索履歴一覧画面に検索した文字列のリストが表示されます。
+
+以上で検索履歴一覧画面の実装は完了です。
+次の[蔵書詳細画面作成](/AndroidCourse/android/09RefactorFragment)では蔵書の詳細情報を表示する画面を作成しながらFragmentクラスの使い方やJson文字列の効率的なパースライブラリの使い方などを学習していきます。
 
 [Realm]: https://realm.io/docs/java/latest
