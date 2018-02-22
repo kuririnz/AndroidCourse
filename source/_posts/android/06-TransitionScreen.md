@@ -516,7 +516,7 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
 ## スコープ
 変数やクラスは宣言された時に参照/代入が可能な場所が決まっています。
 以下の画像で宣言している変数やクラスは参照/代入の行える箇所が異なります。
-{% img /adnroid/06-TransitionScreen/scopedetail.png 500 Scope Area Detail %}
+{% img /android/06-TransitionScreen/scopedetail.png 500 Scope Area Detail %}
 
 <font color="red">赤い枠</font>のエリアで宣言している変数やクラスを"メンバクラス"、"メンバ変数"と呼び、宣言したクラス内であればどのメソッド内でも参照/代入が可能です。
 次に<font color="blue">青い枠</font>で宣言している`listItemClickEvent`インターフェースですが`onCreate()`などメソッド内で宣言された変数やクラスをローカル変数(クラス)と呼びます。
