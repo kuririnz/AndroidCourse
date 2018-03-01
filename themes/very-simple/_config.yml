@@ -16,7 +16,7 @@ fancybox: true # set to true if you want to use it
 
 duoshuo: #duoshuo_shortname
 disqus: #disqus _shortname
-google_analytics: #Google Analytics Tracking Code
+google_analytics: UA-63175607-3
 google_adsense_page_level_ads: #Google Adsense Page Level Ads Code
 valine:
   enable: # set to true if you want to use it

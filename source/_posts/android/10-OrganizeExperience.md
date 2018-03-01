@@ -1,9 +1,9 @@
 ---
-title: 操作性、ユーザ体験の改善
+title: 操作性・ユーザ体験の改善
 date: 2017-11-11
 tags:
 ---
-操作性、ユーザ体感の改善の中でダイアログやデータベース以外の保存機能を学習します。
+操作性ユーザ体感の改善の中でダイアログやデータベース以外の保存機能を学習します。
 
 <!-- toc -->
 
@@ -28,7 +28,7 @@ Androidアプリでダイアログを表示するためには`DialogFragment`ク
 
 > New -> Fragment -> Fragment(Blank)
 
-> ***ここに作成するjavaクラス生成時の設定画像を表示***
+{% img /android/10-OrganizeExperience/cdialogfrag01.png 450 Create DialogFragment %}
 
 |項目                               |設定値                                  |
 |----------------------------------|----------------------------------------|
@@ -45,8 +45,7 @@ LayoutEditor左下から**Text**タブをクリックしテキストエディタ
 > app -> res -> layout -> fragment_progress_dialog.xml
 
 ここでテキストエディタモードでレイアウトを編集するとき、画面右端に表示されている***Preview***をクリックすると、リアルタイムにプレビューを表示されるので利用してみてください。
-
-
+{% img /android/10-OrganizeExperience/prevtextmode.png 500 Preview in TextEditorMode %}
 ```XML fragment_progress_dialog.xml
 <!-- ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -346,3 +345,38 @@ JSONの概念が理解できている方は`{"LAST_TERM":$term}`と保存され�
 # Androidプロジェクトの整理
 ここに至るまでに複数のActivityやFragmentを作成し、類似するネーミングのものも存在するため、ツリー表示が見にくく感じます。
 そこで作成したファイルごとにパッケージを分けて保存することで探しやすさと視認性をよくしていきます。
+
+このときにマウス操作でドラッグ&ドロップを行うとjavaクラスファイルの格納場所を示すPackage(パッケージ)情報に不整合が発生してしまい、
+修正が大変になることがあります。
+Package情報の整合性を保ちつつjavaクラスの格納場所を変更するにはAndroid Studioの`Refactor -> Move`機能を使って格納場所を変更します。
+方法としてはまず、分類分けするためのPackageを追加します、このPackageはフォルダとして実態が生成されます。
+**プロジェクトツリーで右クリックから以下を選択**
+> New -> Package
+
+{% img /android/10-OrganizeExperience/orgpackage01.png 550 Organaized Project Package %}
+続いて作成するPackage名を入力し、`OK`をクリック
+{% img /android/10-OrganizeExperience/orgpackage02.png 450 Organaized Project Package %}
+分類用のPackageが作成されたら**プロジェクトツリーで右クリックから以下を選択**
+> Refactor -> Mode...
+
+{% img /android/10-OrganizeExperience/orgpackage03.png 500 Organaized Project Package %}
+次に移動先を選択するために"To Package"列の`...`ボタンをクリック
+{% img /android/10-OrganizeExperience/orgpackage04.png 500 Organaized Project Package %}
+先ほど作成した`bookdiscovery.Activity`を選択し、`OK`をクリック
+{% img /android/10-OrganizeExperience/orgpackage05.png 500 Organaized Project Package %}
+`bookdiscovery.Activity`が選択されていることを確認し、`Refactor`をクリック
+{% img /android/10-OrganizeExperience/orgpackage06.png 500 Organaized Project Package %}
+プロジェクトツリー表示を確認すると`HistoryActivity.java`が**...\*.bookdiscovery.Activity**配下に移動します
+{% img /android/10-OrganizeExperience/orgpackage07.png 500 Organaized Project Package %}
+このときに`HistoryActivity.java`を参照している`MainActivity.java`や`AndroidManifest.xml`ファイルも変更が加わっています。
+{% img /android/10-OrganizeExperience/orgpackage08.png 500 Organaized Project Package %}
+{% img /android/10-OrganizeExperience/orgpackage09.png 500 Organaized Project Package %}
+また作業中に以下のようなメッセージが下部のツールエリアに表示されることがありますが、これは置換箇所や深い階層での参照が見つかった場合などに表示されることがあります。
+置換箇所のプレビューになるのでないように問題がなければ`Do Refactor`をクリックします
+{% img /android/10-OrganizeExperience/orgpackage10.png 500 Organaized Project Package %}
+以上の手順でPackageの分割や不整合のないファイル移動を行います。
+今回は以下の通りに格納されるようにjavaクラスファイルを移動させて見てください
+{% img /android/10-OrganizeExperience/orgpackage10.png 500 Organaized Project Package %}
+
+
+以上で、操作性・ユーザ体験の改善に関する解説は終了です。
