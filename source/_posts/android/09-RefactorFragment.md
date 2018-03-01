@@ -49,6 +49,7 @@ FragmentはActivityのようにライフサイクルを持ったViewコンポー
 |Fragment Layout Name              |fragment_result_list                    |
 |Include fragment factory methods? |チェックを<font color="red">つけない</font>|
 |Include interface callbacks?      |チェックを<font color="red">つけない</font>|
+|Source Language                   |Java                                    |
 
 新しく`ResultListFragment.java`と`fragment_result_list.xml`の2ファイルが作成されます。
 {% img /android/09-RefactorFragment/addfragment03.png 600 Create New Fragment %}

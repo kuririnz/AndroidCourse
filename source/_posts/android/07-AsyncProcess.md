@@ -591,6 +591,14 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
         // xmlファイルのコンポーネントと関連付け
         resultListView = findViewById(R.id.ResultListView);
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓削除↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        // ListViewに表示する情報をまとめるAdapterをインスタンス化
+        adapter = new ResultListAdapter(ResultListActivity.this, listData);
+        // ListViewに表示情報をまとめたAdapterをセット
+        resultListView.setAdapter(adapter);
+        // ListViewに行をクリックした時のイベントを登録
+        resultListView.setOnItemClickListener(ResultListActivity.this);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
         ...一部省略
             @Override
@@ -673,12 +681,25 @@ public class ResultListActivity extends AppCompatActivity implements AdapterView
 {% img /android/07-AsyncProcess/reflectresult.png 300 Reflect Result %}
 
 今回の修正で`ResultListAdapter`クラスの変数がタイトルリストと概要リストの２つに増えたことで初期化時のコンストラクタで必要になる引数もタイトルと概要データの２つに増えました。
-さらに`ResultListActivity`ではタイマースレッドでメインスレッドに戻った時の処理とは実装方法が違い、内部に新しく`Runnable`インターフェースを持ったクラスを作成し、そのクラスでメインスレッドに戻った時の処理を実装しています。
+さらに`ResultListActivity`ではタイマースレッドでメインスレッドに戻った時の処理とは実装方法が違い、内部に新しく`Runnable`インターフェースを持ったクラスを作成し、`Handler`からメインスレッドに橋渡しをした際には作成したクラスに処理を実装しています。
 新しく作成した"ReflectResult"クラスはコンストラクタでJSONデータのパースの続きを行い、全タイトルデータと全概要データを新しいリスト変数(titleList, summaryList)に代入しています。
 そして全タイトルデータと全概要データを使ってListViewに表示する行データを作成する様に修正しました。
 
 アプリは非同期通信を行い検索結果を取得してからリストを表示しているため、一時的に真っ白な画面が表示される様になりました、他のアプリでは真っ白になる時間をプログレスバーやローディングアニメーションにてユーザに読み込み中であることを伝えます。
 ローディングアニメーションなどの実装方法は先のページで解説していきます。
+
+### LayoutInflater クラス
+レイアウトXMLからViewやウィジェット等のオブジェクトを生成するためのクラス。
+`setContentView`以降で動的にViewを生成/表示する場合に利用します。
+利用方法としては**LayoutInflater**を`from`メソッドにてインスタンス化し`inflate`メソッドを使用してレイアウトXMLを生成します。
+1. LayoutInflaterのインスタンス化
+```java
+    LayoutInflater li = LayoutInflater.from(context);
+```
+1. LayoutInflaterを使ってViewを生成
+```java
+    View view = li.inflate(R.layout.layoutxml);
+```
 
 ## 入力文字列で蔵書検索する
 先ほどまでは決まった文字列("ほんきで学ぶAndroidアプリ開発入門")でしか検索できませんが、
