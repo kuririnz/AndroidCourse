@@ -224,7 +224,9 @@ public class BTWebViewFragment extends Fragment {
 ...一部省略
 ```
 ```java Detailfragment.java
-public class DetailFragment extends Fragment {
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+public class DetailFragment extends Fragment implements View.OnClickListener {
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     // 定数
     // データ渡しのキー情報
@@ -256,21 +258,7 @@ public class DetailFragment extends Fragment {
         transWebviewBtn = getView().findViewById(R.id.TransitionWebView);
 
         // BTWebViewFragmentへの遷移処理を実装
-        transWebviewBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // BTWebViewFragmentをインスタンス化
-                BTWebViewFragment fragment = BTWebViewFragment.getInstance(infoLink);
-                // 別のFragmentに遷移するためのクラスをインスタンス化
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                // 現在、DetailFragmentを表示しているR.id.FragmentContainerをBTWebViewFragmentに置き換え
-                ft.replace(R.id.FragmentContainer, fragment);
-                // 表示していたFragmentをバックスタックに追加
-                ft.addToBackStack(null);
-                // 変更を反映
-                ft.commit();
-            }
-        });
+        transWebviewBtn.setOnClickListener(this);
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
         ...一部省略
@@ -293,6 +281,27 @@ public class DetailFragment extends Fragment {
             }
         ...一部省略
     }
+
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // ボタンクリック時のイベントを実装
+    @Override
+    public void onClick(View view) {
+        // クリックされたボタンをIDで判定
+        if (view.getId() == R.id.TransitionWebView) {
+            // "WebViewで確認"ボタンをクリックした場合
+            // BTWebViewFragmentをインスタンス化
+            BTWebViewFragment fragment = BTWebViewFragment.getInstance(infoLink);
+            // 別のFragmentに遷移するためのクラスをインスタンス化
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            // 現在、DetailFragmentを表示しているR.id.FragmentContainerをBTWebViewFragmentに置き換え
+            ft.replace(R.id.FragmentContainer, fragment);
+            // 表示していたFragmentをバックスタックに追加
+            ft.addToBackStack(null);
+            // 変更を反映
+            ft.commit();
+        }
+    }
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
     ...一部省略
 }
 ```
@@ -342,3 +351,139 @@ public class BTWebViewFragment extends Fragment {
 上記実装ができたら動作確認します。
 蔵書詳細画面から追加した**WEBVIEWで確認**ボタンをクリックしてアプリ内webViewで表示されることを確認します。
 
+`BTWebViewFragment`クラスの実装でアプリ内のWebViewで指定URLのウェブページを表示することができました、WebView内でリンクをタップするなどして遷移したウェブページでソフトウェアバックボタンをクリックすると蔵書詳細画面に戻ってしまうと思いますが、ハンドリングするためには`BTWebViewFragment`で`onCreateView`メソッドでレイアウト生成したViewインスタンスの**setOnKeyLisner**メソッドを実装する必要があります。
+
+また、WebViewをURL毎にハンドリングしたり、表示したウェブページに対してjavascriptのコードを実行する場合などは、
+`WebViewClient`クラスを継承したカスタムクラスを作成し、各メソッドをオーバーライドして実装する必要があります。
+```java BTWebViewFragment.java
+        // 自身のWebViewで表示するためにWebViewClientをWebViewに設定
+        webview.setWebViewClient(new WebViewClient());
+```
+
+WebViewでのハンドリング等は当ページの後半で解説します。
+一旦は指定URLをWebViewで表示する実装に関しては以上になります。
+
+# 既存のブラウザアプリでウェブページを表示する
+BTWebViewFragmentへの遷移ボタンの下にもう一つボタンを追加し、ブラウザで表示するための機能を実装します。
+他のアプリを動作させる時の要素としては`Intent`を使用することを以前のページにも記載していますが、ブラウザでURLを開く場合も`Intent`を使用して実装します。
+**レイアウトの修正**
+```XML fragment_detail.xml
+...一部省略
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+        <ImageView
+            android:id="@+id/DetailImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="8dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/DetailSubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="蔵書サブタイトル"/>
+            <TextView
+                android:id="@+id/DetailAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="蔵書作者名"/>
+            <Button
+                android:id="@+id/TransitionWebView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="WebViewで確認"/>
+            <Button
+                android:id="@+id/TransitionBrouser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ブラウザアプリで確認"/>
+        </LinearLayout>
+    </LinearLayout>
+...一部省略
+```
+```java Detailfragment.java
+public class DetailFragment extends Fragment implements View.OnClickListener {
+
+    ...一部省略
+    private Button transWebviewBtn;
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    private Button transitionBrowserBtn;
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    // Play Store リンクURL
+    private String infoLink;
+    // 個体リンクのURL
+    private String selfLink;
+
+    ...一部省略
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        ...一部省略
+        detailImage = getView().findViewById(R.id.DetailImage);
+        transWebviewBtn = getView().findViewById(R.id.TransitionWebView);
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        transitionBrowserBtn = getView().findViewById(R.id.TransitionBrowser);
+
+        // クリック時にブラウザアプリでURLを表示する処理を実装
+        transitionBrowserBtn.setOnClickListener(this);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        // BTWebViewFragmentへの遷移処理を実装
+        transWebviewBtn.setOnClickListener(this);
+
+        ...一部省略
+    }
+
+    // ボタンクリック時のイベントを実装
+    @Override
+    public void onClick(View view) {
+        // クリックされたボタンをIDで判定
+        if (view.getId() == R.id.TransitionWebView) {
+            // "WebViewで確認"ボタンをクリックした場合
+            // BTWebViewFragmentをインスタンス化
+            BTWebViewFragment fragment = BTWebViewFragment.getInstance(infoLink);
+            // 別のFragmentに遷移するためのクラスをインスタンス化
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            // 現在、DetailFragmentを表示しているR.id.FragmentContainerをBTWebViewFragmentに置き換え
+            ft.replace(R.id.FragmentContainer, fragment);
+            // 表示していたFragmentをバックスタックに追加
+            ft.addToBackStack(null);
+            // 変更を反映
+            ft.commit();
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        } else if (view.getId() == R.id.TransitionBrowser) {
+            // "ブラウザアプリで確認"ボタンをクリックした場合
+            // ブラウザアプリで表示するURLをUriクラスにキャスト
+            Uri uri = Uri.parse(infoLink);
+            // ブラウザアプリで開くためのIntentをインスタンス化
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            // ブラウザアプリで指定URLを表示する
+            startActivity(intent);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        }
+    }
+    ...一部省略
+}
+```
+上記コードを実装したら動作確認します。
+蔵書詳細画面の**ブラウザアプリで確認**ボタンをクリックした時に正常にブラウザアプリが表示またはブラウザアプリの選択ダイアログが表示され、選択したブラウザアプリが立ち上がることを確認します。
+
+Android OSはIntentを受け取ると第二引数のスキーム設定によって表示するアプリを判断します。
+Intentのコンストラクタの第一引数ではIntentが実行する処理を指定します、今回の第一引数は`Intent.ACTION_VIEW`を設定しており、この属性は第二引数に設定されるUriデータを処理できるアプリを表示する役割をIntentに与えることができます。
+
+そして、第二引数で渡したUriデータは`https://..`のURL情報になっておりスキーム箇所は`:`の前までとして判断してください。
+今回のスキームは`https:`となっており、処理できるアプリとしてブラウザアプリ(Chromeなど)を起動するようAndroid OSが判断します、対応するアプリが複数ある場合は表示するアプリを選択するダイアログの様な画面が表示され、ダイアログから選択したアプリが起動します。
+
+電話アプリやメーラーアプリ、自社開発の他アプリを起動することが多く、ほとんどの場合Intentの第一引数は`Intent.ACTION_VIEW`を設定して使用します。
+
+以上でブラウザアプリでの確認機能の実装解説は終了です。
