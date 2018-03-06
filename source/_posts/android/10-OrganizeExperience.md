@@ -235,7 +235,7 @@ public class ProgressDialogFragment extends DialogFragment {
         public void run() {
         	//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
             // Activityが終了していたら処理をしない
-            if (getActivity() == null || getActivity().isFinishing() || !getActivity().hasWindowFocus()) {
+            if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) {
                 return;
             }
             //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
@@ -380,3 +380,4 @@ Package情報の整合性を保ちつつjavaクラスの格納場所を変更す
 
 
 以上で、操作性・ユーザ体験の改善に関する解説は終了です。
+次の[蔵書詳細の元ウェブページの表示](/AndroidCourse/android/11-BrowseWebPage)ではWebViewや他アプリへの連携などを学習します。

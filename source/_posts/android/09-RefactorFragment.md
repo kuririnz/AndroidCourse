@@ -1279,3 +1279,4 @@ public class DetailFragment extends Fragment {
 `applyDefaultRequestOptions()`は画像の表示設定を指定できます、今回は画像をはい出さずに表示するように"fitCenterTransform"を指定しています。
 
 以上で、蔵書詳細画面作成の解説は完了です。
+次の[操作性・ユーザ体験の改善](/AndroidCourse/android/10-OrganaizeExperience)ではユーザがアプリを操作する中で気持ちよく操作するための手段として読み込み中を伝えるダイアログや、最後に検索した内容を保持しておくための設定ファイルなどの利用方法を学習します。
