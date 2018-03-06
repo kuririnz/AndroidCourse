@@ -223,7 +223,7 @@ public class BTWebViewFragment extends Fragment {
     </LinearLayout>
 ...一部省略
 ```
-```java Detailfragment.java
+```java DetailFragment.java
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓修正↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 public class DetailFragment extends Fragment implements View.OnClickListener {
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑修正↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
@@ -412,7 +412,8 @@ BTWebViewFragmentへの遷移ボタンの下にもう一つボタンを追加し
     </LinearLayout>
 ...一部省略
 ```
-```java Detailfragment.java
+**DetailFragment**の実装
+```java DetailFragment.java
 public class DetailFragment extends Fragment implements View.OnClickListener {
 
     ...一部省略
@@ -487,3 +488,149 @@ Intentのコンストラクタの第一引数ではIntentが実行する処理�
 電話アプリやメーラーアプリ、自社開発の他アプリを起動することが多く、ほとんどの場合Intentの第一引数は`Intent.ACTION_VIEW`を設定して使用します。
 
 以上でブラウザアプリでの確認機能の実装解説は終了です。
+
+# Chrome Custom Tabs
+ブラウザアプリの様なレイアウトで表示され表示までの処理が最も早いコンポーネントとなる**Chrome Custom Tabs**での確認機能を実装します。
+
+**Chrome Custom Tabs**はSupport Libraryに含まれるコンポーネントのため、`build.gradle`ファイルを修正する必要があります。
+記述する"customtabs"のバージョン指定は`implementation 'com.android.support:appcompat-v7:XX.XX.XX'`と同じバージョンを指定します。
+以下は資料作成時のアプリのサンプルです。
+```gradle build.gradle(Module: app)
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    ...一部省略
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.google.code.gson:gson:2.2.4'
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    compile 'com.android.support:customtabs:27.0.2'
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+}
+```
+**レイアウトの修正**
+```XML fragment_detail.xml
+...一部省略
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+        <ImageView
+            android:id="@+id/DetailImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="8dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            ...一部省略
+            <Button
+                android:id="@+id/TransitionWebView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="WebViewで確認"/>
+            <Button
+                android:id="@+id/TransitionBrouser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ブラウザアプリで確認"/>
+            <Button
+                android:id="@+id/TransitionCustomTabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ChromeCustomTabsで確認"/>
+        </LinearLayout>
+    </LinearLayout>
+...一部省略
+```
+**DetailFragment**の実装
+```java DetailFragment.java
+public class DetailFragment extends Fragment implements View.OnClickListener {
+
+    ...一部省略
+    private Button transWebviewBtn;
+    private Button transitionBrowserBtn;
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    private Button transCustomTabsBtn;
+    //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    // Play Store リンクURL
+    private String infoLink;
+    // 個体リンクのURL
+    private String selfLink;
+
+    ...一部省略
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        ...一部省略
+        detailImage = getView().findViewById(R.id.DetailImage);
+        transWebviewBtn = getView().findViewById(R.id.TransitionWebView);
+        transitionBrowserBtn = getView().findViewById(R.id.TransitionBrowser);
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        transCustomTabsBtn = getView().findViewById(R.id.TransitionBrowser);
+
+        // クリック時にChrome Custom TabsでURLを表示する処理を実装
+        transCustomTabsBtn.setOnClickListener(this);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        // クリック時にブラウザアプリでURLを表示する処理を実装
+        transitionBrowserBtn.setOnClickListener(this);
+        // BTWebViewFragmentへの遷移処理を実装
+        transWebviewBtn.setOnClickListener(this);
+
+        ...一部省略
+    }
+
+    // ボタンクリック時のイベントを実装
+    @Override
+    public void onClick(View view) {
+        // クリックされたボタンをIDで判定
+        if (view.getId() == R.id.TransitionWebView) {
+            // "WebViewで確認"ボタンをクリックした場合
+            // BTWebViewFragmentをインスタンス化
+            BTWebViewFragment fragment = BTWebViewFragment.getInstance(infoLink);
+            // 別のFragmentに遷移するためのクラスをインスタンス化
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            // 現在、DetailFragmentを表示しているR.id.FragmentContainerをBTWebViewFragmentに置き換え
+            ft.replace(R.id.FragmentContainer, fragment);
+            // 表示していたFragmentをバックスタックに追加
+            ft.addToBackStack(null);
+            // 変更を反映
+            ft.commit();
+        } else if (view.getId() == R.id.TransitionBrowser) {
+            // "ブラウザアプリで確認"ボタンをクリックした場合
+            // ブラウザアプリで表示するURLをUriクラスにキャスト
+            Uri uri = Uri.parse(infoLink);
+            // ブラウザアプリで開くためのIntentをインスタンス化
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            // ブラウザアプリで指定URLを表示する
+            startActivity(intent);
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        } else if (view.getId() == R.id.TransitionCustomTabs) {
+            // "ChromeCustomTabsで確認"ボタンをクリックした場合
+            // ブラウザアプリで表示するURLをUriクラスにキャスト
+            Uri uri = Uri.parse(infoLink);
+            // Chrome Custom Tabsをインスタンス化
+            CustomTabsIntent tabsIntent = new CustomTabsIntent.Builder()
+                    .setShowTitle(true)
+                    .build();
+            // Custom Tabsを表示
+            tabsIntent.launchUrl(getActivity(), uri);
+        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+        }
+    }
+    ...一部省略
+}
+```
+以上のコードを実装したら動作確認します。
+蔵書詳細画面の**ChromeCustomTabsで確認**ボタンをクリックした時に正常にChrome Custom Tabsが表示、またはブラウザアプリの選択ダイアログが表示され、選択した後にChrome Custom Tabsが表示されることが確認できると思います。
+
+Chrome Custom Tabsは特殊なコンポーネントになっており、"Intent"に関しても`CustomTabsIntent`クラスを使います、このクラスの初期化は"Builderパターン"という形式で初期化する形式になっています。
+今回はウェブページのタイトルを表示するオプション設定を行いましたが、他にも起動/終了時のアニメーションなど設定可能項目がいくつか存在します。
+さらにIntentを起動する場合は初期化した`CustomTabsIntent`から`launchUrl`メソッドを使いChrome Custom Tabsで対象URLのウェブページを表示します。
+
+以上でChrome Custom Tabsの実装解説は終了です。
