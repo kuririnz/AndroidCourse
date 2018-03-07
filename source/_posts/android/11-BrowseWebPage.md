@@ -182,7 +182,7 @@ public class BTWebViewFragment extends Fragment {
 ## 3.DetailFragmentクラス → WebView表示Fragmentへの遷移ボタンを配置
 最後に**DetailFragment**から`BTWebViewFragment`へ遷移するためのボタンを配置し、遷移するためのコードを実装します。
 以下のようなレイアウトになるように実装します。
-{% img /android/11-BrowseWebPage/UpdateDetailLayout.png 250 UpdateDetailFragment %}
+{% img /android/11-BrowseWebPage/UpdateDetailLayout01.png 250 UpdateDetailFragment %}
 ```XML fragment_detail.xml
 ...一部省略
     <LinearLayout
@@ -354,7 +354,7 @@ public class BTWebViewFragment extends Fragment {
 `BTWebViewFragment`クラスの実装でアプリ内のWebViewで指定URLのウェブページを表示することができました、WebView内でリンクをタップするなどして遷移したウェブページでソフトウェアバックボタンをクリックすると蔵書詳細画面に戻ってしまうと思いますが、ハンドリングするためには`BTWebViewFragment`で`onCreateView`メソッドでレイアウト生成したViewインスタンスの**setOnKeyLisner**メソッドを実装する必要があります。
 
 また、WebViewをURL毎にハンドリングしたり、表示したウェブページに対してjavascriptのコードを実行する場合などは、
-`WebViewClient`クラスを継承したカスタムクラスを作成し、各メソッドをオーバーライドして実装する必要があります。
+`WebViewClient`クラスを継承した自作クラスを作成し、各メソッドをオーバーライドして実装する必要があります。
 ```java BTWebViewFragment.java
         // 自身のWebViewで表示するためにWebViewClientをWebViewに設定
         webview.setWebViewClient(new WebViewClient());
@@ -366,6 +366,8 @@ WebViewでのハンドリング等は当ページの後半で解説します。
 # 既存のブラウザアプリでウェブページを表示する
 BTWebViewFragmentへの遷移ボタンの下にもう一つボタンを追加し、ブラウザで表示するための機能を実装します。
 他のアプリを動作させる時の要素としては`Intent`を使用することを以前のページにも記載していますが、ブラウザでURLを開く場合も`Intent`を使用して実装します。
+レイアウトは以下の様になる様に実装します。
+{% img /android/11-BrowseWebPage/UpdateDetailLayout02.png 250 UpdateDetailFragment %}
 **レイアウトの修正**
 ```XML fragment_detail.xml
 ...一部省略
@@ -507,6 +509,8 @@ dependencies {
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }
 ```
+続いてレイアウトは以下の様になる様に実装します。
+{% img /android/11-BrowseWebPage/UpdateDetailLayout03.png 250 UpdateDetailFragment %}
 **レイアウトの修正**
 ```XML fragment_detail.xml
 ...一部省略
@@ -634,3 +638,51 @@ Chrome Custom Tabsは特殊なコンポーネントになっており、"Intent"
 さらにIntentを起動する場合は初期化した`CustomTabsIntent`から`launchUrl`メソッドを使いChrome Custom Tabsで対象URLのウェブページを表示します。
 
 以上でChrome Custom Tabsの実装解説は終了です。
+
+# WebViewでのURLハンドリング
+AndroidアプリでWebViewを使う場合、多くの場合は個人(または法人)の管理サイト、またはサービス対象のウェブページに限った範囲でウェブページリンク遷移する場合は開発者が管理できます。
+しかし、外部のウェブページなどにもアクセスできてしまう場合、開発者が管理できない場面(ブラウザアプリはログインできるが、WebViewではできないなど)が考えられるため、管理外のURLの表示などはブラウザアプリを起動したり、特定のURLを表示しようとした場合に管理内のURLを表示させるなどのハンドリング（ある状況における処理）を行うことが必要になります。
+
+そのためには`WebViewClient`クラスを継承した自作クラスを作成し、各メソッドをカスタマイズして実装する必要があります。
+WebViewが次に読み込むURLを判別した後は`WebViewClient`のActivityやFragmentのライフサイクルと似た形でメソッドが実行されます。
+実行されるメソッドは多いのでよく使うメソッドをいくつか紹介します。
+
+|メソッド名|実行されるタイミング|
+|---------|:----------------|
+|shouldInterceptRequest(WebView, String)|・API Level 23- <br> ・画像等リソース読み込み時|
+|shouldInterceptRequest(WebView, WebResourceRequest)|・API Level 24+ <br> ・画像等リソース読み込み時|
+|shouldOverrideUrlLoading(WebView, String)|・API Level 23- <br> ・次回読み込みURL確定時(読み込み前)|
+|shouldOverrideUrlLoading(WebView, WebResourceRequest)|・API Level 24+ <br> ・次回読み込みURL確定時(読み込み前)|
+|onPageStarted(WebView, String, Bitmap)|HTML表示開始時|
+|onLoadResource(WebView, String)|HTML表示中の画像等表示時|
+|onPageFinished(WebView, String)|HTML表示終了時|
+
+多くの場合には`shouldOverrideUrlLoading()`メソッドをオーバーライドしてカスタマイズすることで期待通りの動作に仕上げられると思います。
+各メソッドの引数にはURL情報が含まれているのでURLを元に**条件分岐 if構文**などを使いハンドリングすることができます。
+
+`shouldOverrideUrlLoading()`や`shouldInterceptRequest()`メソッドは古いバージョンもサポート対象都する場合は2つのメソッドまたは第二引数が**String**型のメソッドを実装する必要があります。
+ただ、第二引数が**String**型のメソッドは<font color="red">**deprecated(廃止予定)**</font>となっているため、サポート対象とするOSバージョンをAPI level 24以上にしてしまうことも検討すると良いと思います。
+
+今回の蔵書検索アプリの資料の中では実際に実装箇所は含んでいませんが、表示するウェブページで実行できるプログラム**javascript**をアプリから実行することで、ウェブページ上のデータを取得したり、表示内容を変更することもできます。
+実行の手順としては以下の通りです。
+
+1. WebViewインスタンスで**javascript**の実行を有効化
+最初の`webView.loadUrl()`メソッドを実行する前に設定します。
+```java
+    webview.getSettings().setJavaScriptEnabled(true);
+```
+2. `shouldOverrideUrlLoading()`メソッドで"javascript"のコードを実行
+```java
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        // Android OS 4.4(kitkat)~
+        webView.evaluateJavascript("javascript:document.write('JavaScriptが実行!');", new ValueCallback<string>() { ...});
+    } else {
+        // Andorid OS ~4.3(jelly bean)
+        webView.loadUrl("javascript:document.write('JavaScriptが実行!');");		
+    }
+```
+
+上記の通り、AndroidのOSバージョンによってjavascriptの実行方法に差異があるので注意して実装してください。
+またAndroid OS 4.4(Kitkat)以降で使えるメソッドでは処理結果を受け取ることも簡単にできる様になっています。
+
+以上で蔵書詳細の元ウェブページの表示の解説は終了です。

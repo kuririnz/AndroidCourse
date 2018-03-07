@@ -130,7 +130,7 @@ Gradleの同期処理が実行されるので同期処理の終了にて**Realm*
 # 検索履歴機能
 Realmデータベースを使うにはアプリの起動した時（MainActivity）など起動時画面が表示されるより前にRealmのインスタンスを初期化する必要があります。
 起動時画面が表示される前にアプリ全体を管理する`Application`というクラスのライフサイクルが実行され、Activityが表示されています。
-デフォルトのプロジェクトには`Application`クラスは存在せずAndroid SDK側で自動的に処理されています、そのため必要に応じて`Application`クラスを継承したカスタムクラスを作って実装していきます。
+デフォルトのプロジェクトには`Application`クラスは存在せずAndroid SDK側で自動的に処理されています、そのため必要に応じて`Application`クラスを継承した自作クラスを作って実装していきます。
 ## Applicationクラス作成
 新規Javaファイルを作成します
 > プロジェクトウィンドウ右クリック > New > Java Class
@@ -226,7 +226,7 @@ public class BDApplication extends Application {
 {% endblockquote %}
 と言い換えることができます。
 
-Realmでは上記のテーブルを`RealmObject`クラスを継承したカスタムクラスを作成するだけでテーブル構成が完成します。
+Realmでは上記のテーブルを`RealmObject`クラスを継承した自作クラスを作成するだけでテーブル構成が完成します。
 今回作成する検索履歴機能は上記の表と同じ構成で作成します、新規javaファイルの作成から実装していきましょう。
 > プロジェクトウィンドウ右クリック > New > Java Class
 
