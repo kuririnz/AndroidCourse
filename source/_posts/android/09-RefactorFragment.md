@@ -91,6 +91,7 @@ FragmentはActivityのようにライフサイクルを持ったViewコンポー
 {% img /android/09-RefactorFragment/migratefrg03.png 600 Edit Result List Activity %} 
 
 **FrameLayout**に設定する制約
+
 |FrameLayoutの辺|隣り合わせる箇所|
 |:-------------|:-------------|
 |上辺           |画面上端       |
@@ -99,6 +100,7 @@ FragmentはActivityのようにライフサイクルを持ったViewコンポー
 |右辺           |画面右端       |
 
 **FrameLayout**に設定する属性
+
 |設定項目       |設定値                |
 |--------------|---------------------|
 |ID            |FragmentContainer    |
@@ -192,7 +194,7 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
         return inflater.inflate(R.layout.fragment_result_list, container, false);
     }
 
-	//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     // 親となるActivityが生成された後に実行されるライフサイクルメソッド
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -381,11 +383,11 @@ public class ResultListActivity extends AppCompatActivity {
         // 非同期処理でAPI通信を実行
         okHttpClient.newCall(request).enqueue(callBack);
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-		//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
         // FragmentContainerにResultListFragmentを表示させる処理
         ResultListFragment resultListFragment = ResultListFragment.getInstance(term);
         // Activity内で表示するFragmentを管理するクラスをインスタンス化
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         // Fragmentを表示、または別のFragmentに遷移するためのクラスをインスタンス化
         FragmentTransaction ft = fm.beginTransaction();
         // FragmentManagerに新しいFragmentを追加
@@ -685,7 +687,7 @@ dependencies {
     ...一部省略
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-    compile 'com.google.code.gson:gson:2.2.4'
+    implementation 'com.google.code.gson:gson:2.2.4'
     //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 }
 ```
@@ -783,6 +785,8 @@ public class DetailFragment extends Fragment {
     private TextView publishDateText;
     // APIの検索に使うISBNコード
     private String isbn;
+    // 個体リンクのURL
+    private String selfLink;
     // APIのデータ取得後処理を行うためのHandler
     private Handler handler;
     // OkHttp通信クライアント

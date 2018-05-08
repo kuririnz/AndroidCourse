@@ -693,6 +693,6 @@ public class HistoryActivity extends AppCompatActivity {
 正常な動作では閲覧履歴ボタンをクリックし、画面遷移した検索履歴一覧画面に検索した文字列のリストが表示されます。
 
 以上で検索履歴一覧画面の実装は完了です。
-次の[蔵書詳細画面作成](/AndroidCourse/android/09RefactorFragment)では蔵書の詳細情報を表示する画面を作成しながらFragmentクラスの使い方やJson文字列の効率的なパースライブラリの使い方などを学習していきます。
+次の[蔵書詳細画面作成](/AndroidCourse/android/09-RefactorFragment)では蔵書の詳細情報を表示する画面を作成しながらFragmentクラスの使い方やJson文字列の効率的なパースライブラリの使い方などを学習していきます。
 
 [Realm]: https://realm.io/docs/java/latest
