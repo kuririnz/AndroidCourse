@@ -987,10 +987,6 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
         // 蔵書一覧概要データリスト
         private List<String> summaryList;
         //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-        //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-        // 蔵書モデルクラスリスト
-        private List<ResultListModel> resultList;
-        //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
         
         // コンストラクタ
         public ReflectResult(JSONArray items) {
@@ -998,6 +994,10 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
             titleList = new ArrayList<>();
             summaryList = new ArrayList<>();
             //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑削除↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+            //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+            // 蔵書モデルクラスリスト
+            resultList = new ArrayList<>();
+            //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑追加↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
             // Jsonのパースエラーが発生した時に備えてtry~catchする
             try{
                 // 蔵書リストの件数分繰り返しタイトルをログ出力する
@@ -1201,7 +1201,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:design:27.0.2'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
-    compile 'com.google.code.gson:gson:2.2.4'
+    implementation 'com.google.code.gson:gson:2.2.4'
     //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓追加↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
