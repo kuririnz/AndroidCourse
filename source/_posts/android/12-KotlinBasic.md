@@ -24,10 +24,11 @@ Kotlinはjava言語ではないのでないのでファイル拡張子も変わ�
 
 * 変数
 * 関数
-* 制御構文の変更点、let
+* 制御構文の変更点
 * クラスの定義
 * Unit, Nothing, Any
 * object, companion object
+* スコープ関数
 * ラムダ式
 * try-catch
 
@@ -71,15 +72,16 @@ Kotlinは最近の言語で増えてきた推論型変数、オプショナル�
 	fuga = null			// 代入可
 ```
 オプショナルを設定することで実行時エラー（NullPointerException）などの発生をエラーを予測して実装と動作確認することができます。
-さらにNull許容型の変数を作成した場合でもNullのチェックは簡潔に行えるよう機能が追加されており、その機能が`let`キーワードになります。
+さらにNull許容型の変数を作成した場合でもNullのチェックは簡潔に行えるよう機能が追加されており、その機能が`let`関数になります。
 ```java Java
 	String hoge = fuga != null ? fuga : "hogehoge";
 ```
 ```kotlin Kotlin
-	val hoge = fuga?.let { fuga } else { "hogehoge" }
+	val hoge = fuga?.let { fuga } ?: else { "hogehoge" }
 ```
 上記Kotlinの例では`fuga`がnullではない場合はfugaを代入、nullの場合は"hogehoge"をhogeに代入する式担っています。
-上記では`let-else`式ですが、`let`単体の式の場合で変数の結果がnullの場合にはnullが代入される仕様になっています。
+`let`単体の式の場合で変数の結果がnullの場合にはnullが代入される仕様になっています。
+`let`に関してはスコープ関数の項目で細かい話に触れていきます。
 
 また、Kotlinではキャストの方法も変更されて変更されており、キャストには`as`キーワードを使用します。
 ```java Java
@@ -145,7 +147,7 @@ Kotlinではif文が代入式として使用できるので三項演算子(条�
 	    // 実行したい処理を記述
 	}
 	// if文を利用した変数への代入
-	var num: Int if(a < i) { 0 } else { 10 }
+	var num: Int = if(a < i) { 0 } else { 10 }
 ```
 
 ### when文
@@ -272,7 +274,7 @@ public class fuga {
 ```
 ```kotlin Kotlin
 // 引数が２つありメンバを初期化しているクラス
-class hoge(Int num, String str) {
+class hoge(num: Int, str: String) {
 	var num = num
 	var str = str
 }
@@ -283,7 +285,7 @@ class fuga {
 ```
 プライマリコンストラクタに初期化時の処理をつける場合は以下の通り実装する
 ```kotlin Kotlin
-class hoge(Int num, String str) {
+class hoge(num: Int, str: String) {
 	var num = num
 	var str = str
 	init {
@@ -487,6 +489,114 @@ class Fuga {
 	tmpList.count {it % 2 ==1} // List型で奇数の1,3が含まれたオブジェクトを取得できる
 	tmpList.filter {it == 2} // List型で2が含まれたオブジェクトを取得できる
 ```
+## スコープ関数
+Kotlin標準ライブラリに含まれている機能。
+対象オブジェクトやスコープ関数に渡した引数に限定して即時関数を実行する機能。
+利用できる種類としては現状(2018/05/19時点でkotlin 1.2.41が最新)では以下５つが有効なスコープ関数として登録されています。
+
+|関数 \\ 項目|操作オブジェクト|戻り値        |
+|:---------:|:------------|:-------------|
+|let        |it           |指定可         |
+|with       |this         |指定可         |
+|run        |this         |指定可         |
+|apply      |this         |操作オブジェクト|
+|also       |it           |操作オブジェクト|
+
+また、スコープ関数の中でも`let`,`apply`はAndroid開発の中での利用頻度は高くなる印象があります。
+`let`はオプショナルのunwrappeで使用しますし、`apply`に関しては複数の項目を設定した場合などに使用できるのでFragmentの静的コンストラクタや
+HashMapによる複数項目の設定などを一括で行うような記述が行えるメリットがあります。
+> [Kotlinのスコープ関数を使い分けたい]を参照
+
+### let関数
+`let`関数の定義がこちら↓
+```kotlin
+public inline fun <T, R> T.let(block: (T) -> R): R = block(this)
+```
+自身を引数としてラムダ式を実行する機能を持っている、ラムダブロック最後に記述されているオブジェクト（変数）を戻り値として返却する。
+また、**Null許容変数のUnwappe(Nullチェック)によく使用される**
+`let`の実装サンプルは以下
+```kotlin Kotlin
+	// [Object].let { [処理] }
+	// 実際の使い方
+	val fuga = 20
+	var hoge = fuga.let { it + 10 } // hoge: 30
+```
+上記のコードでい変数"fugaが + 10"を"hoge"に代入する式となりました、ではNullチェックでの使用方法を紹介します。
+```kotlin Kotlin
+	// オプショナルの設定された変数のUnwrappeを行う
+	val hoge = fuga?.let { [fugaがnullじゃない時の処理] } ?: { [fugaがnullの場合の処理] }
+```
+`let`に関してはNullのUnwrappeでの利用が大いのでまずは上記２つの内、後者を特に覚えておけば良いと思います。
+### with
+`with`関数の定義はこちら↓
+```kotlin
+public inline fun <T, R> with(receiver: T, f: T.() -> R): R = receiver.f()
+```
+`with`はオブジェクトを修飾して呼び出す関数ではなく、通常の関数として用意されています。
+`with`関数は引数で指定されたオブジェクトをラムダ式で使用でき引数オブジェクトのメソッド等も参照することができます。
+処理の最後に記述されているオブジェクト(変数)が戻り値になります
+この後に出てくる*apply*とにているが戻り値になる値が違う点に注意してください。
+```kotlin Kotlin
+	// with([Object]) { [処理] }
+	val fuga = fuga(123, "田中")
+	val hoge = with(fuga) {
+		println("id: ${getID()}")
+		getName()
+	}
+	println("hoge: ${hoge}") // hoge: 田中
+```
+### run
+`run`関数の定義はこちら↓
+```kotlin
+public inline fun <T, R> T.run(block: T.() -> R): R = block()
+```
+*let*や*with*と同じように最後に記述されている式や値が戻り値として返却される
+参照方法が*let*、ブロック内のオブジェクト呼び出しが*with*のように実装でき、*let*と*with*が合わさったような関数
+```kotlin Kotlin
+	// [Object].run { [処理] }
+	val fuga = fuga(123, "田中")
+	val hoge = fuga.run {
+		println("id: ${getID()}")
+		getName()
+	}
+	println("hoge: ${hoge}") // hoge: 田中
+```
+### apply
+`apply`関数の定義はこちら↓
+```kotlin
+public inline fun <T> T.apply(block: T.() -> Unit): T { block(); return this }
+```
+戻り値が`apply`関数を修飾したオブジェクトで固定されている、記述の方法などは*with*と同じ形で使用できる。
+Android開発に置けるFragmentの処理が一部簡潔に記述できたりする
+```
+	// [Object].apply { [処理] }
+	val fuga: Fuga = fuga(123, "田中")
+	// 戻り値はFugaクラスのインスタンス
+	val hoge = fuga.apply {
+		println("id: ${getID()}")
+		setName("山田")
+	}
+	println("hoge: ${hoge.getName}") // hoge: 山田
+```
+### also
+`also`関数の定義はこちら↓
+```kotlin
+public inline fun <T> T.also(block: (T) -> Unit): T { block(this); return this }
+```
+Kotlin Version:1.1から追加されたスコープ関数、使い方としては*apply*とほぼ同等だが、ラムダ式で修飾したオブジェクトに
+仮引数名が設定でき、ラムダ式内外でthisのスコープが変わらないという特徴がある。
+```
+	// [Object].apply { [処理] }
+	val fuga: Fuga = fuga(123, "田中")
+	// 戻り値はFugaクラスのインスタンス
+	val hoge = fuga.apply { f ->
+		println("id: ${f.getID()}")
+		f.setName("山田")
+		startActivity(Intent(this, NextActivity::class.java))
+	}
+	println("hoge: ${hoge.getName}") // hoge: 山田
+```
+
 ## Any, Unit, Nothing
 Javaには存在しなかったキーワードが出てきたのでいくつか紹介します。
 ### Any
@@ -506,3 +616,4 @@ KotlinにはJavaと違い検査例外がないため、Javaの場合にコンパ
 
 以上で、Kotlin言語の使い方であったり、Java言語の比較の内容を紹介してきました。
 このページの情報があればJava→Kotlinへの移行を行うときの不具合などの対応はできると思われます。
+[Kotlinのスコープ関数を使い分けたい]: http://nyanyoni.hateblo.jp/entry/2017/08/19/152200
